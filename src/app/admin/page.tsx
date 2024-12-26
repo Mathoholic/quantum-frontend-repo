@@ -7,6 +7,7 @@ import {
   ClientSideRowModelModule,
   ModuleRegistry,
   TextFilterModule,
+  ColumnAutoSizeModule
 } from "ag-grid-community";
 import { ValidationModule } from "ag-grid-community";
 import "ag-grid-community/styles/ag-grid.css";
@@ -21,6 +22,7 @@ ModuleRegistry.registerModules([
   ValidationModule,
   TextFilterModule,
   // ClipboardModule,
+  ColumnAutoSizeModule
 ]);
 
 interface IRow {
@@ -36,6 +38,15 @@ interface IRow {
 const Admin = () => {
   const [rowData, setRowData] = useState<IRow[]>([]);
   const [loading, setLoading] = useState(false);
+  const gridRef = useRef<AgGridReact>(null);
+  const [tabCounts, setTabCounts] = useState({
+    Raw: 0,
+    Interested: 0,
+    FollowUp: 0,
+    VisitScheduled: 0,
+    Converted: 0,
+    NotInterested: 0,
+  });
   const [columnDefs] = useState<ColDef[]>([
     {
       headerName: "Custom ID",
@@ -61,10 +72,41 @@ const Admin = () => {
 
   useEffect(() => {
     fetchData(selectedTab);
+    fetchTabCounts();
+    
   }, [selectedTab]);
+  const fetchTabCounts = async () => {
+    const statuses = ["raw", "interested", "followUp", "visitScheduled", "converted", "notInterested"];
+    const counts: { [key: string]: number } = {};
 
+    for (const status of statuses) {
+      try {
+        const response = await fetch(`http://localhost:3001/form/count?status=${status}`);
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        counts[status] = data.count;
+      } catch (error) {
+        console.error(`Failed to fetch count for status ${status}:`, error);
+      }
+    }
+
+    setTabCounts({
+      Raw: counts.raw || 0,
+      Interested: counts.interested || 0,
+      FollowUp: counts.followUp || 0,
+      VisitScheduled: counts.visitScheduled || 0,
+      Converted: counts.converted || 0,
+      NotInterested: counts.notInterested || 0,
+    });
+  };
   const fetchData = async (category: string) => {
-    setLoading(true);
+    debugger;
+    const gridApi = gridRef.current?.api;
+    if (gridApi) {
+      gridApi.showLoadingOverlay();
+    }
     const offset = 1;
     const pageSize = 10;
     let status = "raw";
@@ -106,16 +148,18 @@ const Admin = () => {
         status: item.status,
         uuid: item.uuid,
       }));
-
+      fetchTabCounts();
       setRowData(mappedData);
     } catch (error) {
       console.error("Failed to fetch data:", error);
     } finally {
+      
       setLoading(false);
     }
   };
 
   const updateRecord = async (id: string, category: string) => {
+    debugger;
     let uuid = id;
     let status = category;
     await fetch(
@@ -143,6 +187,26 @@ const Admin = () => {
 
     const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
       const newStatus = event.target.value;
+      // let newStatus = event.target.value;
+      // if (newStatus === "Raw") {
+      //   newStatus = "raw";
+      // }
+      // if (newStatus === "Interested") {
+      //   newStatus = "interested";
+      // }
+      // if (newStatus === "FollowUp") {
+      //   newStatus = "followUp";
+      // }
+      // if (newStatus === "Visit Scheduled") {
+      //   newStatus = "visitScheduled";
+      // }
+      // if (newStatus === "Converted") {
+      //   newStatus = "converted";
+      // }
+      // if (newStatus === "Not Interested") {
+      //   newStatus = "notInterested";
+      // }
+      // updateRecord(props.data.uuid, newStatus);
       updateRecord(props.data.uuid, newStatus);
     };
 
@@ -156,6 +220,10 @@ const Admin = () => {
       </select>
     );
   }
+  const onGridReady = (params: any) => {
+    debugger;
+    params.api.sizeColumnsToFit();
+  };
   return (
     <div className="flex justify-center items-center min-h-screen">
       <div className="w-full max-w-5xl">
@@ -177,10 +245,13 @@ const Admin = () => {
                   : "bg-gray-400 hover:bg-gray-500"
               }`}
             >
-              {tab}
+              {tab} ({tabCounts[tab.replace(" ", "") as keyof typeof tabCounts]})
             </button>
           ))}
         </div>
+        {/* {loading ? (
+          <div>Loading...</div>
+        ) : ( */}
         <div
           className="ag-theme-alpine"
           style={{ height: "400px", width: "100%" }}
@@ -195,12 +266,17 @@ const Admin = () => {
               ValidationModule,
               TextFilterModule,
             ]}
+            onGridReady={onGridReady}
+            //  rowSelection="multiple"
+             
+             suppressHorizontalScroll={true}
             // suppressCutToClipboard={true}
             defaultColDef={{
               filter: true,
             }}
           />
         </div>
+        {/* )} */}
       </div>
     </div>
   );
