@@ -1,29 +1,8 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import { AgGridReact, AgGridReactProps } from "ag-grid-react";
-import {
-  ColDef,
-  ClientSideRowModelModule,
-  ModuleRegistry,
-  TextFilterModule,
-  ColumnAutoSizeModule
-} from "ag-grid-community";
-import { ValidationModule } from "ag-grid-community";
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-alpine.css";
-// import {
+import React, { useState, useEffect } from "react";
+import { ChevronUp, ChevronDown, Search } from "lucide-react";
 
-//   ClipboardModule,
-
-// } from "ag-grid-enterprise";
-ModuleRegistry.registerModules([
-  ClientSideRowModelModule,
-  ValidationModule,
-  TextFilterModule,
-  // ClipboardModule,
-  ColumnAutoSizeModule
-]);
 
 interface IRow {
   fullName: string;
@@ -38,7 +17,13 @@ interface IRow {
 const Admin = () => {
   const [rowData, setRowData] = useState<IRow[]>([]);
   const [loading, setLoading] = useState(false);
-  const gridRef = useRef<AgGridReact>(null);
+  const [selectedTab, setSelectedTab] = useState("Raw");
+  const [filters, setFilters] = useState<{[key: string]: string}>({});
+  const [sortConfig, setSortConfig] = useState<{
+    key: keyof IRow | null;
+    direction: 'asc' | 'desc' | null;
+  }>({ key: null, direction: null });
+  
   const [tabCounts, setTabCounts] = useState({
     Raw: 0,
     Interested: 0,
@@ -47,44 +32,29 @@ const Admin = () => {
     Converted: 0,
     NotInterested: 0,
   });
-  const [columnDefs] = useState<ColDef[]>([
-    {
-      headerName: "Custom ID",
-      field: "customId",
-      filter: "agTextColumnFilter",
-    },
-    {
-      headerName: "Full Name",
-      field: "fullName",
-      filter: "agTextColumnFilter",
-    },
-    { headerName: "Email", field: "email", filter: "agTextColumnFilter" },
-    { headerName: "Phone", field: "phone", filter: "agTextColumnFilter" },
-    { headerName: "Category", field: "category", filter: "agTextColumnFilter" },
-    { headerName: "Status", field: "status", filter: "agTextColumnFilter" },
-    {
-      headerName: "Actions",
-      field: "actions",
-      cellRenderer: DropdownRenderer,
-    },
-  ]);
-  const [selectedTab, setSelectedTab] = useState("Raw");
+
+  const columns = [
+    { field: 'customId', headerName: 'Custom ID' },
+    { field: 'fullName', headerName: 'Full Name' },
+    { field: 'email', headerName: 'Email' },
+    { field: 'phone', headerName: 'Phone' },
+    { field: 'category', headerName: 'Category' },
+    { field: 'status', headerName: 'Status' },
+  ];
 
   useEffect(() => {
     fetchData(selectedTab);
     fetchTabCounts();
-    
   }, [selectedTab]);
+
   const fetchTabCounts = async () => {
     const statuses = ["raw", "interested", "followUp", "visitScheduled", "converted", "notInterested"];
     const counts: { [key: string]: number } = {};
 
     for (const status of statuses) {
       try {
-        const response = await fetch(`http://localhost:3001/form/count?status=${status}`);
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
+        const response = await fetch(`http://localhost:3002/form/count?status=${status}`);
+        if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();
         counts[status] = data.count;
       } catch (error) {
@@ -101,46 +71,32 @@ const Admin = () => {
       NotInterested: counts.notInterested || 0,
     });
   };
+
   const fetchData = async (category: string) => {
-    debugger;
-    const gridApi = gridRef.current?.api;
-    if (gridApi) {
-      gridApi.showLoadingOverlay();
-    }
+    setLoading(true);
     const offset = 1;
     const pageSize = 10;
-    let status = "raw";
-    if (category === "Raw") {
-      status = "raw";
-    }
-    if (category === "Interested") {
-      status = "interested";
-    }
-    if (category === "FollowUp") {
-      status = "followUp";
-    }
-    if (category === "Visit Scheduled") {
-      status = "visitScheduled";
-    }
-    if (category === "Converted") {
-      status = "converted";
-    }
-    if (category === "Not Interested") {
-      status = "notInterested";
-    }
-    try {
-      const response = await fetch(
-        `http://localhost:3001/form/status?status=${status}&offset=${offset}&pageSize=${pageSize}`
-      );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const data = await response.json();
-      console.log("Fetched data:", data);
+    const statusMap: { [key: string]: string } = {
+      "Raw": "raw",
+      "Interested": "interested",
+      "FollowUp": "followUp",
+      "Visit Scheduled": "visitScheduled",
+      "Converted": "converted",
+      "Not Interested": "notInterested"
+    };
+    
+    const status = statusMap[category] || "raw";
 
+    try {
+      debugger;
+      const response = await fetch(
+        `http://localhost:3002/form/status?status=${status}&offset=${offset}&pageSize=${pageSize}`
+      );
+      if (!response.ok) throw new Error("Network response was not ok");
+      
+      const data = await response.json();
       const mappedData = data.data.map((item: any) => ({
         fullName: `${item.firstName} ${item.lastName}`,
-        lname: item.lastName,
         email: item.email,
         phone: item.mobileNumber,
         customId: item.customId,
@@ -148,34 +104,66 @@ const Admin = () => {
         status: item.status,
         uuid: item.uuid,
       }));
+      
       fetchTabCounts();
       setRowData(mappedData);
     } catch (error) {
       console.error("Failed to fetch data:", error);
     } finally {
-      
       setLoading(false);
     }
   };
 
-  const updateRecord = async (id: string, category: string) => {
-    debugger;
-    let uuid = id;
-    let status = category;
-    await fetch(
-      `http://localhost:3001/form/updateStatus?uuid=${uuid}&status=${status}`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id, category }),
-      }
-    );
-    fetchData(selectedTab);
+  const updateRecord = async (uuid: string, status: string) => {
+    try {
+      await fetch(
+        `http://localhost:3002/form/updateStatus?uuid=${uuid}&status=${status}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ uuid, status }),
+        }
+      );
+      fetchData(selectedTab);
+    } catch (error) {
+      console.error("Failed to update record:", error);
+    }
   };
 
-  function DropdownRenderer(props: any): React.JSX.Element {
+  const handleSort = (field: keyof IRow) => {
+    let direction: 'asc' | 'desc' | null = 'asc';
+    
+    if (sortConfig.key === field && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    } else if (sortConfig.key === field && sortConfig.direction === 'desc') {
+      direction = null;
+    }
+    
+    setSortConfig({ key: field, direction });
+  };
+
+  const sortedData = [...rowData].sort((a, b) => {
+    if (!sortConfig.key || !sortConfig.direction) return 0;
+    
+    const aValue = a[sortConfig.key];
+    const bValue = b[sortConfig.key];
+    
+    if (sortConfig.direction === 'asc') {
+      return aValue < bValue ? -1 : 1;
+    } else {
+      return aValue > bValue ? -1 : 1;
+    }
+  });
+
+  const filteredData = sortedData.filter(row => {
+    return Object.entries(filters).every(([key, value]) => {
+      return row[key as keyof IRow].toLowerCase().includes(value.toLowerCase());
+    });
+  });
+
+  const StatusDropdown = ({ currentStatus, uuid }: { currentStatus: string; uuid: string }) => {
     const options = [
       "raw",
       "interested",
@@ -185,33 +173,26 @@ const Admin = () => {
       "notInterested",
     ];
 
-    const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-      const newStatus = event.target.value;
-      // let newStatus = event.target.value;
-      // if (newStatus === "Raw") {
-      //   newStatus = "raw";
-      // }
-      // if (newStatus === "Interested") {
-      //   newStatus = "interested";
-      // }
-      // if (newStatus === "FollowUp") {
-      //   newStatus = "followUp";
-      // }
-      // if (newStatus === "Visit Scheduled") {
-      //   newStatus = "visitScheduled";
-      // }
-      // if (newStatus === "Converted") {
-      //   newStatus = "converted";
-      // }
-      // if (newStatus === "Not Interested") {
-      //   newStatus = "notInterested";
-      // }
-      // updateRecord(props.data.uuid, newStatus);
-      updateRecord(props.data.uuid, newStatus);
+  
+    const [status, setStatus] = useState(currentStatus);
+
+
+    useEffect(() => {
+      setStatus(currentStatus);
+    }, [currentStatus]);
+
+    const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+      const newStatus = e.target.value;
+      setStatus(newStatus);
+      updateRecord(uuid, newStatus);
     };
 
     return (
-      <select onChange={handleChange} value={props.data.status}>
+      <select
+        className="p-2 border rounded-md"
+        value={status}
+        onChange={handleChange}
+      >
         {options.map((option) => (
           <option key={option} value={option}>
             {option}
@@ -219,15 +200,13 @@ const Admin = () => {
         ))}
       </select>
     );
-  }
-  const onGridReady = (params: any) => {
-    debugger;
-    params.api.sizeColumnsToFit();
   };
+
   return (
-    <div className="flex justify-center items-center min-h-screen">
-      <div className="w-full max-w-5xl">
-        <div className="mb-4">
+
+    <div className="flex justify-center items-center min-h-screen p-4">
+      <div className="w-full max-w-6xl">
+        <div className="mb-6 flex flex-wrap gap-2">
           {[
             "Raw",
             "Interested",
@@ -239,7 +218,7 @@ const Admin = () => {
             <button
               key={tab}
               onClick={() => setSelectedTab(tab)}
-              className={`mr-2 px-4 py-2 rounded-md text-white transition-all duration-300 ${
+              className={`px-4 py-2 rounded-md text-white transition-all duration-300 ${
                 selectedTab === tab
                   ? "bg-blue-600"
                   : "bg-gray-400 hover:bg-gray-500"
@@ -249,34 +228,77 @@ const Admin = () => {
             </button>
           ))}
         </div>
-        {/* {loading ? (
-          <div>Loading...</div>
-        ) : ( */}
-        <div
-          className="ag-theme-alpine"
-          style={{ height: "400px", width: "100%" }}
-        >
-          <AgGridReact
-            rowData={rowData}
-            columnDefs={columnDefs}
-            theme={"legacy"}
-            components={{ dropdownRenderer: DropdownRenderer }}
-            modules={[
-              ClientSideRowModelModule,
-              ValidationModule,
-              TextFilterModule,
-            ]}
-            onGridReady={onGridReady}
-            //  rowSelection="multiple"
-             
-             suppressHorizontalScroll={true}
-            // suppressCutToClipboard={true}
-            defaultColDef={{
-              filter: true,
-            }}
-          />
+
+        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+          <div className="overflow-x-auto w-full h-96">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-gray-50">
+                  {columns.map((column) => (
+                    <th key={column.field} className="p-4">
+                      <div className="flex flex-col space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span>{column.headerName}</span>
+                          <button 
+                            onClick={() => handleSort(column.field as keyof IRow)}
+                            className="ml-2"
+                          >
+                            {sortConfig.key === column.field ? (
+                              sortConfig.direction === 'asc' ? <ChevronUp size={16} /> : <ChevronDown size={16} />
+                            ) : (
+                              <div className="w-4 h-4" />
+                            )}
+                          </button>
+                        </div>
+                        <input
+                          type="text"
+                          placeholder="Filter..."
+                          className="p-1 text-sm border rounded"
+                          onChange={(e) => setFilters(prev => ({
+                            ...prev,
+                            [column.field]: e.target.value
+                          }))}
+                        />
+                      </div>
+                    </th>
+                  ))}
+                  <th className="p-4">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {loading ? (
+                  <tr>
+                    <td colSpan={7} className="text-center py-4">
+                      Loading...
+                    </td>
+                  </tr>
+                ) : filteredData.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="text-center py-4">
+                      No data found
+                    </td>
+                  </tr>
+                ) : (
+                  filteredData.map((row, index) => (
+                    <tr 
+                      key={row.uuid}
+                      className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-100`}
+                    >
+                      {columns.map((column) => (
+                        <td key={column.field} className="p-4">
+                          {row[column.field as keyof IRow]}
+                        </td>
+                      ))}
+                      <td className="p-4">
+                        <StatusDropdown currentStatus={row.status} uuid={row.uuid} />
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
-        {/* )} */}
       </div>
     </div>
   );
