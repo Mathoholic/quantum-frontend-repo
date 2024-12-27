@@ -64,7 +64,7 @@ const Members = () => {
 
       const data = await response.json();
 
-      const mappedData = data.data.data.map((item: any) => ({
+      const mappedData = data.dat?.data?.map((item: any) => ({
         uuid: item.uuid,
         memberName: item.memberName,
         memberRole: item.memberRole,
@@ -210,10 +210,10 @@ const Members = () => {
 
       <div className="p-6 bg-gray-100 min-h-screen">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {members.length === 0 && (
+          {members?.length === 0 && (
             <p className="text-gray-600 text-center">No members found</p>
           )}
-          {members.map((member) => (
+          {members?.map((member) => (
             <div
               key={member.uuid}
               className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
