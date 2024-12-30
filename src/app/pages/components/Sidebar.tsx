@@ -2,14 +2,15 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import styles from './Sidebar.module.css';
-import { FaBars, FaHome, FaUsers } from 'react-icons/fa'; // Importing the hamburger icon
+import { FaBars, FaHome, FaUsers } from 'react-icons/fa'; 
 
 const Sidebar = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true); // State for toggling sidebar
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true); 
 
   const menuItems = [
     { name: 'Lead View', path: '/pages/admin', icon: <FaHome /> },
     { name: 'Members', path: '/pages/members', icon: <FaUsers /> },
+    {name:'From',path:'/pages/form',icon:<FaUsers/>}
   ];
 
   const toggleSidebar = () => {

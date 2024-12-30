@@ -86,7 +86,7 @@ const Members = () => {
         memberEmail: item.memberEmail,
         memberMobile: item.memberMobile,
         memberId: item.memberId,
-        memberDesination: item.memberDesination,
+        memberDesination: item.memberDesination,  
         description: item.description,
         profilePic: item.profilePic,
         order: item.order,
@@ -385,7 +385,7 @@ const Members = () => {
 
               {/* Details Section */}
               <div className="p-6 space-y-3">
-                <div className="grid grid-cols-2 gap-1">
+                <div className="grid grid-cols-2">
                   <div className="space-y-3">
                     <div>
                       <p className="text-sm text-gray-500 mb-1">Role</p>
@@ -765,7 +765,7 @@ const Members = () => {
                         value={newMemberData.description}
                         onChange={handleInputChange}
                         className="w-full p-2 border rounded-md"
-                        rows={3}
+                        rows={5}
                       />
                       {formErrors.description && (
                         <p className="text-red-600">{formErrors.description}</p>
