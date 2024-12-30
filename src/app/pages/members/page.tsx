@@ -1,11 +1,16 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { Edit, Trash2, X } from "lucide-react";
+import React, { useState, useEffect, useRef } from "react";
+import { Edit, Trash2, X, Loader } from "lucide-react";
 import Swal from "sweetalert2";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@radix-ui/react-tooltip";
 
 interface IMember {
- 
   uuid: string;
   memberName: string;
   memberRole: string;
@@ -14,16 +19,22 @@ interface IMember {
   memberId: string;
   memberDesination: string;
   description: string;
-  profilePic: string;
+  profilePic: string | null;
   order: string;
+  userImageFile: File | null;
 }
 
 const Members = () => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [disableBtn, setDisableBtn] = useState<boolean>(true);
   const [members, setMembers] = useState<IMember[]>([]);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editFormData, setEditFormData] = useState<IMember | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [fileName , setFileName] = useState<string>("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePath, setImagePath] = useState("");
+  const [loader, setLoaderFlag] = useState<boolean>(false);
+  const [memberIDPresent, setMemberIDPresent] = useState<boolean>(false);
   const [newMemberData, setNewMemberData] = useState<IMember>({
     uuid: "",
     memberName: "",
@@ -35,6 +46,7 @@ const Members = () => {
     description: "",
     profilePic: "",
     order: "",
+    userImageFile: null,
   });
 
   useEffect(() => {
@@ -42,6 +54,7 @@ const Members = () => {
   }, []);
 
   const fetchData = async () => {
+    setLoaderFlag(true);
     const payload = {
       offset: 1,
       pageSize: 10000,
@@ -49,7 +62,8 @@ const Members = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:3002/team/get?offset=${payload.offset}&pageSize=${payload.pageSize}`,
+        // `http://localhost:3002/team/get?offset=${payload.offset}&pageSize=${payload.pageSize}`,
+        `http://localhost:3002/team`,
         {
           method: "GET",
           headers: {
@@ -60,11 +74,12 @@ const Members = () => {
 
       if (!response.ok) {
         throw new Error("Network response was not ok");
+        setLoaderFlag(false);
       }
 
       const data = await response.json();
-
-      const mappedData = data.dat?.data?.map((item: any) => ({
+      setMemberIDPresent(false);
+      const mappedData = data.map((item: IMember) => ({
         uuid: item.uuid,
         memberName: item.memberName,
         memberRole: item.memberRole,
@@ -77,70 +92,118 @@ const Members = () => {
         order: item.order,
       }));
       setMembers(mappedData);
+      setLoaderFlag(false);
     } catch (error) {
       console.error("Failed to fetch data:", error);
+      setLoaderFlag(false);
+      setMemberIDPresent(false);
     }
   };
 
-  const handleEdit = (member: IMember) => {
-    setEditFormData(member);
-    setIsEditModalOpen(true);
-  };
+  // const handleEdit = (member: IMember) => {
+  //   setEditFormData(member);
+  //   setIsEditModalOpen(true);
+  // };
 
   const handleDelete = async (memberId: string) => {
     const result = await Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
-      });
-    if (result.isConfirmed){
-        try {
-            await fetch(`http://localhost:3002/team/delete?memberId=${memberId}`, {
-              method: "DELETE",
-              headers: {
-                "Content-Type": "application/json",
-              },
-            });
-            fetchData();
-          } catch (error) {
-            console.error("Failed to delete member:", error);
-          }
-          finally{
-            Swal.fire(
-              'Deleted!',
-              'Your Member has been deleted.',
-              'success'
-            )
-          }
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    });
+    if (result.isConfirmed) {
+      try {
+        await fetch(`http://localhost:3002/team/delete?memberId=${memberId}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        fetchData();
+      } catch (error) {
+        console.error("Failed to delete member:", error);
+      } finally {
+        Swal.fire("Deleted!", "Your Member has been deleted.", "success");
+      }
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    debugger;
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    // if (editFormData) {
+    //   setEditFormData({ ...editFormData, [name]: value });
+    // } else {
+    setNewMemberData({ ...newMemberData, [name]: value });
+    console.log(newMemberData);
+    // }
+  };
+  const handleEditInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     if (editFormData) {
-      setEditFormData({ ...editFormData, [name]: value });
-    } else {
-      setNewMemberData({ ...newMemberData, [name]: value });
-      console.log(newMemberData);
+      setEditFormData({
+        uuid: editFormData.uuid,
+        memberName: editFormData.memberName,
+        memberRole: editFormData.memberRole,
+        memberEmail: editFormData.memberEmail,
+        memberMobile: editFormData.memberMobile,
+        memberId: editFormData.memberId,
+        memberDesination: editFormData.memberDesination,
+        description: editFormData.description,
+        profilePic: editFormData.profilePic,
+        order: editFormData.order,
+        userImageFile: editFormData.userImageFile,
+        [name]: value,
+      });
+    }
+    if (name === "memberId" && value) {
+      setDisableBtn(false);
+    }
+    if (name === "memberId" && !value) {
+      setDisableBtn(true);
     }
   };
-
-  const handleUpdate = async (id:string) => {
+  const handleEdit = (member: any) => {
+    setEditFormData(member);
+    setIsEditModalOpen(true);
+  };
+  const handleUpdate = async (id: string) => {
     if (!editFormData) return;
     debugger;
+    const formData = new FormData();
+    formData.append("memberName", editFormData.memberName);
+    formData.append("memberRole", editFormData.memberRole);
+    formData.append("memberEmail", editFormData.memberEmail);
+    formData.append("memberMobile", editFormData.memberMobile);
+    formData.append("memberId", editFormData.memberId);
+    formData.append("memberDesination", editFormData.memberDesination);
+    formData.append("description", editFormData.description);
+    formData.append("order", editFormData.order);
+
+    const file = fileInputRef.current?.files?.[0];
+    if (file) {
+      formData.append("profilePic", file);
+    } else if (imageFile) {
+      formData.append("profilePic", imageFile);
+    }
+
     try {
-      await fetch(`http://localhost:3002/team/edit/${id}`, {
+      const response = await fetch(`http://localhost:3002/team/edit/${id}`, {
         method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(editFormData),
+        body: formData,
       });
+
+      if (!response.ok) {
+        throw new Error("Failed to update member");
+      }
+
       setIsEditModalOpen(false);
       fetchData();
     } catch (error) {
@@ -148,126 +211,232 @@ const Members = () => {
     }
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const formData = new FormData();
-      formData.append('profilePic', file);
-  
+  const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
+
+  const validateForm = () => {
+    const errors: { [key: string]: string } = {};
+    if (!newMemberData.memberEmail) errors.memberEmail = "Email is required";
+    if (!newMemberData.memberMobile) errors.memberMobile = "Mobile is required";
+    if (!newMemberData.memberId) errors.memberId = "ID is required";
+    if (!newMemberData.memberName) errors.memberName = "Name is required";
+    if (!newMemberData.memberRole) errors.memberRole = "Role is required";
+    if (!newMemberData.memberDesination)
+      errors.memberDesination = "Designation is required";
+    if (!newMemberData.order) errors.order = "Order is required";
+    if (!newMemberData.description)
+      errors.description = "Description is required";
+    // if (!imageFile && !newMemberData.userImageFile) errors.userImageFile = 'Profile picture is required';
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+  const [emailExists, setEmailExists] = useState(false);
+  const [phoneExists, setPhoneExists] = useState(false);
+  const addNewMember = async (e: React.FormEvent<HTMLFormElement>) => {
+    debugger;
+    e.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
+    let profilePicPath = "";
+    const formData = new FormData();
+    formData.append("memberName", newMemberData.memberName);
+    formData.append("memberRole", newMemberData.memberRole);
+    formData.append("memberEmail", newMemberData.memberEmail);
+    formData.append("memberMobile", newMemberData.memberMobile);
+    formData.append("memberId", newMemberData.memberId);
+    formData.append("memberDesination", newMemberData.memberDesination);
+    formData.append("description", newMemberData.description);
+    formData.append("order", newMemberData.order);
+    //here check if email , mobile , is present or not if not then return and show erro in these fiel that fields are mandatory
+    if (newMemberData?.memberId) {
       try {
-        const response = await fetch('http://localhost:3002/upload', {
-          method: 'POST',
-          body: formData,
-        });
-  
+        const response = await fetch(
+          `http://localhost:3002/team/member/${newMemberData.memberId}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
         if (!response.ok) {
-          throw new Error('Failed to upload image');
+          throw new Error("Network response was not ok");
         }
-  
-        const result = await response.json();
-        const imagePath = result.path;
-  
-        // Set the uploaded image path in state
-        setNewMemberData({ ...newMemberData, profilePic: imagePath });
-        setFileName(imagePath);
+        const data = await response.json();
+        if (data?.data?.memberId === newMemberData.memberId) {
+          setMemberIDPresent(true);
+          return;
+        }
       } catch (error) {
-        console.error('Error uploading image:', error);
+        console.error("Failed to fetch data:", error);
+        setMemberIDPresent(false);
       }
     }
-  };
-  
-  
-  const addNewMember = async () => {
-    debugger;
+    const file = fileInputRef.current?.files?.[0];
+    if (file) {
+      formData.append("profilePic", file);
+      setImageFile(file);
+    }
     try {
-      await fetch(`http://localhost:3002/team/add`, {
+      const response = await fetch(`http://localhost:3002/team/add`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newMemberData),
+        body: formData,
       });
-      setIsAddModalOpen(false);
-      fetchData();
+      if (!response.ok) {
+        throw new Error("Failed to add new member");
+      }
+      debugger;
+      const data = await response.json();
+      if (data?.error) {
+        const errorMessage = data.error;
+        const emailRegex = /Duplicate entry '(.*?)' for key/;
+        const match = emailRegex.exec(errorMessage);
+        if (match && match[1] === newMemberData.memberEmail) {
+          setEmailExists(true);
+        } else if (match && match[1] === newMemberData.memberMobile) {
+          setPhoneExists(true);
+        } else {
+          Swal.fire("Error!", "Failed to add new member", "error");
+        }
+      }
+      if (data?.data?.uuid) {
+        Swal.fire("Success!", "Member added successfully", "success");
+        setNewMemberData({
+          uuid: "",
+          memberName: "",
+          memberRole: "",
+          memberEmail: "",
+          memberMobile: "",
+          memberId: "",
+          memberDesination: "",
+          description: "",
+          profilePic: "",
+          order: "",
+          userImageFile: null,
+        });
+        setIsAddModalOpen(false);
+        fetchData();
+      }
     } catch (error) {
       console.error("Failed to add new member:", error);
     }
   };
-  
-
-  
+  const [isHovered, setIsHovered] = useState(false);
   return (
     <>
-    
-      <div className="flex justify-end p-6">
+      <div className="flex justify-end p-6 bg-slate-50">
         <button
           onClick={() => setIsAddModalOpen(true)}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow-sm transition-all duration-200 flex items-center gap-2"
         >
-          Add Member
+          <span className="font-medium">Add Member</span>
         </button>
       </div>
 
-      <div className="p-6 bg-gray-100 min-h-screen">
+      <div className="p-6 bg-slate-50 min-h-screen">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {members?.length === 0 && (
-            <p className="text-gray-600 text-center">No members found</p>
+          {loader && (
+            <div className="flex justify-center items-center h-screen">
+              <Loader className="animate-spin text-blue-600" />
+            </div>
+          )}
+          {members?.length === 0 && !loader && (
+            <p className="text-gray-600 text-center font-medium">No members found</p>
           )}
           {members?.map((member) => (
             <div
               key={member.uuid}
-              className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+              className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden"
             >
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h3 className="text-xl font-semibold text-gray-800">
-                    {member.memberName}
-                  </h3>
-                  <p className="text-gray-600">{member.memberDesination}</p>
-                </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleEdit(member)}
-                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-full"
-                  >
-                    <Edit size={18} />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(member.memberId)}
-                    className="p-2 text-red-600 hover:bg-red-50 rounded-full"
-                  >
-                    <Trash2 size={18} />
-                  </button>
+              {/* Header Section */}
+              <div className="p-6 border-b border-gray-100">
+                <div className="flex justify-between items-start gap-4">
+                  <div className="flex items-start gap-4">
+                    <img
+                      src={member.profilePic ?? undefined}
+                      className="w-16 h-16 rounded-lg object-cover border-2 border-gray-50"
+                      style={{ objectFit: "cover" }}
+                    />
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                        {member.memberName}
+                      </h3>
+                      <p className="text-blue-600 font-medium">
+                        {member.memberDesination}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleEdit(member)}
+                      className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                    >
+                      <Edit size={18} />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(member.memberId)}
+                      className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
                 </div>
               </div>
 
-              <div className="space-y-2">
-              <img
-                src={`http://localhost:3002${member.profilePic}`}
-                alt={member.memberName}
-                className="member-image"
-              />
-                <p className="text-gray-600">
-                  <span className="font-medium">Role:</span> {member.memberRole}
-                </p>
-                <p className="text-gray-600">
-                  <span className="font-medium">Email:</span>{" "}
-                  {member.memberEmail}
-                </p>
-                <p className="text-gray-600">
-                  <span className="font-medium">Phone:</span>{" "}
-                  {member.memberMobile}
-                </p>
-                <p className="text-gray-600">
-                  <span className="font-medium">ID:</span> {member.memberId}
-                </p>
-                <p className="text-gray-600">
-                  <span className="font-medium">Description:</span>{" "}
-                  {member.description}
-                </p>
-                <p className="text-gray-600">
-                  <span className="font-medium">Order:</span> {member.order}
-                </p>
+              {/* Details Section */}
+              <div className="p-6 space-y-3">
+                <div className="grid grid-cols-2 gap-1">
+                  <div className="space-y-3">
+                    <div>
+                      <p className="text-sm text-gray-500 mb-1">Role</p>
+                      <p className="font-medium text-gray-900">{member.memberRole}</p>
+                    </div>
+                    <div>
+                    <p className="text-sm text-gray-500 mb-1">ID</p>
+                    <p className="font-medium text-gray-900">{member.memberId}</p>
+                     
+                    </div>
+                    <div>
+                    <p className="text-sm text-gray-500 mb-1">Order</p>
+                    <p className="font-medium text-gray-900">{member.order}</p>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div>
+                    <p className="text-sm text-gray-500 mb-1">Email</p>
+                    <p className="font-medium text-gray-900">{member.memberEmail}</p>
+                    </div>
+                    <div>
+                    <p className="text-sm text-gray-500 mb-1">Phone</p>
+                    <p className="font-medium text-gray-900">{member.memberMobile}</p>
+                     
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="pt-3">
+        <p className="text-sm text-gray-500 mb-1">Description</p>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <p 
+                className="text-gray-900 line-clamp-2 hover:cursor-help"
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+              >
+                {member.description}
+              </p>
+            </TooltipTrigger>
+            <TooltipContent className="max-w-md p-2">
+            <p className="text-sm bg-gray-100 p-4 rounded-lg shadow-md text-gray-700">
+              {member.description}
+            </p>
+
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
+    
               </div>
             </div>
           ))}
@@ -290,13 +459,21 @@ const Members = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Member Image
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1"></label>
+                    <img
+                      src={editFormData.profilePic ?? undefined}
+                      alt={editFormData.memberName}
+                      className="member-image mb-2 inline-block"
+                      style={{
+                        width: "100px",
+                        height: "100px",
+                        objectFit: "cover",
+                      }}
+                    />
                     <input
                       type="file"
                       accept="image/*"
-                      onChange={(e) => handleImageUpload(e)}
+                      ref={fileInputRef}
                       className="w-full p-2 border rounded-md"
                     />
                   </div>
@@ -308,7 +485,7 @@ const Members = () => {
                       type="text"
                       name="memberName"
                       value={editFormData.memberName}
-                      onChange={handleInputChange}
+                      onChange={handleEditInputChange}
                       className="w-full p-2 border rounded-md"
                     />
                   </div>
@@ -321,7 +498,7 @@ const Members = () => {
                       type="text"
                       name="memberRole"
                       value={editFormData.memberRole}
-                      onChange={handleInputChange}
+                      onChange={handleEditInputChange}
                       className="w-full p-2 border rounded-md"
                     />
                   </div>
@@ -334,7 +511,7 @@ const Members = () => {
                       type="email"
                       name="memberEmail"
                       value={editFormData.memberEmail}
-                      onChange={handleInputChange}
+                      onChange={handleEditInputChange}
                       className="w-full p-2 border rounded-md"
                     />
                   </div>
@@ -347,7 +524,7 @@ const Members = () => {
                       type="text"
                       name="memberMobile"
                       value={editFormData.memberMobile}
-                      onChange={handleInputChange}
+                      onChange={handleEditInputChange}
                       className="w-full p-2 border rounded-md"
                     />
                   </div>
@@ -362,7 +539,8 @@ const Members = () => {
                       type="text"
                       name="memberId"
                       value={editFormData.memberId}
-                      onChange={handleInputChange}
+                      onChange={handleEditInputChange}
+                      disabled={true}
                       className="w-full p-2 border rounded-md"
                     />
                   </div>
@@ -375,7 +553,7 @@ const Members = () => {
                       type="text"
                       name="memberDesination"
                       value={editFormData.memberDesination}
-                      onChange={handleInputChange}
+                      onChange={handleEditInputChange}
                       className="w-full p-2 border rounded-md"
                     />
                   </div>
@@ -386,7 +564,7 @@ const Members = () => {
                     <input
                       name="order"
                       value={editFormData.order}
-                      onChange={handleInputChange}
+                      onChange={handleEditInputChange}
                       className="w-full p-2 border rounded-md"
                     />
                   </div>
@@ -397,9 +575,9 @@ const Members = () => {
                     <textarea
                       name="description"
                       value={editFormData.description}
-                      onChange={handleInputChange}
+                      onChange={handleEditInputChange}
                       className="w-full p-2 border rounded-md"
-                      rows={3}
+                      rows={9}
                     />
                   </div>
                 </div>
@@ -413,7 +591,7 @@ const Members = () => {
                   Cancel
                 </button>
                 <button
-                  onClick={()=>handleUpdate(editFormData.memberId)}
+                  onClick={() => handleUpdate(editFormData.memberId)}
                   className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
                 >
                   Update
@@ -437,139 +615,182 @@ const Members = () => {
                 </button>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Member Image
-                    </label>
-                    <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => handleImageUpload(e)}
-                    className="w-full p-2 border rounded-md"
-                    />
+              <form onSubmit={addNewMember}>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Member Image
+                      </label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        ref={fileInputRef}
+                        className="w-full p-2 border rounded-md"
+                      />
+                      {/* {formErrors.userImageFile && <p className="text-red-600">{formErrors.userImageFile}</p>} */}
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Name
+                      </label>
+                      <input
+                        type="text"
+                        name="memberName"
+                        value={newMemberData.memberName}
+                        onChange={handleInputChange}
+                        className="w-full p-2 border rounded-md"
+                      />
+                      {formErrors.memberName && (
+                        <p className="text-red-600">{formErrors.memberName}</p>
+                      )}
+                    </div>
 
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Name
-                    </label>
-                    <input
-                      type="text"
-                      name="memberName"
-                      value={newMemberData.memberName}
-                      onChange={handleInputChange}
-                      className="w-full p-2 border rounded-md"
-                    />
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Role
+                      </label>
+                      <input
+                        type="text"
+                        name="memberRole"
+                        value={newMemberData.memberRole}
+                        onChange={handleInputChange}
+                        className="w-full p-2 border rounded-md"
+                      />
+                      {formErrors.memberRole && (
+                        <p className="text-red-600">{formErrors.memberRole}</p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Email
+                      </label>
+                      <input
+                        type="email"
+                        name="memberEmail"
+                        value={newMemberData.memberEmail}
+                        onChange={handleInputChange}
+                        className="w-full p-2 border rounded-md"
+                      />
+                      {emailExists && (
+                        <p className="text-red-600">Email already exists</p>
+                      )}
+                      {formErrors.memberEmail && (
+                        <p className="text-red-600">{formErrors.memberEmail}</p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Mobile
+                      </label>
+                      <input
+                        type="text"
+                        name="memberMobile"
+                        value={newMemberData.memberMobile}
+                        onChange={handleInputChange}
+                        className="w-full p-2 border rounded-md"
+                      />
+                      {phoneExists && (
+                        <p className="text-red-600">Mobile already exists</p>
+                      )}
+                      {formErrors.memberMobile && (
+                        <p className="text-red-600">
+                          {formErrors.memberMobile}
+                        </p>
+                      )}
+                    </div>
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Role
-                    </label>
-                    <input
-                      type="text"
-                      name="memberRole"
-                      value={newMemberData.memberRole}
-                      onChange={handleInputChange}
-                      className="w-full p-2 border rounded-md"
-                    />
-                  </div>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        ID
+                      </label>
+                      <input
+                        type="text"
+                        name="memberId"
+                        value={newMemberData.memberId}
+                        onChange={handleInputChange}
+                        className="w-full p-2 border rounded-md"
+                      />
+                      {formErrors.memberId && (
+                        <p className="text-red-600">{formErrors.memberId}</p>
+                      )}
+                      {memberIDPresent && (
+                        <p className="text-red-500">
+                          Member ID already present
+                        </p>
+                      )}
+                    </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      name="memberEmail"
-                      value={newMemberData.memberEmail}
-                      onChange={handleInputChange}
-                      className="w-full p-2 border rounded-md"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Mobile
-                    </label>
-                    <input
-                      type="text"
-                      name="memberMobile"
-                      value={newMemberData.memberMobile}
-                      onChange={handleInputChange}
-                      className="w-full p-2 border rounded-md"
-                    />
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Designation
+                      </label>
+                      <input
+                        type="text"
+                        name="memberDesination"
+                        value={newMemberData.memberDesination}
+                        onChange={handleInputChange}
+                        className="w-full p-2 border rounded-md"
+                      />
+                      {formErrors.memberDesination && (
+                        <p className="text-red-600">
+                          {formErrors.memberDesination}
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Order
+                      </label>
+                      <input
+                        name="order"
+                        value={newMemberData.order}
+                        onChange={handleInputChange}
+                        className="w-full p-2 border rounded-md"
+                      />
+                      {formErrors.order && (
+                        <p className="text-red-600">{formErrors.order}</p>
+                      )}
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Description
+                      </label>
+                      <textarea
+                        name="description"
+                        value={newMemberData.description}
+                        onChange={handleInputChange}
+                        className="w-full p-2 border rounded-md"
+                        rows={3}
+                      />
+                      {formErrors.description && (
+                        <p className="text-red-600">{formErrors.description}</p>
+                      )}
+                    </div>
                   </div>
                 </div>
 
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      ID
-                    </label>
-                    <input
-                      type="text"
-                      name="memberId"
-                      value={newMemberData.memberId}
-                      onChange={handleInputChange}
-                      className="w-full p-2 border rounded-md"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Designation
-                    </label>
-                    <input
-                      type="text"
-                      name="memberDesination"
-                      value={newMemberData.memberDesination}
-                      onChange={handleInputChange}
-                      className="w-full p-2 border rounded-md"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Order
-                    </label>
-                    <input
-                      name="order"
-                      value={newMemberData.order}
-                      onChange={handleInputChange}
-                      className="w-full p-2 border rounded-md"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Description
-                    </label>
-                    <textarea
-                      name="description"
-                      value={newMemberData.description}
-                      onChange={handleInputChange}
-                      className="w-full p-2 border rounded-md"
-                      rows={3}
-                    />
-                  </div>
+                <div className="flex justify-end gap-4 mt-6">
+                  <button
+                    type="button"
+                    onClick={() => setIsAddModalOpen(false)}
+                    className="px-4 py-2 text-gray-600 border rounded-md hover:bg-gray-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                    // disabled={memberIDPresent}
+                  >
+                    Add
+                  </button>
                 </div>
-              </div>
-
-              <div className="flex justify-end gap-4 mt-6">
-                <button
-                  onClick={() => setIsAddModalOpen(false)}
-                  className="px-4 py-2 text-gray-600 border rounded-md hover:bg-gray-50"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={()=>{addNewMember()}}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-                >
-                  Add
-                </button>
-              </div>
+              </form>
             </div>
           </div>
         )}
