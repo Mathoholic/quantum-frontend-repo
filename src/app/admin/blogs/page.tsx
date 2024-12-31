@@ -1,202 +1,179 @@
-"use client";
+'use client'
 
-import React, { useState, useEffect } from "react";
-import { ChevronUp, ChevronDown } from "lucide-react";
-import axios from "axios";
+import { useState, useRef, useEffect } from 'react';
+import axios from 'axios';
 
-interface Blog {
-  id: number;
-  title: string;
-  content: string;
-  tags: string[];
-  imageUrl?: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-const AdminBlogs = () => {
-  const [blogs, setBlogs] = useState<Blog[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [sortConfig, setSortConfig] = useState<{ key: keyof Blog | null; direction: "asc" | "desc" | null }>({ key: null, direction: null });
-  const [formVisible, setFormVisible] = useState(false);
+export default function BlogPage() {
   const [formData, setFormData] = useState({
-    title: "",
-    content: "",
-    tags: "",
-    imageUrl: "",
+    title: '',
+    content: '',
+    tags: '', // Comma-separated tags
+    image: null as File | null,
   });
+  const [blogs, setBlogs] = useState<any[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const response = await axios.get('http://localhost:3002/blogs');
+        setBlogs(response.data);
+      } catch (error) {
+        console.error('Error fetching blogs:', error);
+      }
+    };
+
     fetchBlogs();
   }, []);
 
-  const fetchBlogs = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get("http://localhost:3002/blogs");
-      setBlogs(response.data);
-    } catch (error) {
-      console.error("Failed to fetch blogs:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSort = (key: keyof Blog) => {
-    let direction: "asc" | "desc" | null = "asc";
-    if (sortConfig.key === key && sortConfig.direction === "asc") {
-      direction = "desc";
-    } else if (sortConfig.key === key && sortConfig.direction === "desc") {
-      direction = null;
-    }
-    setSortConfig({ key, direction });
-  };
-
-  const sortedBlogs = [...blogs].sort((a, b) => {
-    if (!sortConfig.key || !sortConfig.direction) return 0;
-    const aValue = a[sortConfig.key];
-    const bValue = b[sortConfig.key];
-    if (sortConfig.direction === "asc") return aValue && bValue && aValue < bValue ? -1 : 1;
-    if (sortConfig.direction === "desc") return aValue && bValue && aValue > bValue ? -1 : 1;
-    return 0;
-  });
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
   };
 
-  const handleFormSubmit = async (e: React.FormEvent) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      image: e.target.files ? e.target.files[0] : null,
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      const response = await axios.post("http://localhost:3002/blogs", {
-        ...formData,
-        tags: formData.tags.split(",").map((tag) => tag.trim()),
-      });
-      setBlogs((prev) => [response.data, ...prev]);
-      setFormData({ title: "", content: "", tags: "", imageUrl: "" });
-      setFormVisible(false);
-    } catch (error) {
-      console.error("Failed to create blog:", error);
-    }
-  };
 
-  const handleDelete = async (id: number) => {
+    const form = new FormData();
+    form.append('title', formData.title);
+    form.append('content', formData.content);
+    form.append('tags', formData.tags); // Send tags as a single comma-separated string
+    const file = fileInputRef.current?.files?.[0];
+    if (file) {
+      form.append('image', file);
+    }
+
     try {
-      await axios.delete(`http://localhost:3002/blogs/${id}`);
-      setBlogs((prev) => prev.filter((blog) => blog.id !== id));
+      const response = await axios.post('http://localhost:3002/blogs', form, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      console.log('Blog created:', response.data);
+      alert('Blog created successfully!');
+      setFormData({
+        title: '',
+        content: '',
+        tags: '',
+        image: null,
+      });
+      setIsModalOpen(false);
+      setBlogs([...blogs, response.data]);
     } catch (error) {
-      console.error("Failed to delete blog:", error);
+      console.error('Error creating blog:', error);
+      alert('Failed to create blog.');
     }
   };
 
   return (
-    <div className="p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Blog Management</h1>
+    <div className="max-w-6xl mx-auto p-6 bg-white rounded-lg shadow-md">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-gray-800">Blogs</h1>
         <button
-          onClick={() => setFormVisible(!formVisible)}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md"
+          onClick={() => setIsModalOpen(true)}
+          className="py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
-          {formVisible ? "Close Form" : "Create Blog"}
+          Create Blog
         </button>
       </div>
 
-      {formVisible && (
-        <form className="bg-white p-4 rounded-md shadow-md mb-6" onSubmit={handleFormSubmit}>
-          <div className="mb-4">
-            <label className="block text-gray-700">Title</label>
-            <input
-              type="text"
-              name="title"
-              value={formData.title}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded-md"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700">Content</label>
-            <textarea
-              name="content"
-              value={formData.content}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded-md"
-              rows={4}
-              required
-            ></textarea>
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700">Tags (comma-separated)</label>
-            <input
-              type="text"
-              name="tags"
-              value={formData.tags}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded-md"
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700">Image URL</label>
-            <input
-              type="text"
-              name="imageUrl"
-              value={formData.imageUrl}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded-md"
-            />
-          </div>
-          <button type="submit" className="px-4 py-2 bg-green-600 text-white rounded-md">
-            Submit
-          </button>
-        </form>
+      {blogs.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {blogs.map((blog: any) => (
+            <div key={blog.id} className="p-4 bg-gray-100 rounded-lg shadow-md">
+              {blog.image && <img src={blog.image} alt={blog.title} className="w-full h-48 object-cover rounded-md mb-4" />}
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">{blog.title}</h2>
+              <p className="text-gray-700 mb-2">{blog.content}</p>
+              <p className="text-gray-500">Tags: {blog.tags}</p>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="text-gray-500">No blogs available.</p>
       )}
 
-      <div className="overflow-x-auto bg-white rounded-lg shadow-md">
-        <table className="w-full">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="p-4">Title</th>
-              <th className="p-4">Tags</th>
-              <th className="p-4">Created At</th>
-              <th className="p-4">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr>
-                <td colSpan={4} className="text-center p-4">
-                  Loading...
-                </td>
-              </tr>
-            ) : sortedBlogs.length === 0 ? (
-              <tr>
-                <td colSpan={4} className="text-center p-4">
-                  No blogs found
-                </td>
-              </tr>
-            ) : (
-              sortedBlogs.map((blog) => (
-                <tr key={blog.id} className="hover:bg-gray-50">
-                  <td className="p-4">{blog.title}</td>
-                  <td className="p-4">{blog.tags.join(", ")}</td>
-                  <td className="p-4">{new Date(blog.createdAt).toLocaleDateString()}</td>
-                  <td className="p-4">
-                    <button
-                      onClick={() => handleDelete(blog.id)}
-                      className="px-4 py-2 bg-red-600 text-white rounded-md"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg shadow-md max-w-2xl w-full">
+            <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">Create a Blog</h2>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Title</label>
+                <input
+                  type="text"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleChange}
+                  required
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm p-2"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Content</label>
+                <textarea
+                  name="content"
+                  value={formData.content}
+                  onChange={handleChange}
+                  required
+                  rows={6}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm p-2"
+                ></textarea>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Tags (comma-separated)</label>
+                <input
+                  type="text"
+                  name="tags"
+                  value={formData.tags}
+                  onChange={handleChange}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm p-2"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Image</label>
+                <input
+                  type="file"
+                  name="image"
+                  accept="image/*"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border file:border-gray-300 file:text-sm file:font-medium file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100"
+                />
+              </div>
+
+              <div className="flex justify-end space-x-4">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-gray-700 bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                  Create Blog
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
-};
-
-export default AdminBlogs;
+}
