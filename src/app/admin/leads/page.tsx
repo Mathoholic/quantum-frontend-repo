@@ -76,7 +76,7 @@ const Admin = () => {
 
     setShowForm(true);
     const baseUrl = window.location.origin;
-    const formUrl = `${baseUrl}/pages/form?customId=${row.customId}`;
+    const formUrl = `${baseUrl}/admin/form?customId=${row.customId}`;
 
     try {
       await fetch('http://localhost:3002/form/enqueryForm', {
