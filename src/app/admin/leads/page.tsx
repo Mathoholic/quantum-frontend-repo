@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { ChevronUp, ChevronDown, Search } from "lucide-react";
-
-
+import { ChevronUp, ChevronDown } from "lucide-react";
+import { ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 interface IRow {
   fullName: string;
   email: string;
@@ -12,34 +13,58 @@ interface IRow {
   category: string;
   status: string;
   uuid: string;
+  FormLink: string;
 }
 
 const Admin = () => {
   const [rowData, setRowData] = useState<IRow[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedTab, setSelectedTab] = useState("Raw");
-  const [filters, setFilters] = useState<{[key: string]: string}>({});
+  const [filters, setFilters] = useState<{ [key: string]: string }>({});
+  const [showForm, setShowForm] = useState(false);
   const [sortConfig, setSortConfig] = useState<{
     key: keyof IRow | null;
-    direction: 'asc' | 'desc' | null;
+    direction: "asc" | "desc" | null;
   }>({ key: null, direction: null });
-  
+
   const [tabCounts, setTabCounts] = useState({
     Raw: 0,
     Interested: 0,
-    FollowUp: 0,
     VisitScheduled: 0,
     Converted: 0,
     NotInterested: 0,
+    FormFilled: 0,
+    Admitted: 0,
   });
-
+  const showToast = () => {
+    toast.success('Link Copied successful!', {
+      position: 'top-right',
+      autoClose: 500,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    });
+  };
   const columns = [
-    { field: 'customId', headerName: 'Custom ID' },
-    { field: 'fullName', headerName: 'Full Name' },
-    { field: 'email', headerName: 'Email' },
-    { field: 'phone', headerName: 'Phone' },
-    { field: 'category', headerName: 'Category' },
-    { field: 'status', headerName: 'Status' },
+    { field: "customId", headerName: "Custom ID" },
+    { field: "fullName", headerName: "Full Name" },
+    { field: "email", headerName: "Email" },
+    { field: "phone", headerName: "Phone" },
+    { field: "category", headerName: "Category" },
+    { field: "status", headerName: "Status" },
+    {
+      field: "generateFormLink",
+      headerName: "Generate Form Link",
+      renderCell: (params: any) => (
+        <button
+          onClick={() =>  handleGenerateLink(params.row)}
+          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+        >
+          Get Link
+        </button>
+      ),
+    },
   ];
 
   useEffect(() => {
@@ -47,13 +72,50 @@ const Admin = () => {
     fetchTabCounts();
   }, [selectedTab]);
 
-  const fetchTabCounts = async () => {
-    const statuses = ["raw", "interested", "followUp", "visitScheduled", "converted", "notInterested"];
-    const counts: { [key: string]: number } = {};
+  const handleGenerateLink = async (row: IRow) => {
 
+    setShowForm(true);
+    const baseUrl = window.location.origin;
+    const formUrl = `${baseUrl}/pages/form?customId=${row.customId}`;
+
+    try {
+      await fetch('http://localhost:3002/form/enqueryForm', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          uuid: row.uuid,
+          formLink: formUrl
+        })
+      });
+
+      navigator.clipboard.writeText(formUrl);
+      showToast();
+    } catch (error) {
+      console.error('Error saving form link:', error);
+      alert('Error generating form link');
+    }
+
+  };
+
+  const fetchTabCounts = async () => {
+    const statuses = [
+      "raw",
+      "interested",
+      "followUp",
+      "visitScheduled",
+      "converted",
+      "notInterested",
+      "formFilled",
+      "admitted",
+    ];
+    const counts: { [key: string]: number } = {};
     for (const status of statuses) {
       try {
-        const response = await fetch(`http://localhost:3002/form/count?status=${status}`);
+        const response = await fetch(
+          `http://localhost:3002/form/count?status=${status}`
+        );
         if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();
         counts[status] = data.count;
@@ -65,35 +127,34 @@ const Admin = () => {
     setTabCounts({
       Raw: counts.raw || 0,
       Interested: counts.interested || 0,
-      FollowUp: counts.followUp || 0,
       VisitScheduled: counts.visitScheduled || 0,
       Converted: counts.converted || 0,
       NotInterested: counts.notInterested || 0,
+      FormFilled: counts.formFilled || 0,
+      Admitted: counts.admitted || 0,
     });
   };
 
   const fetchData = async (category: string) => {
     setLoading(true);
-    const offset = 1;
-    const pageSize = 10;
     const statusMap: { [key: string]: string } = {
-      "Raw": "raw",
-      "Interested": "interested",
-      "FollowUp": "followUp",
+      Raw: "raw",
+      Interested: "interested",
       "Visit Scheduled": "visitScheduled",
-      "Converted": "converted",
-      "Not Interested": "notInterested"
+      Converted: "converted",
+      "Not Interested": "notInterested",
+      "Form Filled": "formFilled",
+      Admitted: "admitted",
     };
-    
+
     const status = statusMap[category] || "raw";
 
     try {
-      debugger;
       const response = await fetch(
-        `http://localhost:3002/form/status?status=${status}&offset=${offset}&pageSize=${pageSize}`
+        `http://localhost:3002/form/status?status=${status}`
       );
       if (!response.ok) throw new Error("Network response was not ok");
-      
+
       const data = await response.json();
       const mappedData = data.data.map((item: any) => ({
         fullName: `${item.firstName} ${item.lastName}`,
@@ -103,8 +164,9 @@ const Admin = () => {
         category: item.category,
         status: item.status,
         uuid: item.uuid,
+        googleFormLink: item.googleFormLink,
       }));
-      
+
       fetchTabCounts();
       setRowData(mappedData);
     } catch (error) {
@@ -133,49 +195,54 @@ const Admin = () => {
   };
 
   const handleSort = (field: keyof IRow) => {
-    let direction: 'asc' | 'desc' | null = 'asc';
-    
-    if (sortConfig.key === field && sortConfig.direction === 'asc') {
-      direction = 'desc';
-    } else if (sortConfig.key === field && sortConfig.direction === 'desc') {
+    let direction: "asc" | "desc" | null = "asc";
+
+    if (sortConfig.key === field && sortConfig.direction === "asc") {
+      direction = "desc";
+    } else if (sortConfig.key === field && sortConfig.direction === "desc") {
       direction = null;
     }
-    
+
     setSortConfig({ key: field, direction });
   };
 
   const sortedData = [...rowData].sort((a, b) => {
     if (!sortConfig.key || !sortConfig.direction) return 0;
-    
+
     const aValue = a[sortConfig.key];
     const bValue = b[sortConfig.key];
-    
-    if (sortConfig.direction === 'asc') {
+
+    if (sortConfig.direction === "asc") {
       return aValue < bValue ? -1 : 1;
     } else {
       return aValue > bValue ? -1 : 1;
     }
   });
 
-  const filteredData = sortedData.filter(row => {
+  const filteredData = sortedData.filter((row) => {
     return Object.entries(filters).every(([key, value]) => {
       return row[key as keyof IRow].toLowerCase().includes(value.toLowerCase());
     });
   });
 
-  const StatusDropdown = ({ currentStatus, uuid }: { currentStatus: string; uuid: string }) => {
+  const StatusDropdown = ({
+    currentStatus,
+    uuid,
+  }: {
+    currentStatus: string;
+    uuid: string;
+  }) => {
     const options = [
       "raw",
       "interested",
-      "followUp",
       "visitScheduled",
       "converted",
       "notInterested",
+      "formFilled",
+      "admitted",
     ];
 
-  
     const [status, setStatus] = useState(currentStatus);
-
 
     useEffect(() => {
       setStatus(currentStatus);
@@ -203,17 +270,18 @@ const Admin = () => {
   };
 
   return (
-
     <div className="flex justify-center items-center min-h-screen p-4">
-      <div className="w-full max-w-6xl">
+      <ToastContainer />
+      <div className="w-full max-w-10xl">
         <div className="mb-6 flex flex-wrap gap-2">
           {[
             "Raw",
             "Interested",
-            "FollowUp",
             "Visit Scheduled",
             "Converted",
             "Not Interested",
+            "Form Filled",
+            "Admitted",
           ].map((tab) => (
             <button
               key={tab}
@@ -224,13 +292,14 @@ const Admin = () => {
                   : "bg-gray-400 hover:bg-gray-500"
               }`}
             >
-              {tab} ({tabCounts[tab.replace(" ", "") as keyof typeof tabCounts]})
+              {tab} ({tabCounts[tab.replace(" ", "") as keyof typeof tabCounts]}
+              )
             </button>
           ))}
         </div>
 
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-          <div className="overflow-x-auto w-full h-96">
+          <div className="overflow-x-auto w-full h-screen">
             <table className="w-full">
               <thead>
                 <tr className="bg-gray-50">
@@ -239,12 +308,18 @@ const Admin = () => {
                       <div className="flex flex-col space-y-2">
                         <div className="flex items-center justify-between">
                           <span>{column.headerName}</span>
-                          <button 
-                            onClick={() => handleSort(column.field as keyof IRow)}
+                          <button
+                            onClick={() =>
+                              handleSort(column.field as keyof IRow)
+                            }
                             className="ml-2"
                           >
                             {sortConfig.key === column.field ? (
-                              sortConfig.direction === 'asc' ? <ChevronUp size={16} /> : <ChevronDown size={16} />
+                              sortConfig.direction === "asc" ? (
+                                <ChevronUp size={16} />
+                              ) : (
+                                <ChevronDown size={16} />
+                              )
                             ) : (
                               <div className="w-4 h-4" />
                             )}
@@ -254,10 +329,12 @@ const Admin = () => {
                           type="text"
                           placeholder="Filter..."
                           className="p-1 text-sm border rounded"
-                          onChange={(e) => setFilters(prev => ({
-                            ...prev,
-                            [column.field]: e.target.value
-                          }))}
+                          onChange={(e) =>
+                            setFilters((prev) => ({
+                              ...prev,
+                              [column.field]: e.target.value,
+                            }))
+                          }
                         />
                       </div>
                     </th>
@@ -280,17 +357,24 @@ const Admin = () => {
                   </tr>
                 ) : (
                   filteredData.map((row, index) => (
-                    <tr 
+                    <tr
                       key={row.uuid}
-                      className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-100`}
+                      className={`${
+                        index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                      } hover:bg-gray-100`}
                     >
                       {columns.map((column) => (
                         <td key={column.field} className="p-4">
-                          {row[column.field as keyof IRow]}
+                          {column.renderCell
+                            ? column.renderCell({ row })
+                            : row[column.field as keyof IRow]}
                         </td>
                       ))}
                       <td className="p-4">
-                        <StatusDropdown currentStatus={row.status} uuid={row.uuid} />
+                        <StatusDropdown
+                          currentStatus={row.status}
+                          uuid={row.uuid}
+                        />
                       </td>
                     </tr>
                   ))
