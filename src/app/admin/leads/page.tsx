@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { ChevronUp, ChevronDown } from "lucide-react";
-import { ToastContainer } from 'react-toastify';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ChevronUp, ChevronDown, Download } from "lucide-react";
+import { ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 interface IRow {
   fullName: string;
   email: string;
@@ -37,8 +37,8 @@ const Admin = () => {
     Admitted: 0,
   });
   const showToast = () => {
-    toast.success('Link Copied successful!', {
-      position: 'top-right',
+    toast.success("Link Copied successful!", {
+      position: "top-right",
       autoClose: 500,
       hideProgressBar: false,
       closeOnClick: true,
@@ -58,7 +58,7 @@ const Admin = () => {
       headerName: "Generate Form Link",
       renderCell: (params: any) => (
         <button
-          onClick={() =>  handleGenerateLink(params.row)}
+          onClick={() => handleGenerateLink(params.row)}
           className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
         >
           Get Link
@@ -73,30 +73,28 @@ const Admin = () => {
   }, [selectedTab]);
 
   const handleGenerateLink = async (row: IRow) => {
-
     setShowForm(true);
     const baseUrl = window.location.origin;
     const formUrl = `${baseUrl}/admin/form?customId=${row.customId}`;
 
     try {
-      await fetch('http://localhost:3002/form/enqueryForm', {
-        method: 'POST',
+      await fetch("http://localhost:3002/form/enqueryForm", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           uuid: row.uuid,
-          formLink: formUrl
-        })
+          formLink: formUrl,
+        }),
       });
 
       navigator.clipboard.writeText(formUrl);
       showToast();
     } catch (error) {
-      console.error('Error saving form link:', error);
-      alert('Error generating form link');
+      console.error("Error saving form link:", error);
+      alert("Error generating form link");
     }
-
   };
 
   const fetchTabCounts = async () => {
@@ -268,123 +266,162 @@ const Admin = () => {
       </select>
     );
   };
+  const getCSVFile = async () => {
+    try {
+      const response = await fetch("http://localhost:3002/form/lead/csv", {
+        method: "GET",
+        headers: {
+          "Content-Type": "text/csv",
+        },
+      });
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "fee-details.csv";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } catch (error) {
+      console.error("Error fetching the CSV file:", error);
+    }
+  };
   return (
-    <div className="flex justify-center items-center min-h-screen p-4">
-      <ToastContainer />
-      <div className="w-full max-w-10xl">
-        <div className="mb-6 flex flex-wrap gap-2">
-          {[
-            "Raw",
-            "Interested",
-            "Visit Scheduled",
-            "Converted",
-            "Not Interested",
-            "Form Filled",
-            "Admitted",
-          ].map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setSelectedTab(tab)}
-              className={`px-4 py-2 rounded-md text-white transition-all duration-300 ${
-                selectedTab === tab
-                  ? "bg-blue-600"
-                  : "bg-gray-400 hover:bg-gray-500"
-              }`}
-            >
-              {tab} ({tabCounts[tab.replace(" ", "") as keyof typeof tabCounts]}
-              )
-            </button>
-          ))}
-        </div>
+    <>
+      <div className="w-full flex justify-end mb-4">
+        <button
+          onClick={() => getCSVFile()}
+          className="px-4 py-2 text-sm bg-green-500 text-white rounded hover:bg-green-600 transition-colors duration-200 flex items-center gap-2 shadow-sm"
+        >
+          <Download className="h-4 w-4" />
+          Download CSV
+        </button>
+      </div>
+      <div className="flex justify-center items-center min-h-screen p-4">
+        <ToastContainer />
+        {/* <div className="flex justify-between items-center mb-6">
+        
+      </div> */}
 
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-          <div className="overflow-x-auto w-full h-screen">
-            <table className="w-full">
-              <thead>
-                <tr className="bg-gray-50">
-                  {columns.map((column) => (
-                    <th key={column.field} className="p-4">
-                      <div className="flex flex-col space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span>{column.headerName}</span>
-                          <button
-                            onClick={() =>
-                              handleSort(column.field as keyof IRow)
-                            }
-                            className="ml-2"
-                          >
-                            {sortConfig.key === column.field ? (
-                              sortConfig.direction === "asc" ? (
-                                <ChevronUp size={16} />
+        <div className="w-full max-w-10xl">
+          <div className="mb-6 flex flex-wrap gap-2">
+            {[
+              "Raw",
+              "Interested",
+              "Visit Scheduled",
+              "Converted",
+              "Not Interested",
+              "Form Filled",
+              "Admitted",
+            ].map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setSelectedTab(tab)}
+                className={`px-4 py-2 rounded-md text-white transition-all duration-300 ${
+                  selectedTab === tab
+                    ? "bg-blue-600"
+                    : "bg-gray-400 hover:bg-gray-500"
+                }`}
+              >
+                {tab} (
+                {tabCounts[tab.replace(" ", "") as keyof typeof tabCounts]})
+              </button>
+            ))}
+          </div>
+
+          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div className="overflow-x-auto w-full h-screen">
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-gray-50">
+                    {columns.map((column) => (
+                      <th key={column.field} className="p-4">
+                        <div className="flex flex-col space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span>{column.headerName}</span>
+                            <button
+                              onClick={() =>
+                                handleSort(column.field as keyof IRow)
+                              }
+                              className="ml-2"
+                            >
+                              {sortConfig.key === column.field ? (
+                                sortConfig.direction === "asc" ? (
+                                  <ChevronUp size={16} />
+                                ) : (
+                                  <ChevronDown size={16} />
+                                )
                               ) : (
-                                <ChevronDown size={16} />
-                              )
-                            ) : (
-                              <div className="w-4 h-4" />
-                            )}
-                          </button>
+                                <div className="w-4 h-4" />
+                              )}
+                            </button>
+                          </div>
+                          <input
+                            type="text"
+                            placeholder="Filter..."
+                            className="p-1 text-sm border rounded"
+                            onChange={(e) =>
+                              setFilters((prev) => ({
+                                ...prev,
+                                [column.field]: e.target.value,
+                              }))
+                            }
+                          />
                         </div>
-                        <input
-                          type="text"
-                          placeholder="Filter..."
-                          className="p-1 text-sm border rounded"
-                          onChange={(e) =>
-                            setFilters((prev) => ({
-                              ...prev,
-                              [column.field]: e.target.value,
-                            }))
-                          }
-                        />
-                      </div>
-                    </th>
-                  ))}
-                  <th className="p-4">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading ? (
-                  <tr>
-                    <td colSpan={7} className="text-center py-4">
-                      Loading...
-                    </td>
+                      </th>
+                    ))}
+                    <th className="p-4">Actions</th>
                   </tr>
-                ) : filteredData.length === 0 ? (
-                  <tr>
-                    <td colSpan={7} className="text-center py-4">
-                      No data found
-                    </td>
-                  </tr>
-                ) : (
-                  filteredData.map((row, index) => (
-                    <tr
-                      key={row.uuid}
-                      className={`${
-                        index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                      } hover:bg-gray-100`}
-                    >
-                      {columns.map((column) => (
-                        <td key={column.field} className="p-4">
-                          {column.renderCell
-                            ? column.renderCell({ row })
-                            : row[column.field as keyof IRow]}
-                        </td>
-                      ))}
-                      <td className="p-4">
-                        <StatusDropdown
-                          currentStatus={row.status}
-                          uuid={row.uuid}
-                        />
+                </thead>
+                <tbody>
+                  {loading ? (
+                    <tr>
+                      <td colSpan={7} className="text-center py-4">
+                        Loading...
                       </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+                  ) : filteredData.length === 0 ? (
+                    <tr>
+                      <td colSpan={7} className="text-center py-4">
+                        No data found
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredData.map((row, index) => (
+                      <tr
+                        key={row.uuid}
+                        className={`${
+                          index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                        } hover:bg-gray-100`}
+                      >
+                        {columns.map((column) => (
+                          <td key={column.field} className="p-4">
+                            {column.renderCell
+                              ? column.renderCell({ row })
+                              : row[column.field as keyof IRow]}
+                          </td>
+                        ))}
+                        <td className="p-4">
+                          <StatusDropdown
+                            currentStatus={row.status}
+                            uuid={row.uuid}
+                          />
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
