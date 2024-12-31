@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { Edit2, Save } from 'lucide-react';
+import { Download, Edit2, Save } from 'lucide-react';
 import { toast, ToastContainer } from 'react-toastify';
 
 const FeeDetails = () => {
@@ -24,7 +24,6 @@ const FeeDetails = () => {
 
     const fetchFeeDetails = async () => {
         try {
-            debugger;
             const response = await fetch('http://localhost:3002/form/fee/details');
             const result = await response.json();
             setFeeData(result.data.data);
@@ -47,7 +46,6 @@ const FeeDetails = () => {
     };
 
     const handleSave = async (row: any) => {
-        debugger;
         const uuid = row.uuid;
         try {
             const payload = {
@@ -95,10 +93,45 @@ const FeeDetails = () => {
           draggable: true,
         });
       };
+      const getCSVFile = async () => {
+        try {
+            const response = await fetch('http://localhost:3002/form/fee/details/csv', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'text/csv',
+                },
+            });
+    
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+    
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'fee-details.csv';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        } catch (error) {
+            console.error('Error fetching the CSV file:', error);
+        }
+    };
+    
     return (
         <div className="w-full p-6 bg-white shadow-md rounded-lg">
-            <ToastContainer />
-            <h1 className="text-2xl font-bold mb-6">Fee Details</h1>
+      <ToastContainer />
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Fee Details</h1>
+        <button 
+          onClick={() => getCSVFile()}
+          className="px-4 py-2 text-sm bg-green-500 text-white rounded hover:bg-green-600 transition-colors duration-200 flex items-center gap-2 shadow-sm"
+        >
+          <Download className="h-4 w-4" />
+          Download CSV
+        </button>
+      </div>
             <div className="overflow-x-auto">
                 <table className="w-full table-auto border-collapse">
                     <thead>
