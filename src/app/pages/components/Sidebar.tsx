@@ -10,7 +10,7 @@ const Sidebar = () => {
   const menuItems = [
     { name: 'Lead View', path: '/pages/admin', icon: <FaHome /> },
     { name: 'Members', path: '/pages/members', icon: <FaUsers /> },
-    {name:'From',path:'/pages/form',icon:<FaUsers/>}
+    // {name:'Form',path:'/pages/form',icon:<FaUsers/>}
   ];
 
   const toggleSidebar = () => {

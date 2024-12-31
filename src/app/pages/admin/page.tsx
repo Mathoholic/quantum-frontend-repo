@@ -39,7 +39,7 @@ const Admin = () => {
   const showToast = () => {
     toast.success('Link Copied successful!', {
       position: 'top-right',
-      autoClose: 3000,
+      autoClose: 500,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,
@@ -73,7 +73,6 @@ const Admin = () => {
   }, [selectedTab]);
 
   const handleGenerateLink = async (row: IRow) => {
-    debugger;
 
     setShowForm(true);
     const baseUrl = window.location.origin;
