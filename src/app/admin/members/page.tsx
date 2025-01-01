@@ -232,7 +232,6 @@ const Members = () => {
   const [emailExists, setEmailExists] = useState(false);
   const [phoneExists, setPhoneExists] = useState(false);
   const addNewMember = async (e: React.FormEvent<HTMLFormElement>) => {
-    debugger;
     e.preventDefault();
     if (!validateForm()) {
       return;

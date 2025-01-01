@@ -2,30 +2,42 @@
 
 import { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
-
+import { ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+export interface Blog {
+  id: string;
+  title: string;
+  content: string;
+  imageUrl: string;
+  [key: string]: any; 
+}
 export default function BlogPage() {
   const [formData, setFormData] = useState({
     title: '',
     content: '',
-    tags: '', // Comma-separated tags
+    tags: '',
     image: null as File | null,
   });
-  const [blogs, setBlogs] = useState<any[]>([]);
+  
+  const [blogs, setBlogs] = useState<Blog[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const fetchBlogs = async () => {
-      try {
-        const response = await axios.get('http://localhost:3002/blogs');
-        setBlogs(response.data);
-      } catch (error) {
-        console.error('Error fetching blogs:', error);
-      }
-    };
+      const fetchBlogs = async () => {
+        try {
+          debugger;
+          const response = await axios.get('http://localhost:3002/blogs');
+          setBlogs(response.data);
+          console.log('Blogs fetched:', blogs);
+        } catch (error) {
+          console.error('Error fetching blogs:', error);
+        }
+      };
 
     fetchBlogs();
-  }, []);
+  }, [blogs]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -48,7 +60,7 @@ export default function BlogPage() {
     const form = new FormData();
     form.append('title', formData.title);
     form.append('content', formData.content);
-    form.append('tags', formData.tags); // Send tags as a single comma-separated string
+    form.append('tags', formData.tags);
     const file = fileInputRef.current?.files?.[0];
     if (file) {
       form.append('image', file);
@@ -61,7 +73,7 @@ export default function BlogPage() {
         },
       });
       console.log('Blog created:', response.data);
-      alert('Blog created successfully!');
+      showToast();
       setFormData({
         title: '',
         content: '',
@@ -72,12 +84,32 @@ export default function BlogPage() {
       setBlogs([...blogs, response.data]);
     } catch (error) {
       console.error('Error creating blog:', error);
-      alert('Failed to create blog.');
+      showErrorToast();
     }
   };
-
+  const showErrorToast = () => {
+    toast.success("Error In Creting Blog!", {
+      position: "top-right",
+      autoClose: 500,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    });
+  };
+  const showToast = () => {
+      toast.success("Blog Created successful!", {
+        position: "top-right",
+        autoClose: 500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    };
   return (
     <div className="max-w-6xl mx-auto p-6 bg-white rounded-lg shadow-md">
+      <ToastContainer />
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-800">Blogs</h1>
         <button
@@ -91,13 +123,14 @@ export default function BlogPage() {
       {blogs.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {blogs.map((blog: any) => (
-            <div key={blog.id} className="p-4 bg-gray-100 rounded-lg shadow-md">
-              {blog.image && <img src={blog.image} alt={blog.title} className="w-full h-48 object-cover rounded-md mb-4" />}
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">{blog.title}</h2>
-              <p className="text-gray-700 mb-2">{blog.content}</p>
-              <p className="text-gray-500">Tags: {blog.tags}</p>
-            </div>
-          ))}
+          <div key={blog.id} className="p-4 bg-gray-100 rounded-lg shadow-md">
+            {blog.imageUrl && <img src={blog.imageUrl} alt={blog.title} className="w-full h-48 object-cover rounded-md mb-4" />}
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">{blog.title}</h2>
+            <p className="text-gray-700 mb-2">{blog.content}</p>
+            <p className="text-gray-500">Tags: {blog.tags}</p>
+          </div>
+        ))}
+
         </div>
       ) : (
         <p className="text-gray-500">No blogs available.</p>
