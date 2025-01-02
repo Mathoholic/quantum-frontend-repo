@@ -1,41 +1,118 @@
+
 "use client";
 import React, { useState, useEffect } from "react";
-import { Download, Edit2, Save } from "lucide-react";
+import { Download } from "lucide-react";
 import { toast, ToastContainer } from "react-toastify";
 
+interface StudentData {
+  uuid: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  class: string;
+  mobileNumber: string;
+  totalYearlyPayment: string;
+  firstInstallment: string;
+  secondInstallment: string;
+  thirdInstallment: string;
+  customId: string;
+}
+
 const FeeDetails = () => {
-  const [feeData, setFeeData] = useState<Array<any>>([]);
-  const [filteredData, setFilteredData] = useState<Array<any>>([]);
-  const [editingRow, setEditingRow] = useState<string | null>(null);
-  const [editValues, setEditValues] = useState({
-    firstInstallment: "",
-    secondInstallment: "",
-    thirdInstallment: "",
-    firstInstallmentStatus: "",
-    secondInstallmentStatus: "",
-    thirdInstallmentStatus: ""
-  });
-  const [filters, setFilters] = useState({
-    customId: "",
-    name: "",
-    email: "",
-    mobileNumber: "",
-    firstInstallment: "",
-    secondInstallment: "",
-    thirdInstallment: "",
-    firstInstallmentStatus: "",
-    secondInstallmentStatus: "",
-    thirdInstallmentStatus: "",
-  });
+  const [feeData, setFeeData] = useState<StudentData[]>([]);
+  const [filteredData, setFilteredData] = useState<StudentData[]>([]);
+  const [selectedClass, setSelectedClass] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedInstallment, setSelectedInstallment] = useState<string>("");
+  const [customIdInput, setCustomIdInput] = useState<string>("");
 
   const fetchFeeDetails = async () => {
+    setLoading(true);
+    setError(null);
     try {
-      const response = await fetch("http://localhost:3002/form/fee/details");
+      const response = await fetch("http://localhost:3002/form/getAllClass/receipt");
       const result = await response.json();
-      setFeeData(result.data.data);
-      setFilteredData(result.data.data);
+      
+      const dataArray = Array.isArray(result.data) ? result.data :
+                       result.data && typeof result.data === 'object' ? [result.data] :
+                       [];
+      
+      setFeeData(dataArray);
+      setFilteredData(dataArray);
     } catch (error) {
       console.error("Error fetching fee details:", error);
+      setError("Failed to fetch fee details");
+      setFeeData([]);
+      setFilteredData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchFeeDetailsByClass = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(
+        `http://localhost:3002/form/getClassName?class=${encodeURIComponent(selectedClass)}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      
+      const dataArray = Array.isArray(result.data) ? result.data :
+                       result.data && typeof result.data === 'object' ? [result.data] :
+                       [];
+
+      setFeeData(dataArray);
+      setFilteredData(dataArray);
+    } catch (error) {
+      console.error("Error fetching fee details:", error);
+      setError(`Failed to fetch details for class ${selectedClass}`);
+      setFeeData([]);
+      setFilteredData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const generateReceipt = async () => {
+    if (!customIdInput || !selectedInstallment) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:3002/form/generate-receipt/${customIdInput}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ installmentNumber: parseInt(selectedInstallment) }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate receipt');
+      }
+
+      const result = await response.json();
+      toast.success("Receipt generated successfully!");
+      closeModal();
+      fetchFeeDetails(); // Refresh the data
+    } catch (error) {
+      console.error('Error generating receipt:', error);
+      toast.error("Failed to generate receipt");
     }
   };
 
@@ -43,380 +120,219 @@ const FeeDetails = () => {
     fetchFeeDetails();
   }, []);
 
-  const handleEdit = (row: any) => {
-    setEditingRow(row.uuid);
-    setEditValues({
-      firstInstallment: row.firstInstallment,
-      secondInstallment: row.secondInstallment,
-      thirdInstallment: row.thirdInstallment,
-      firstInstallmentStatus: row.firstInstallmentStatus,
-      secondInstallmentStatus: row.secondInstallmentStatus,
-      thirdInstallmentStatus: row.thirdInstallmentStatus,
-    });
-  };
-
-  const handleSave = async (row: any) => {
-    const uuid = row.uuid;
-    try {
-      const payload = {
-        ...row,
-        firstInstallment: editValues.firstInstallment,
-        secondInstallment: editValues.secondInstallment,
-        thirdInstallment: editValues.thirdInstallment,
-        firstInstallmentStatus: editValues.firstInstallmentStatus,
-        secondInstallmentStatus: editValues.secondInstallmentStatus,
-        thirdInstallmentStatus: editValues.thirdInstallmentStatus,
-      };
-
-      const response = await fetch(
-        `http://localhost:3002/form/fee/update?uuid=${uuid}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        }
-      );
-
-      if (response.ok) {
-        fetchFeeDetails();
-        setEditingRow(null);
-        setEditValues({
-          firstInstallment: "",
-          secondInstallment: "",
-          thirdInstallment: "",
-          firstInstallmentStatus: "",
-          secondInstallmentStatus: "",
-          thirdInstallmentStatus: "",
-        });
-        showSuccessToast();
-      }
-    } catch (error) {
-      console.error("Error updating fee details:", error);
-    }
-  };
-
-  const showSuccessToast = () => {
-    toast.success("Fee updated successfully!", {
-      position: "top-right",
-      autoClose: 500,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-    });
-  };
-
-  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>, key: string) => {
-    const value = e.target.value;
-    setFilters((prevFilters) => {
-        const updatedFilters = { ...prevFilters, [key]: value };
-
-        // Perform filtering using the updated filter value
-        const updatedData = feeData.filter((row) => {
-            return (
-                (!updatedFilters.customId || row.customId.includes(updatedFilters.customId)) &&
-                (!updatedFilters.name ||
-                    `${row.firstName} ${row.lastName}`
-                        .toLowerCase()
-                        .includes(updatedFilters.name.toLowerCase())) &&
-                (!updatedFilters.email || row.email.toLowerCase().includes(updatedFilters.email.toLowerCase())) &&
-                (!updatedFilters.mobileNumber || row.mobileNumber.includes(updatedFilters.mobileNumber)) &&
-                (!updatedFilters.firstInstallment || row.firstInstallment.toLowerCase().includes(updatedFilters.firstInstallment.toLowerCase())) &&
-(!updatedFilters.secondInstallment || row.secondInstallment.toLowerCase().includes(updatedFilters.secondInstallment.toLowerCase())) &&
-(!updatedFilters.thirdInstallment || row.thirdInstallment.toLowerCase().includes(updatedFilters.thirdInstallment.toLowerCase())) &&
-(!updatedFilters.firstInstallmentStatus || row.firstInstallmentStatus.toLowerCase().includes(updatedFilters.firstInstallmentStatus.toLowerCase())) &&
-(!updatedFilters.secondInstallmentStatus || row.secondInstallmentStatus.toLowerCase().includes(updatedFilters.secondInstallmentStatus.toLowerCase())) &&
-(!updatedFilters.thirdInstallmentStatus || row.thirdInstallmentStatus.toLowerCase().includes(updatedFilters.thirdInstallmentStatus.toLowerCase()))
-
-            );
-        });
-
-        setFilteredData(updatedData); 
-        return updatedFilters;
-    });
-};
-
   const getCSVFile = async () => {
     try {
-        const response = await fetch('http://localhost:3002/form/fee/details/csv', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'text/csv',
-            },
-        });
+      const response = await fetch("http://localhost:3002/form/fee/details/csv", {
+        method: "GET",
+        headers: {
+          "Content-Type": "text/csv",
+        },
+      });
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'fee-details.csv';
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "fee-details.csv";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
     } catch (error) {
-        console.error('Error fetching the CSV file:', error);
+      console.error("Error fetching the CSV file:", error);
+      toast.error("Failed to download CSV file");
     }
-};
+  };
+
+  const classOptions = [
+    "Nursery", "LKG", "UKG",
+    "Class 1", "Class 2", "Class 3",
+    "Class 4", "Class 5", "Class 6"
+  ];
+
+  const openModal = (customId: string) => {
+    setCustomIdInput(customId);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setCustomIdInput("");
+    setSelectedInstallment("");
+  };
+
   return (
-    <div className="w-full p-6 bg-white shadow-md rounded-lg">
+    <div className="w-full p-6 bg-white shadow-md rounded-lg relative">
       <ToastContainer />
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Fee Details</h1>
         <button
-          onClick={() => getCSVFile()}
+          onClick={getCSVFile}
           className="px-4 py-2 text-sm bg-green-500 text-white rounded hover:bg-green-600 transition-colors duration-200 flex items-center gap-2 shadow-sm"
         >
           <Download className="h-4 w-4" />
           Download CSV
         </button>
       </div>
+
+      <div className="mb-6">
+        <div className="flex gap-4 mb-4">
+          <select
+            value={selectedClass}
+            onChange={(e) => setSelectedClass(e.target.value)}
+            className="px-4 py-2 border rounded-md text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Select Class</option>
+            {classOptions.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+          
+          <button
+            onClick={fetchFeeDetailsByClass}
+            disabled={!selectedClass || loading}
+            className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+          >
+            {loading ? 'Loading...' : 'Filter by Class'}
+          </button>
+          
+          <button
+            onClick={() => {
+              setSelectedClass('');
+              fetchFeeDetails();
+            }}
+            disabled={loading}
+            className="px-4 py-2 bg-gray-600 text-white rounded-md text-sm hover:bg-gray-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+          >
+            Reset Filter
+          </button>
+        </div>
+        
+        {error && (
+          <div className="text-red-500 mt-2">{error}</div>
+        )}
+      </div>
+
       <div className="overflow-x-auto">
         <table className="w-full table-auto border-collapse">
           <thead>
             <tr className="bg-gray-100">
-              <th className="p-3 text-left">
-                Custom ID
-                <input
-                  type="text"
-                  value={filters.customId}
-                  onChange={(e) => handleFilterChange(e, "customId")}
-                  className="mt-1 p-1 w-full border rounded"
-                  placeholder="Filter"
-                />
-              </th>
-              <th className="p-3 text-left">
-                Name
-                <input
-                  type="text"
-                  value={filters.name}
-                  onChange={(e) => handleFilterChange(e, "name")}
-                  className="mt-1 p-1 w-full border rounded"
-                  placeholder="Filter"
-                />
-              </th>
-              <th className="p-3 text-left">
-                Email
-                <input
-                  type="text"
-                  value={filters.email}
-                  onChange={(e) => handleFilterChange(e, "email")}
-                  className="mt-1 p-1 w-full border rounded"
-                  placeholder="Filter"
-                />
-              </th>
-              <th className="p-3 text-left">
-                Mobile
-                <input
-                  type="text"
-                  value={filters.mobileNumber}
-                  onChange={(e) => handleFilterChange(e, "mobileNumber")}
-                  className="mt-1 p-1 w-full border rounded"
-                  placeholder="Filter"
-                />
-              </th>
-              <th className="p-3 text-left">
-                First Installment
-                <input
-                  type="text"
-                  value={filters.firstInstallment}
-                  onChange={(e) => handleFilterChange(e, "firstInstallment")}
-                  className="mt-1 p-1 w-full border rounded"
-                  placeholder="Filter"
-                />
-              </th>
-              <th className="p-3 text-left">
-                Second Installment
-                <input
-                  type="text"
-                  value={filters.secondInstallment}
-                  onChange={(e) => handleFilterChange(e, "secondInstallment")}
-                  className="mt-1 p-1 w-full border rounded"
-                  placeholder="Filter"
-                />
-              </th>
-              <th className="p-3 text-left">
-                Third Installment
-                <input
-                  type="text"
-                  value={filters.thirdInstallment}
-                  onChange={(e) => handleFilterChange(e, "thirdInstallment")}
-                  className="mt-1 p-1 w-full border rounded"
-                  placeholder="Filter"
-                />
-              </th>
-              <th className="p-3 text-left">
-                First Installment Status
-                <input
-                  type="text"
-                  value={filters.firstInstallmentStatus}
-                  onChange={(e) => handleFilterChange(e, "firstInstallmentStatus")}
-                  className="mt-1 p-1 w-full border rounded"
-                  placeholder="Filter"
-                />
-              </th>
-              <th className="p-3 text-left">
-                Second Installment Status
-                <input
-                  type="text"
-                  value={filters.secondInstallmentStatus}
-                  onChange={(e) => handleFilterChange(e, "secondInstallmentStatus")}
-                  className="mt-1 p-1 w-full border rounded"
-                  placeholder="Filter"
-                />
-              </th>
-              <th className="p-3 text-left">
-                Third Installment Status
-                <input
-                  type="text"
-                  value={filters.thirdInstallmentStatus}
-                  onChange={(e) => handleFilterChange(e, "thirdInstallmentStatus")}
-                  className="mt-1 p-1 w-full border rounded"
-                  placeholder="Filter"
-                />
-              </th>
-
+              <th className="p-3 text-left">Custom ID</th>
+              <th className="p-3 text-left">Class</th>
+              <th className="p-3 text-left">Name</th>
+              <th className="p-3 text-left">Email</th>
+              <th className="p-3 text-left">Mobile</th>
+              <th className="p-3 text-left">First Installment</th>
+              <th className="p-3 text-left">Second Installment</th>
+              <th className="p-3 text-left">Third Installment</th>
+              <th className="p-3 text-left">First Installment Status</th>
+              <th className="p-3 text-left">Second Installment Status</th>
+              <th className="p-3 text-left">Third Installment Status</th>
               <th className="p-3 text-left">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {filteredData.map((row) => (
-              <tr key={row.uuid} className="border-b">
-                <td className="p-3">{row.customId}</td>
-                <td className="p-3">{`${row.firstName} ${row.lastName}`}</td>
-                <td className="p-3">{row.email}</td>
-                <td className="p-3">{row.mobileNumber}</td>
-                <td className="p-3">
-                  {editingRow === row.uuid ? (
-                    <input
-                      type="text"
-                      value={editValues.firstInstallment}
-                      onChange={(e) =>
-                        setEditValues({
-                          ...editValues,
-                          firstInstallment: e.target.value,
-                        })
-                      }
-                      className="w-32 p-2 border rounded"
-                    />
-                  ) : (
-                    row.firstInstallment
-                  )}
-                </td>
-                <td className="p-3">
-                  {editingRow === row.uuid ? (
-                    <input
-                      type="text"
-                      value={editValues.secondInstallment}
-                      onChange={(e) =>
-                        setEditValues({
-                          ...editValues,
-                          secondInstallment: e.target.value,
-                        })
-                      }
-                      className="w-32 p-2 border rounded"
-                    />
-                  ) : (
-                    row.secondInstallment
-                  )}
-                </td>
-                <td className="p-3">
-                  {editingRow === row.uuid ? (
-                    <input
-                      type="text"
-                      value={editValues.thirdInstallment}
-                      onChange={(e) =>
-                        setEditValues({
-                          ...editValues,
-                          thirdInstallment: e.target.value,
-                        })
-                      }
-                      className="w-32 p-2 border rounded"
-                    />
-                  ) : (
-                    row.thirdInstallment
-                  )}
-                </td>
-                <td className="p-3">
-                  {editingRow === row.uuid ? (
-                    <input
-                      type="text"
-                      value={editValues.firstInstallmentStatus}
-                      onChange={(e) =>
-                        setEditValues({
-                          ...editValues,
-                          firstInstallmentStatus: e.target.value,
-                        })
-                      }
-                      className="w-32 p-2 border rounded"
-                    />
-                  ) : (
-                    row.firstInstallmentStatus
-                  )}
-                </td>
-                <td className="p-3">
-                  {editingRow === row.uuid ? (
-                    <input
-                      type="text"
-                      value={editValues.secondInstallmentStatus}
-                      onChange={(e) =>
-                        setEditValues({
-                          ...editValues,
-                          secondInstallmentStatus: e.target.value,
-                        })
-                      }
-                      className="w-32 p-2 border rounded"
-                    />
-                  ) : (
-                    row.secondInstallmentStatus
-                  )}
-                </td>
-                <td className="p-3">
-                  {editingRow === row.uuid ? (
-                    <input
-                      type="text"
-                      value={editValues.thirdInstallmentStatus}
-                      onChange={(e) =>
-                        setEditValues({
-                          ...editValues,
-                          thirdInstallmentStatus: e.target.value,
-                        })
-                      }
-                      className="w-32 p-2 border rounded"
-                    />
-                  ) : (
-                    row.thirdInstallmentStatus
-                  )}
-                </td>
-                <td className="p-3">
-                  {editingRow === row.uuid ? (
-                    <button
-                      onClick={() => handleSave(row)}
-                      className="px-4 py-2 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 flex items-center gap-2"
-                    >
-                      <Save className="h-4 w-4" />
-                      Save
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => handleEdit(row)}
-                      className="px-4 py-2 text-sm bg-gray-500 text-white rounded hover:bg-gray-600 flex items-center gap-2"
-                    >
-                      <Edit2 className="h-4 w-4" />
-                      Edit
-                    </button>
-                  )}
-                </td>
+            {loading ? (
+              <tr>
+                <td colSpan={12} className="text-center p-4">Loading...</td>
               </tr>
-            ))}
+            ) : filteredData.length === 0 ? (
+              <tr>
+                <td colSpan={12} className="text-center p-4">No data found</td>
+              </tr>
+            ) : (
+              filteredData.map((row) => (
+                <tr key={row.uuid} className="border-b">
+                  <td className="p-3">{row.customId}</td>
+                  <td className="p-3">{row.class}</td>
+                  <td className="p-3">{`${row.firstName} ${row.lastName}`}</td>
+                  <td className="p-3">{row.email}</td>
+                  <td className="p-3">{row.mobileNumber}</td>
+                  <td className="p-3">{row.firstInstallment}</td>
+                  <td className="p-3">{row.secondInstallment}</td>
+                  <td className="p-3">{row.thirdInstallment}</td>
+                  <td className="p-3"></td>
+                  <td className="p-3"></td>
+                  <td className="p-3"></td>
+                  <td className="p-3">
+                    <button
+                      onClick={() => openModal(row.customId)}
+                      className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 transition-colors"
+                    >
+                      Generate Receipt
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
+
+      {/* Custom Modal */}
+      {isModalOpen && (
+        <>
+          {/* Overlay */}
+          <div 
+            className="fixed inset-0 bg-black bg-opacity-50 z-40"
+            onClick={closeModal}
+          />
+          
+          {/* Modal Content */}
+          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-xl z-50 w-96">
+            <h2 className="text-xl font-semibold mb-4">Generate Receipt</h2>
+            
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Custom ID
+              </label>
+              <input
+                type="text"
+                value={customIdInput}
+                onChange={(e) => setCustomIdInput(e.target.value)}
+                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter Custom ID"
+              />
+            </div>
+
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Select Installment
+              </label>
+              <select
+                value={selectedInstallment}
+                onChange={(e) => setSelectedInstallment(e.target.value)}
+                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Select Installment</option>
+                <option value="1">Installment 1</option>
+                <option value="2">Installment 2</option>
+                <option value="3">Installment 3</option>
+              </select>
+            </div>
+
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={closeModal}
+                className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={generateReceipt}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 transition-colors"
+              >
+                Generate
+              </button>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };

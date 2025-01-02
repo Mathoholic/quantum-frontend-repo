@@ -16,8 +16,22 @@ const FormPage = () => {
     mobileNumber: "",
     address: "",
     education: "",
-    gender: ""
+    gender: "",
+    class: "" 
   });
+
+  // Array of class options
+  const classOptions = [
+    "Nursery",
+    "LKG",
+    "UKG",
+    "Class 1",
+    "Class 2",
+    "Class 3",
+    "Class 4",
+    "Class 5",
+    "Class 6"
+  ];
 
   const checkUserFilledForm = async (customId: string) => {
     if (!customId) {
@@ -29,7 +43,6 @@ const FormPage = () => {
       const response = await fetch(`http://localhost:3002/form/enqueryForm/find?customId=${customId}`);
       const result = await response.json();
 
-     
       if (result.data === true) {
         setFormFlag(false); 
         return true; 
@@ -94,7 +107,8 @@ const FormPage = () => {
           mobileNumber: "",
           address: "",
           education: "",
-          gender: ""
+          gender: "",
+          class: "" 
         });
         setFormFlag(false);
         showSuccessToast();
@@ -128,7 +142,6 @@ const FormPage = () => {
           <h1 className="text-2xl font-bold mb-6 text-center">Student Application Form</h1>
           
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Form fields remain the same */}
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">Custom ID</label>
               <input
@@ -183,6 +196,23 @@ const FormPage = () => {
                 className="w-full p-2 border rounded-md"
                 required
               />
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">Class</label>
+              <select
+                value={formData.class}
+                onChange={(e) => setFormData(prev => ({ ...prev, class: e.target.value }))}
+                className="w-full p-2 border rounded-md"
+                required
+              >
+                <option value="">Select Class</option>
+                {classOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div className="space-y-2">
