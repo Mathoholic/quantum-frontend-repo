@@ -33,7 +33,7 @@ const FeeDetails = () => {
       const response = await fetch("http://localhost:3002/form/fee/details");
       const result = await response.json();
       setFeeData(result.data.data);
-      setFilteredData(result.data.data); // Set initial filtered data
+      setFilteredData(result.data.data);
     } catch (error) {
       console.error("Error fetching fee details:", error);
     }
@@ -123,18 +123,18 @@ const FeeDetails = () => {
                         .includes(updatedFilters.name.toLowerCase())) &&
                 (!updatedFilters.email || row.email.toLowerCase().includes(updatedFilters.email.toLowerCase())) &&
                 (!updatedFilters.mobileNumber || row.mobileNumber.includes(updatedFilters.mobileNumber)) &&
-                (!updatedFilters.firstInstallment || row.firstInstallment.includes(updatedFilters.firstInstallment)) &&
-                (!updatedFilters.secondInstallment ||
-                    row.secondInstallment.includes(updatedFilters.secondInstallment)) &&
-                (!updatedFilters.thirdInstallment || row.thirdInstallment.includes(updatedFilters.thirdInstallment)) &&
-                (!updatedFilters.firstInstallmentStatus || row.firstInstallmentStatus.includes(updatedFilters.firstInstallmentStatus)) &&
-                (!updatedFilters.secondInstallmentStatus || row.secondInstallmentStatus.includes(updatedFilters.secondInstallmentStatus)) &&
-                (!updatedFilters.thirdInstallmentStatus || row.thirdInstallmentStatus.includes(updatedFilters.thirdInstallmentStatus))
+                (!updatedFilters.firstInstallment || row.firstInstallment.toLowerCase().includes(updatedFilters.firstInstallment.toLowerCase())) &&
+(!updatedFilters.secondInstallment || row.secondInstallment.toLowerCase().includes(updatedFilters.secondInstallment.toLowerCase())) &&
+(!updatedFilters.thirdInstallment || row.thirdInstallment.toLowerCase().includes(updatedFilters.thirdInstallment.toLowerCase())) &&
+(!updatedFilters.firstInstallmentStatus || row.firstInstallmentStatus.toLowerCase().includes(updatedFilters.firstInstallmentStatus.toLowerCase())) &&
+(!updatedFilters.secondInstallmentStatus || row.secondInstallmentStatus.toLowerCase().includes(updatedFilters.secondInstallmentStatus.toLowerCase())) &&
+(!updatedFilters.thirdInstallmentStatus || row.thirdInstallmentStatus.toLowerCase().includes(updatedFilters.thirdInstallmentStatus.toLowerCase()))
+
             );
         });
 
-        setFilteredData(updatedData); // Update filtered data
-        return updatedFilters; // Update the filters state
+        setFilteredData(updatedData); 
+        return updatedFilters;
     });
 };
 
