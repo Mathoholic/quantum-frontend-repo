@@ -31,9 +31,9 @@ const Admin = () => {
     Raw: 0,
     Interested: 0,
     VisitScheduled: 0,
-    Converted: 0,
+    // Converted: 0,
     NotInterested: 0,
-    FormFilled: 0,
+    // FormFilled: 0,
     Admitted: 0,
   });
   const showToast = () => {
@@ -75,7 +75,7 @@ const Admin = () => {
   const handleGenerateLink = async (row: IRow) => {
     setShowForm(true);
     const baseUrl = window.location.origin;
-    const formUrl = `${baseUrl}/admin/form?customId=${row.customId}`;
+    const formUrl = `${baseUrl}/form?customId=${row.customId}`;
 
     try {
       await fetch("http://localhost:3002/form/enqueryForm", {
@@ -103,9 +103,9 @@ const Admin = () => {
       "interested",
       "followUp",
       "visitScheduled",
-      "converted",
+      // "converted",
       "notInterested",
-      "formFilled",
+      // "formFilled",
       "admitted",
     ];
     const counts: { [key: string]: number } = {};
@@ -126,13 +126,14 @@ const Admin = () => {
       Raw: counts.raw || 0,
       Interested: counts.interested || 0,
       VisitScheduled: counts.visitScheduled || 0,
-      Converted: counts.converted || 0,
+
       NotInterested: counts.notInterested || 0,
-      FormFilled: counts.formFilled || 0,
+    
       Admitted: counts.admitted || 0,
     });
   };
-
+    // FormFilled: counts.formFilled || 0,
+            // Converted: counts.converted || 0,
   const fetchData = async (category: string) => {
     setLoading(true);
     const statusMap: { [key: string]: string } = {
@@ -234,9 +235,9 @@ const Admin = () => {
       "raw",
       "interested",
       "visitScheduled",
-      "converted",
+      // "converted",
       "notInterested",
-      "formFilled",
+      // "formFilled",
       "admitted",
     ];
 
@@ -314,9 +315,9 @@ const Admin = () => {
               "Raw",
               "Interested",
               "Visit Scheduled",
-              "Converted",
+              // "Converted",
               "Not Interested",
-              "Form Filled",
+              // "Form Filled",
               "Admitted",
             ].map((tab) => (
               <button

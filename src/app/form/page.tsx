@@ -16,8 +16,24 @@ const FormPage = () => {
     mobileNumber: "",
     address: "",
     education: "",
-    gender: ""
+    gender: "",
+    class: "" 
   });
+  const classOptions = [
+    "Nursery",
+    "LKG",
+    "UKG",
+    "Class 1",
+    "Class 2",
+    "Class 3",
+    "Class 4",
+    "Class 5",
+    "Class 6",
+    "Class 7",
+    "Class 8",
+    "Class 9",
+    "Class 10"
+  ];
 
   const checkUserFilledForm = async (customId: string) => {
     if (!customId) {
@@ -94,7 +110,8 @@ const FormPage = () => {
           mobileNumber: "",
           address: "",
           education: "",
-          gender: ""
+          gender: "",
+          class:""
         });
         setFormFlag(false);
         showSuccessToast();
@@ -138,7 +155,22 @@ const FormPage = () => {
                 className="w-full p-2 border rounded-md bg-gray-100"
               />
             </div>
-
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">Class</label>
+              <select
+                value={formData.class}
+                onChange={(e) => setFormData(prev => ({ ...prev, class: e.target.value }))}
+                className="w-full p-2 border rounded-md"
+                required
+              >
+                <option value="">Select Class</option>
+                {classOptions.map((classOption) => (
+                  <option key={classOption} value={classOption}>
+                    {classOption}
+                  </option>
+                ))}
+              </select>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700">First Name</label>
