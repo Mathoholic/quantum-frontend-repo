@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
-
+import { toast, ToastContainer } from "react-toastify";
 interface Submission {
   uuid: string;
   customId: string;
@@ -17,6 +17,7 @@ interface Submission {
   firstInstallmentFee: string;
   secondInstallmentFee: string;
   thirdInstallmentFee: string;
+  applicantId: string;
 }
 
 interface ReceiptModalProps {
@@ -41,68 +42,88 @@ const ReceiptModal = ({ isOpen, onClose, student }: ReceiptModalProps) => {
   };
 
   const validateInstallments = () => {
-    const total = calculateFees();
-    const sum =
-      parseFloat(firstInstallment) +
-      parseFloat(secondInstallment) +
-      parseFloat(thirdInstallment);
-    return Math.abs(total - sum) < 0.01; 
-  };
+  const total = calculateFees();
+  const first = parseFloat(firstInstallment) || 0;
+  const second = parseFloat(secondInstallment) || 0;
+  const third = parseFloat(thirdInstallment) || 0;
 
-  const setFeeStructure = async () => {
-    if (!student) return;
-    if (!validateInstallments()) {
-      alert('The sum of installments does not match the total after discount.');
-      return;
-    }
-    const customId = student.customId;
-    if (customId) {
-      try {
-        const response = await fetch(`http://localhost:3002/form/class/receipt?customId=${customId}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-        const result = await response.json();
-        setLoading(true);
-        const url = result.data ? 'http://localhost:3002/form/class/updateReceipt' : 'http://localhost:3002/form/class/createReceipt';
-        const method = result.data ? 'PATCH' : 'POST';
-        const responseSave = await fetch(url, {
-          method: method,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            customId: student.customId,
-            class: student.class,
-            firstName: student.firstName,
-            lastName: student.lastName,
-            email: student.email,
-            mobileNumber: student.mobileNumber,
-            totalYearlyPayment: calculateFees().toString(),
-            firstInstallment: firstInstallment,
-            secondInstallment: secondInstallment,
-            thirdInstallment: thirdInstallment,
-          }),
-        });
+  const filledInstallments = [first, second, third].filter((val) => val > 0);
 
-        if (!responseSave.ok) {
-          throw new Error('Failed to save fee structure');
-        }
-      } catch (error) {
-        console.error('Error saving fee structure:', error);
-      } finally {
-        setLoading(false);
-        onClose();
-        setTotalFee('');
-        setDiscountPercentage('');
-        setFirstInstallment('');
-        setSecondInstallment('');
-        setThirdInstallment('');
+  // Invalid if more than one installment is skipped
+  if (filledInstallments.length < 2 && total !== first + second + third) {
+    return false;
+  }
+
+  return Math.abs(total - (first + second + third)) < 0.01;
+};
+
+const setFeeStructure = async () => {
+  if (!student) return;
+
+  // Validate installments
+  if (!validateInstallments()) {
+    alert(
+      'Invalid installment configuration. Ensure the sum matches the total after discount.'
+    );
+    return;
+  }
+
+  const customId = student.customId;
+  if (customId) {
+    try {
+      const response = await fetch(`http://localhost:3002/form/class/receipt?customId=${customId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const result = await response.json();
+      setLoading(true);
+
+      const url = result.data
+        ? 'http://localhost:3002/form/class/updateReceipt'
+        : 'http://localhost:3002/form/class/createReceipt';
+      const method = result.data ? 'PATCH' : 'POST';
+
+      const responseSave = await fetch(url, {
+        method: method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          customId: student.customId,
+          class: student.class,
+          firstName: student.firstName,
+          lastName: student.lastName,
+          email: student.email,
+          mobileNumber: student.mobileNumber,
+          totalYearlyPayment: calculateFees().toString(),
+          firstInstallment: firstInstallment || '0',
+          secondInstallment: secondInstallment || '0',
+          thirdInstallment: thirdInstallment || '0',
+          applicantId: student.applicantId,
+        }),
+      });
+
+      if (!responseSave.ok) {
+        throw new Error('Failed to save fee structure');
       }
+    } catch (error) {
+      console.error('Error saving fee structure:', error);
+      toast.error("Failed to save fee structure");
+    } finally {
+      setLoading(false);
+      onClose();
+      setTotalFee('');
+      setDiscountPercentage('');
+      setFirstInstallment('');
+      setSecondInstallment('');
+      setThirdInstallment('');
+      toast.success("Fee Structure Saved Successfully");
     }
-  };
+  }
+};
+
 
   if (!isOpen || !student) return null;
 
@@ -129,7 +150,8 @@ const ReceiptModal = ({ isOpen, onClose, student }: ReceiptModalProps) => {
               <h3 className="font-semibold">Student Information</h3>
               <p>Name: {student.firstName} {student.lastName}</p>
               <p>Class: {student.class}</p>
-              <p>ID: {student.customId}</p>
+              <p>CustomId: {student.customId}</p>
+              <p>Applicant Id: {student.applicantId}</p>
             </div>
             <div>
               <h3 className="font-semibold">Contact Information</h3>
@@ -319,6 +341,7 @@ const ApplicationForm = () => {
   };
   return (
     <div className="bg-white rounded-lg shadow-sm p-6">
+      <ToastContainer />
       <ReceiptModal 
         isOpen={isModalOpen}
         onClose={() => {
@@ -374,6 +397,12 @@ const ApplicationForm = () => {
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-medium">
                     Custom ID
                   </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-medium">
+                    Applicant ID
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-medium">
+                    Class
+                  </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Name
                   </th>
@@ -407,8 +436,15 @@ const ApplicationForm = () => {
                       {submission.customId}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <div className="text-gray-900 font-medium">{submission?.applicantId || '-'}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <div className="text-gray-900 font-medium">{submission.class || '-'}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       <div className="font-medium">{submission.firstName} {submission.lastName}</div>
                     </td>
+                    
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       <div className="text-gray-900 font-medium">{submission.gender}</div>
                     </td>
@@ -434,7 +470,7 @@ const ApplicationForm = () => {
                         onClick={() => handleOpenReceipt(submission)}
                         className="px-3 py-1 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
                       >
-                        Generate Receipt
+                        Create Fee Receipt
                       </button>
                     </td>
                   </tr>
