@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useState, useEffect } from "react";
 import { Download } from "lucide-react";
@@ -27,6 +26,7 @@ const FeeDetails = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedInstallment, setSelectedInstallment] = useState<string>("");
   const [customIdInput, setCustomIdInput] = useState<string>("");
+  const [selectedInstallments, setSelectedInstallments] = useState<string[]>([]);
 
   const fetchFeeDetails = async () => {
     setLoading(true);
@@ -88,7 +88,7 @@ const FeeDetails = () => {
   };
 
   const generateReceipt = async () => {
-    if (!customIdInput || !selectedInstallment) {
+    if (!customIdInput || selectedInstallments.length === 0) {
       toast.error("Please fill in all fields");
       return;
     }
@@ -99,7 +99,7 @@ const FeeDetails = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ installmentNumber: parseInt(selectedInstallment) }),
+        body: JSON.stringify({ installmentNumbers: selectedInstallments.map(Number) }),
       });
 
       if (!response.ok) {
@@ -161,7 +161,7 @@ const FeeDetails = () => {
   const closeModal = () => {
     setIsModalOpen(false);
     setCustomIdInput("");
-    setSelectedInstallment("");
+    setSelectedInstallments([]);
   };
 
   return (
@@ -302,18 +302,27 @@ const FeeDetails = () => {
 
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Select Installment
+                Select Installments
               </label>
-              <select
-                value={selectedInstallment}
-                onChange={(e) => setSelectedInstallment(e.target.value)}
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">Select Installment</option>
-                <option value="1">Installment 1</option>
-                <option value="2">Installment 2</option>
-                <option value="3">Installment 3</option>
-              </select>
+              <div className="space-y-2">
+                {['1', '2', '3'].map((installment) => (
+                  <label key={installment} className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      value={installment}
+                      checked={selectedInstallments.includes(installment)}
+                      onChange={(e) => {
+                        const { value, checked } = e.target;
+                        setSelectedInstallments((prev) =>
+                          checked ? [...prev, value] : prev.filter((i) => i !== value)
+                        );
+                      }}
+                      className="form-checkbox h-4 w-4 text-blue-600 transition"
+                    />
+                    Installment {installment}
+                  </label>
+                ))}
+              </div>
             </div>
 
             <div className="flex justify-end gap-4">
@@ -325,6 +334,7 @@ const FeeDetails = () => {
               </button>
               <button
                 onClick={generateReceipt}
+                disabled={selectedInstallments.length === 0 || !customIdInput}
                 className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 transition-colors"
               >
                 Generate

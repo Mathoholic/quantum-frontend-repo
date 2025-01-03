@@ -8,9 +8,9 @@ import { usePathname } from 'next/navigation';
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const noHeaderFooterRoutes = ['/admin','/form']; 
+  const noHeaderFooterRoutes = ['/form']; // Only specific routes that are not under /admin
 
-  const showHeaderFooter = pathname !== null && !noHeaderFooterRoutes.includes(pathname);
+  const showHeaderFooter = pathname !== null && !pathname.startsWith('/admin') && !noHeaderFooterRoutes.some(route => pathname.startsWith(route));
 
   return (
     <html lang="en">
