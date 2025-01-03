@@ -1,6 +1,6 @@
 const ContactForm = () => {
     return (
-      <div className="bg-blue-100 p-8 rounded-lg">
+      <div className="p-8 rounded-lg">
         <h2 className="text-3xl font-bold mb-6">Contact Us!</h2>
         <form className="space-y-4">
           <div>
