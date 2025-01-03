@@ -8,7 +8,7 @@ const Navbar = () => {
     const currentPath = usePathname();
 
     return (
-        <nav className="bg-blue-100 flex justify-between items-center px-6 py-4 shadow-md">
+        <nav className="bg-sky-100 flex justify-between items-center px-6 py-4 shadow-md">
             <div className="text-2xl font-bold text-blue-900">
                 <Image src="/logo.png" alt="Logo" width={32} height={32} />
             </div>

@@ -2,8 +2,8 @@
 'use client';
 
 import { useState } from 'react';
-import BlogList from '@/components/blogs/BlogList';
-import BlogModal from '@/components/blogs/CreateBlogModal';
+import BlogList from '@/components/blogs/admin/BlogList';
+import BlogModal from '@/components/blogs/admin/CreateBlogModal';
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
