@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Download } from "lucide-react";
+import { Check, Download } from "lucide-react";
 import { toast, ToastContainer } from "react-toastify";
 
 interface StudentData {
@@ -53,6 +53,43 @@ const FeeDetails = () => {
   const [applicantId, setApplicationId] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [date, setDate] = useState<string>("");
+
+  const getAvailableInstallments = (customId: string) => {
+    const studentData = filteredData.find(
+      (student) => student.customId === customId
+    );
+    const receiptData = receiptInfo.find((r) => r.customId === customId);
+
+    if (!studentData) return [];
+
+    const installments = [];
+
+    if (
+      studentData.firstInstallment &&
+      parseFloat(studentData.firstInstallment) > 0 &&
+      !receiptData?.firstInstallmentDate
+    ) {
+      installments.push("1");
+    }
+
+    if (
+      studentData.secondInstallment &&
+      parseFloat(studentData.secondInstallment) > 0 &&
+      !receiptData?.secondInstallmentDate
+    ) {
+      installments.push("2");
+    }
+
+    if (
+      studentData.thirdInstallment &&
+      parseFloat(studentData.thirdInstallment) > 0 &&
+      !receiptData?.thirdInstallmentDate
+    ) {
+      installments.push("3");
+    }
+
+    return installments;
+  };
 
   const fetchFeeDetails = async () => {
     setLoading(true);
@@ -164,6 +201,66 @@ const FeeDetails = () => {
     thirdInstallment: string | null;
     thirdInstallmentDate: string;
   };
+  // const generateReceipt = async () => {
+  //   if (!customIdInput || selectedInstallments.length === 0 || !date) {
+  //     toast.error("Please fill in all required fields");
+  //     return;
+  //   }
+
+  //   try {
+  //     const studentData = filteredData.find(
+  //       (student) => student.customId === customIdInput
+  //     );
+
+  //     if (!studentData) {
+  //       toast.error("Student data not found");
+  //       return;
+  //     }
+
+  //     const payload = {
+  //       customId: customIdInput,
+  //       firstInstallment: studentData.firstInstallment || "0",
+  //       firstInstallmentDate: selectedInstallments.includes("1")
+  //         ? date
+  //         : firstInstallmentDate,
+  //       secondInstallment: studentData.secondInstallment || "0",
+  //       secondInstallmentDate: selectedInstallments.includes("2")
+  //         ? date
+  //         : secondInstallmentDate,
+  //       thirdInstallment: studentData.thirdInstallment || "0",
+  //       thirdInstallmentDate: selectedInstallments.includes("3")
+  //         ? date
+  //         : thirdInstallmentDate,
+  //     };
+
+  //     console.log("Payload:", payload);
+
+  //     const response = await fetch(
+  //       `http://localhost:3002/fee-receipt-generate?customId=${customIdInput}`,
+  //       {
+  //         method: checkResponse ? "PATCH" : "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify(payload),
+  //       }
+  //     );
+
+  //     if (!response.ok) {
+  //       throw new Error(`Failed to generate receipt: ${response.statusText}`);
+  //     }
+
+  //     const result = await response.json();
+  //     console.log("Response:", result);
+  //     toast.success("Receipt generated successfully!");
+  //     closeModal();
+  //     fetchFeeDetails();
+  //     fetchReceiptGeneratedData();
+  //   } catch (error) {
+  //     console.error("Error generating receipt:", error);
+  //     toast.error("Failed to generate receipt");
+  //   }
+  // };
   const generateReceipt = async () => {
     if (!customIdInput || selectedInstallments.length === 0 || !date) {
       toast.error("Please fill in all required fields");
@@ -182,21 +279,25 @@ const FeeDetails = () => {
 
       const payload = {
         customId: customIdInput,
-        firstInstallment: studentData.firstInstallment || "0",
+        firstInstallment: selectedInstallments.includes("1")
+          ? studentData.firstInstallment
+          : "0",
         firstInstallmentDate: selectedInstallments.includes("1")
           ? date
           : firstInstallmentDate,
-        secondInstallment: studentData.secondInstallment || "0",
+        secondInstallment: selectedInstallments.includes("2")
+          ? studentData.secondInstallment
+          : "0",
         secondInstallmentDate: selectedInstallments.includes("2")
           ? date
           : secondInstallmentDate,
-        thirdInstallment: studentData.thirdInstallment || "0",
+        thirdInstallment: selectedInstallments.includes("3")
+          ? studentData.thirdInstallment
+          : "0",
         thirdInstallmentDate: selectedInstallments.includes("3")
           ? date
           : thirdInstallmentDate,
       };
-
-      console.log("Payload:", payload);
 
       const response = await fetch(
         `http://localhost:3002/fee-receipt-generate?customId=${customIdInput}`,
@@ -214,7 +315,6 @@ const FeeDetails = () => {
       }
 
       const result = await response.json();
-      console.log("Response:", result);
       toast.success("Receipt generated successfully!");
       closeModal();
       fetchFeeDetails();
@@ -224,7 +324,6 @@ const FeeDetails = () => {
       toast.error("Failed to generate receipt");
     }
   };
-
   useEffect(() => {
     fetchFeeDetails();
     fetchReceiptGeneratedData();
@@ -322,7 +421,24 @@ const FeeDetails = () => {
     "2": secondInstallmentDate,
     "3": thirdInstallmentDate,
   };
+  const areAllInstallmentsPaid = (customId: string): boolean => {
+    const receiptData = receiptInfo.find((r) => r.customId === customId);
+    const studentData = filteredData.find(
+      (student) => student.customId === customId
+    );
 
+    if (!receiptData || !studentData) return false;
+
+    const hasFirst = parseFloat(studentData.firstInstallment) > 0;
+    const hasSecond = parseFloat(studentData.secondInstallment) > 0;
+    const hasThird = parseFloat(studentData.thirdInstallment) > 0;
+
+    return Boolean(
+      (!hasFirst || receiptData.firstInstallmentDate) &&
+      (!hasSecond || receiptData.secondInstallmentDate) &&
+      (!hasThird || receiptData.thirdInstallmentDate)
+    );
+  };
   return (
     <div className="w-full p-6 bg-white shadow-md rounded-lg relative">
       <ToastContainer />
@@ -379,19 +495,19 @@ const FeeDetails = () => {
         <table className="w-full table-auto border-collapse">
           <thead>
             <tr className="bg-gray-100">
-              <th className="p-3 text-left">Custom ID</th>
-              <th className="p-3 text-left">Applicant ID</th>
-              <th className="p-3 text-left">Class</th>
-              <th className="p-3 text-left">Name</th>
-              <th className="p-3 text-left">Email</th>
-              <th className="p-3 text-left">Mobile</th>
-              <th className="p-3 text-left">First Installment</th>
-              <th className="p-3 text-left">Second Installment</th>
-              <th className="p-3 text-left">Third Installment</th>
-              <th className="p-3 text-left">First Installment Status</th>
-              <th className="p-3 text-left">Second Installment Status</th>
-              <th className="p-3 text-left">Third Installment Status</th>
-              <th className="p-3 text-left">Actions</th>
+              <th className="p-3  w-36 text-left">Custom ID</th>
+              <th className="p-3  w-36 text-left">Applicant ID</th>
+              <th className="p-3 w-36 text-left">Class</th>
+              <th className="p-3 w-36 text-left">Name</th>
+              <th className="p-3 w-36 text-left">Email</th>
+              <th className="p-3 w-36 text-left">Mobile</th>
+              <th className="p-3 w-36 text-left">First Installment</th>
+              <th className="p-3 w-36 text-left">Second Installment</th>
+              <th className="p-3 w-36 text-left">Third Installment</th>
+              <th className="p-3 w-36 text-left">First Installment Status</th>
+              <th className="p-3 w-36 text-left">Second Installment Status</th>
+              <th className="p-3 w-36 text-left">Third Installment Status</th>
+              <th className="p-3 w-36 text-left">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -464,6 +580,11 @@ const FeeDetails = () => {
                       }
                       className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 transition-colors"
                     >
+                      {/* <button
+    onClick={() => openModal(row.customId, row.firstName + " " + row.lastName, row.applicantId)}
+    disabled={areAllInstallmentsPaid(row.customId)}
+    className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+  ></button> */}
                       Generate Receipt
                     </button>
                   </td>
@@ -520,12 +641,15 @@ const FeeDetails = () => {
                 placeholder="Enter Custom ID"
               />
             </div>
-            <div className="mb-6">
+           {/* div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Select Installments
               </label>
+              {areAllInstallmentsPaid(customIdInput) && (
+                <Check className="h-4 w-4 text-green-500" />
+              )}
               <div className="space-y-2">
-                {["1", "2", "3"].map((installment) => (
+                {getAvailableInstallments(customIdInput).map((installment) => (
                   <label key={installment} className="flex items-center gap-2">
                     <input
                       type="checkbox"
@@ -557,8 +681,69 @@ const FeeDetails = () => {
                   className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
+            </div> < */}
+            {areAllInstallmentsPaid(customIdInput) ? (
+        <div className="flex items-center gap-2 p-4 bg-green-50 rounded-md text-green-700 mb-6">
+          <Check className="h-5 w-5" />
+          <span>All installments have been completed</span>
+        </div>
+      ) : (
+        <>
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Select Installments
+            </label>
+            <div className="space-y-2">
+              {getAvailableInstallments(customIdInput).map((installment) => (
+                <label key={installment} className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    value={installment}
+                    checked={selectedInstallments.includes(installment)}
+                    onChange={(e) => {
+                      const { value, checked } = e.target;
+                      setSelectedInstallments((prev) =>
+                        checked
+                          ? [...prev, value]
+                          : prev.filter((i) => i !== value)
+                      );
+                    }}
+                    className="form-checkbox h-4 w-4 text-blue-600 transition"
+                  />
+                  Installment {installment}
+                </label>
+              ))}
             </div>
 
+            <div className="mb-7 mt-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Select Date
+              </label>
+              <input
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-4">
+            {/* <button
+              onClick={closeModal}
+              className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors"
+            >
+              Cancel
+            </button> */}
+            {/* <button
+              onClick={generateReceipt}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+            >
+              Generate
+            </button> */}
+          </div>
+        </>
+      )}
             <div className="flex justify-end gap-4">
               <button
                 onClick={closeModal}
@@ -567,9 +752,11 @@ const FeeDetails = () => {
                 Cancel
               </button>
               <button
-                onClick={generateReceipt}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
-              >
+  onClick={generateReceipt}
+  disabled={areAllInstallmentsPaid(customIdInput) || !selectedInstallments.length || !date}
+  className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+>
+                
                 Generate
               </button>
             </div>
