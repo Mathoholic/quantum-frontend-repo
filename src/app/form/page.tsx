@@ -270,7 +270,7 @@ const FormPage = () => {
         <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
           <div className="flex flex-col items-center">
             <CheckCircle className="w-16 h-16 text-green-500 mb-4" />
-            <h1 className="text-2xl font-bold mb-2 text-center">Form Already Submitted</h1>
+            <h1 className="text-2xl font-bold mb-2 text-center">Form Submitted</h1>
             <p className="text-gray-600 text-center">You have already submitted the form. Thank you!</p>
           </div>
         </div>
