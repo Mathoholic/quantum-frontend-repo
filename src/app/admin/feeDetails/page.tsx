@@ -20,6 +20,10 @@ interface StudentData {
 
 interface FeeDetailsProps {
   customId: string;
+  applicantId: string;
+  firstName: string;
+  lastName: string;
+  class: string;
   firstInstallment: string;
   firstInstallmentDate: string | null;
   secondInstallment: string;
@@ -37,6 +41,8 @@ const FeeDetails = () => {
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [checkResponse, setCheckResponse] = useState(false);
+  const [userClassName ,setUserClassName] = useState<string>("");
+  
   const [selectedInstallments, setSelectedInstallments] = useState<string[]>(
     []
   );
@@ -53,7 +59,6 @@ const FeeDetails = () => {
   const [applicantId, setApplicationId] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [date, setDate] = useState<string>("");
-
   const getAvailableInstallments = (customId: string) => {
     const studentData = filteredData.find(
       (student) => student.customId === customId
@@ -276,9 +281,16 @@ const FeeDetails = () => {
         toast.error("Student data not found");
         return;
       }
-
+      debugger;
+      const fullName = name.trim().split(' ');
+      const firstName = fullName[0]; 
+      const lastName = fullName.slice(1).join(' ') || ''; 
       const payload = {
         customId: customIdInput,
+        applicantId:applicantId,
+        firstName:firstName,
+        lastName :lastName,
+        class:userClassName,
         firstInstallment: selectedInstallments.includes("1")
           ? studentData.firstInstallment
           : "0",
@@ -332,7 +344,7 @@ const FeeDetails = () => {
   const getCSVFile = async () => {
     try {
       const response = await fetch(
-        "http://localhost:3002/form/fee/details/csv",
+        "http://localhost:3002/fee-receipt-generate/fee/details/csv",
         {
           method: "GET",
           headers: {
@@ -374,11 +386,13 @@ const FeeDetails = () => {
   const openModal = async (
     customId: string,
     name: string,
-    applicantId: string
+    applicantId: string,
+    className :string
   ) => {
     setCustomIdInput(customId);
     setName(name);
     setApplicationId(applicantId);
+    setUserClassName(className);
 
     let checkResponse;
     try {
@@ -527,6 +541,7 @@ const FeeDetails = () => {
               filteredData.map((row) => (
                 <tr key={row.uuid} className="border-b">
                   <td className="p-3">{row.customId}</td>
+                
                   <td className="p-3">{row.applicantId}</td>
                   <td className="p-3">{row.class}</td>
                   <td className="p-3">{`${row.firstName} ${row.lastName}`}</td>
@@ -575,7 +590,8 @@ const FeeDetails = () => {
                         openModal(
                           row.customId,
                           row.firstName + " " + row.lastName,
-                          row.applicantId
+                          row.applicantId,  row.class
+
                         )
                       }
                       className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 transition-colors"
