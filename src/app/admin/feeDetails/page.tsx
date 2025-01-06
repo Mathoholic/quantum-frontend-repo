@@ -16,6 +16,8 @@ interface StudentData {
   thirdInstallment: string;
   customId: string;
   applicantId: string;
+  pendingFee:string;
+
 }
 
 interface FeeDetailsProps {
@@ -30,6 +32,8 @@ interface FeeDetailsProps {
   secondInstallmentDate: string | null;
   thirdInstallment: string;
   thirdInstallmentDate: string | null;
+  pendingFee:string;
+  totalYearlyPayment: string;
 }
 
 const FeeDetails = () => {
@@ -57,6 +61,7 @@ const FeeDetails = () => {
   >(null);
   const [customIdInput, setCustomIdInput] = useState<string>("");
   const [applicantId, setApplicationId] = useState<string>("");
+  const [userPendingFee,setuserPendingFee] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [date, setDate] = useState<string>("");
   const getAvailableInstallments = (customId: string) => {
@@ -271,26 +276,40 @@ const FeeDetails = () => {
       toast.error("Please fill in all required fields");
       return;
     }
-
+  
     try {
       const studentData = filteredData.find(
         (student) => student.customId === customIdInput
       );
-
       if (!studentData) {
         toast.error("Student data not found");
         return;
       }
-      debugger;
-      const fullName = name.trim().split(' ');
-      const firstName = fullName[0]; 
-      const lastName = fullName.slice(1).join(' ') || ''; 
+  
+      const fullName = name.trim().split(" ");
+      const firstName = fullName[0];
+      const lastName = fullName.slice(1).join(" ") || "";
+  
+      // Determine the starting pending fee
+      const previousReceipt = receiptInfo.find(r => r.customId === customIdInput);
+      const initialPendingFee = previousReceipt 
+        ? parseFloat(previousReceipt.pendingFee || "0") 
+        : parseFloat(studentData.pendingFee || "0");
+  
+      // Calculate the new pending fee
+      const pendingFee = String(
+        initialPendingFee -
+        (selectedInstallments.includes("1") ? parseFloat(studentData.firstInstallment) : 0) -
+        (selectedInstallments.includes("2") ? parseFloat(studentData.secondInstallment) : 0) -
+        (selectedInstallments.includes("3") ? parseFloat(studentData.thirdInstallment) : 0)
+      );
+  
       const payload = {
         customId: customIdInput,
-        applicantId:applicantId,
-        firstName:firstName,
-        lastName :lastName,
-        class:userClassName,
+        applicantId: applicantId,
+        firstName: firstName,
+        lastName: lastName,
+        class: userClassName,
         firstInstallment: selectedInstallments.includes("1")
           ? studentData.firstInstallment
           : "0",
@@ -309,8 +328,10 @@ const FeeDetails = () => {
         thirdInstallmentDate: selectedInstallments.includes("3")
           ? date
           : thirdInstallmentDate,
+        totalYearlyPayment: studentData.totalYearlyPayment,
+        pendingFee: pendingFee,
       };
-
+  
       const response = await fetch(
         `http://localhost:3002/fee-receipt-generate?customId=${customIdInput}`,
         {
@@ -321,11 +342,11 @@ const FeeDetails = () => {
           body: JSON.stringify(payload),
         }
       );
-
+  
       if (!response.ok) {
         throw new Error(`Failed to generate receipt: ${response.statusText}`);
       }
-
+  
       const result = await response.json();
       toast.success("Receipt generated successfully!");
       closeModal();
@@ -336,6 +357,7 @@ const FeeDetails = () => {
       toast.error("Failed to generate receipt");
     }
   };
+  
   useEffect(() => {
     fetchFeeDetails();
     fetchReceiptGeneratedData();
@@ -389,6 +411,7 @@ const FeeDetails = () => {
     applicantId: string,
     className :string
   ) => {
+
     setCustomIdInput(customId);
     setName(name);
     setApplicationId(applicantId);
@@ -426,6 +449,7 @@ const FeeDetails = () => {
 
   const closeModal = () => {
     setIsModalOpen(false);
+    setDate("");
     setCustomIdInput("");
     setSelectedInstallments([]);
   };
@@ -515,12 +539,15 @@ const FeeDetails = () => {
               <th className="p-3 w-36 text-left">Name</th>
               <th className="p-3 w-36 text-left">Email</th>
               <th className="p-3 w-36 text-left">Mobile</th>
+              
               <th className="p-3 w-36 text-left">First Installment</th>
               <th className="p-3 w-36 text-left">Second Installment</th>
               <th className="p-3 w-36 text-left">Third Installment</th>
               <th className="p-3 w-36 text-left">First Installment Status</th>
               <th className="p-3 w-36 text-left">Second Installment Status</th>
               <th className="p-3 w-36 text-left">Third Installment Status</th>
+              {/* <th className="p-3 w-36 text-left">Total Fee</th>
+              <th className="p-3 w-36 text-left">Pending Fee</th> */}
               <th className="p-3 w-36 text-left">Actions</th>
             </tr>
           </thead>
@@ -547,43 +574,50 @@ const FeeDetails = () => {
                   <td className="p-3">{`${row.firstName} ${row.lastName}`}</td>
                   <td className="p-3">{row.email}</td>
                   <td className="p-3">{row.mobileNumber}</td>
+                  {/* <td className="p-3">{row.totalYearlyPayment}</td>
+                  <td className="p-3">{row.pendingFee}</td> */}
                   <td className="p-3">
                     {row.firstInstallment &&
                     parseFloat(row.firstInstallment) > 0
-                      ? row.firstInstallment
+                      ? "₹"+ ' '+row.firstInstallment
                       : "Not Applicable"}
                   </td>
                   <td className="p-3">
                     {row.secondInstallment &&
                     parseFloat(row.secondInstallment) > 0
-                      ? row.secondInstallment
+                      ? "₹"+ ' '+row.secondInstallment
                       : "Not Applicable"}
                   </td>
                   <td className="p-3">
                     {row.thirdInstallment &&
                     parseFloat(row.thirdInstallment) > 0
-                      ? row.thirdInstallment
+                      ? "₹"+ ' '+ row.thirdInstallment
                       : "Not Applicable"}
                   </td>
                   <td className="p-3">
                     {row.firstInstallment &&
                     parseFloat(row.firstInstallment) > 0
                       ? getInstallmentStatus(row.customId, 1)
-                      : "0"}
+                      : "Not Applicable"}
                   </td>
                   <td className="p-3">
                     {row.secondInstallment &&
                     parseFloat(row.secondInstallment) > 0
                       ? getInstallmentStatus(row.customId, 2)
-                      : "0"}
+                      : "Not Applicable"}
                   </td>
                   <td className="p-3">
                     {row.thirdInstallment &&
                     parseFloat(row.thirdInstallment) > 0
                       ? getInstallmentStatus(row.customId, 3)
-                      : "0"}
+                      : "Not Applicable"}
                   </td>
-
+                  {/* <td className="p-3">
+                    {row.totalYearlyPayment}
+                  </td>
+                  <td className="p-3">
+                    {row.pendingFee}
+                  </td> */}
                   <td className="p-3">
                     <button
                       onClick={() =>

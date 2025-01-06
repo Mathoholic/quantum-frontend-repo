@@ -18,6 +18,7 @@ interface Submission {
   secondInstallmentFee: string;
   thirdInstallmentFee: string;
   applicantId: string;
+  pendingFee:string;
 }
 
 interface ReceiptModalProps {
@@ -79,7 +80,7 @@ const setFeeStructure = async () => {
       });
       const result = await response.json();
       setLoading(true);
-
+      debugger;
       const url = result.data
         ? 'http://localhost:3002/form/class/updateReceipt'
         : 'http://localhost:3002/form/class/createReceipt';
@@ -102,6 +103,7 @@ const setFeeStructure = async () => {
           secondInstallment: secondInstallment || '0',
           thirdInstallment: thirdInstallment || '0',
           applicantId: student.applicantId,
+          pendingFee:calculateFees().toString()
         }),
       });
 
@@ -403,6 +405,7 @@ const ApplicationForm = () => {
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-medium">
                     Class
                   </th>
+                  
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Name
                   </th>
