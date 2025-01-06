@@ -34,7 +34,7 @@ const ReceiptModal = ({ isOpen, onClose, student }: ReceiptModalProps) => {
   const [secondInstallment, setSecondInstallment] = useState('');
   const [thirdInstallment, setThirdInstallment] = useState('');
   const [loading, setLoading] = useState(false);
-
+   const [isLoading, setGenerateLoader] = useState<boolean>(false);
   const calculateFees = () => {
     const total = parseFloat(totalFee) || 0;
     const discount = parseFloat(discountPercentage) || 0;
@@ -60,7 +60,7 @@ const ReceiptModal = ({ isOpen, onClose, student }: ReceiptModalProps) => {
 
 const setFeeStructure = async () => {
   if (!student) return;
-
+  setGenerateLoader(true);
   // Validate installments
   if (!validateInstallments()) {
     alert(
@@ -113,7 +113,9 @@ const setFeeStructure = async () => {
     } catch (error) {
       console.error('Error saving fee structure:', error);
       toast.error("Failed to save fee structure");
+      setGenerateLoader(false);
     } finally {
+      setGenerateLoader(false);
       setLoading(false);
       onClose();
       setTotalFee('');
@@ -254,7 +256,8 @@ const setFeeStructure = async () => {
               onClick={() => setFeeStructure()}
               className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
             >
-              Save
+              <span>{isLoading ? <span className="loader mr-2 bg-white"></span> : "Save"}</span>
+              {isLoading && <span className="loader-text">Generating...</span>}
             </button>
           </div>
         </div>
@@ -332,7 +335,7 @@ const ApplicationForm = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[200px]">
-        <div className="text-gray-600">Loading submissions...</div>
+        <div className="text-gray-600">Loading...</div>
       </div>
     );
   }
