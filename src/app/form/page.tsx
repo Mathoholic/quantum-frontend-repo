@@ -5,10 +5,38 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { CheckCircle, Loader } from "lucide-react";
 
+interface FormData {
+  customId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  mobileNumber: string;
+  address: string;
+  education: string;
+  gender: string;
+  class: string;
+}
+
+interface Errors {
+  email: string;
+  mobileNumber: string;
+}
+
+interface TouchedFields {
+  email: boolean;
+  mobileNumber: boolean;
+}
+
 const FormPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showForm, setFormFlag] = useState(true);
-  const [formData, setFormData] = useState({
+  const [isFormValid, setIsFormValid] = useState(false);
+  const [touchedFields, setTouchedFields] = useState<TouchedFields>({
+    email: false,
+    mobileNumber: false
+  });
+
+  const [formData, setFormData] = useState<FormData>({
     customId: "",
     firstName: "",
     lastName: "",
@@ -17,23 +45,83 @@ const FormPage = () => {
     address: "",
     education: "",
     gender: "",
-    class: "" 
+    class: ""
   });
+
+  const [errors, setErrors] = useState<Errors>({
+    email: "",
+    mobileNumber: ""
+  });
+
   const classOptions = [
-    "Nursery",
-    "LKG",
-    "UKG",
-    "Class 1",
-    "Class 2",
-    "Class 3",
-    "Class 4",
-    "Class 5",
-    "Class 6",
-    "Class 7",
-    "Class 8",
-    "Class 9",
-    "Class 10"
+    "Nursery", "LKG", "UKG", "Class 1", "Class 2", "Class 3", "Class 4",
+    "Class 5", "Class 6", "Class 7", "Class 8", "Class 9", "Class 10"
   ];
+
+  const validateField = (name: string, value: string): string => {
+    if (!touchedFields[name as keyof TouchedFields]) return "";
+
+    switch (name) {
+      case 'email':
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return !value 
+          ? "Email is required"
+          : !emailRegex.test(value) 
+          ? "Please enter a valid email address" 
+          : "";
+      
+      case 'mobileNumber':
+        const mobileRegex = /^[0-9]{10}$/;
+        return !value 
+          ? "Mobile number is required"
+          : !mobileRegex.test(value) 
+          ? "Please enter a valid 10-digit mobile number" 
+          : "";
+      
+      default:
+        return "";
+    }
+  };
+
+  const validateForm = () => {
+    const allFieldsTouched = {
+      email: true,
+      mobileNumber: true
+    };
+    setTouchedFields(allFieldsTouched);
+
+    const newErrors = {
+      email: validateField('email', formData.email),
+      mobileNumber: validateField('mobileNumber', formData.mobileNumber)
+    };
+
+    setErrors(newErrors);
+
+    const isValid = Object.values(formData).every(value => value !== "") &&
+                   Object.values(newErrors).every(error => error === "");
+    
+    setIsFormValid(isValid);
+    return isValid;
+  };
+
+  const handleBlur = (fieldName: keyof TouchedFields) => {
+    setTouchedFields(prev => ({
+      ...prev,
+      [fieldName]: true
+    }));
+    
+    const error = validateField(fieldName, formData[fieldName]);
+    setErrors(prev => ({
+      ...prev,
+      [fieldName]: error
+    }));
+  };
+
+  useEffect(() => {
+    if (Object.values(touchedFields).some(touched => touched)) {
+      validateForm();
+    }
+  }, [formData]);
 
   const checkUserFilledForm = async (customId: string) => {
     if (!customId) {
@@ -44,11 +132,10 @@ const FormPage = () => {
     try {
       const response = await fetch(`http://localhost:3002/form/enqueryForm/find?customId=${customId}`);
       const result = await response.json();
-
-     
+      
       if (result.data === true) {
-        setFormFlag(false); 
-        return true; 
+        setFormFlag(false);
+        return true;
       } else {
         setFormFlag(true);
         return false;
@@ -90,6 +177,12 @@ const FormPage = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
+    if (!validateForm()) {
+      toast.error('Please fill all fields correctly');
+      return;
+    }
+
     setIsLoading(true);
     
     try {
@@ -111,7 +204,7 @@ const FormPage = () => {
           address: "",
           education: "",
           gender: "",
-          class:""
+          class: ""
         });
         setFormFlag(false);
         showSuccessToast();
@@ -145,7 +238,6 @@ const FormPage = () => {
           <h1 className="text-2xl font-bold mb-6 text-center">Student Application Form</h1>
           
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Form fields remain the same */}
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">Custom ID</label>
               <input
@@ -155,8 +247,9 @@ const FormPage = () => {
                 className="w-full p-2 border rounded-md bg-gray-100"
               />
             </div>
+
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">Class</label>
+              <label className="block text-sm font-medium text-gray-700">Class *</label>
               <select
                 value={formData.class}
                 onChange={(e) => setFormData(prev => ({ ...prev, class: e.target.value }))}
@@ -171,9 +264,10 @@ const FormPage = () => {
                 ))}
               </select>
             </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">First Name</label>
+                <label className="block text-sm font-medium text-gray-700">First Name *</label>
                 <input
                   type="text"
                   value={formData.firstName}
@@ -184,7 +278,7 @@ const FormPage = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">Last Name</label>
+                <label className="block text-sm font-medium text-gray-700">Last Name *</label>
                 <input
                   type="text"
                   value={formData.lastName}
@@ -196,29 +290,40 @@ const FormPage = () => {
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">Email</label>
+              <label className="block text-sm font-medium text-gray-700">Email *</label>
               <input
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                className="w-full p-2 border rounded-md"
+                onBlur={() => handleBlur('email')}
+                className={`w-full p-2 border rounded-md ${touchedFields.email && errors.email ? 'border-red-500' : ''}`}
                 required
               />
+              {touchedFields.email && errors.email && (
+                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+              )}
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">Mobile Number</label>
+              <label className="block text-sm font-medium text-gray-700">Mobile Number *</label>
               <input
                 type="tel"
                 value={formData.mobileNumber}
-                onChange={(e) => setFormData(prev => ({ ...prev, mobileNumber: e.target.value }))}
-                className="w-full p-2 border rounded-md"
+                onChange={(e) => {
+                  const value = e.target.value.replace(/\D/g, '').slice(0, 10);
+                  setFormData(prev => ({ ...prev, mobileNumber: value }));
+                }}
+                onBlur={() => handleBlur('mobileNumber')}
+                className={`w-full p-2 border rounded-md ${touchedFields.mobileNumber && errors.mobileNumber ? 'border-red-500' : ''}`}
                 required
               />
+              {touchedFields.mobileNumber && errors.mobileNumber && (
+                <p className="text-red-500 text-sm mt-1">{errors.mobileNumber}</p>
+              )}
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">Address</label>
+              <label className="block text-sm font-medium text-gray-700">Address *</label>
               <textarea
                 value={formData.address}
                 onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
@@ -229,7 +334,7 @@ const FormPage = () => {
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">Education</label>
+              <label className="block text-sm font-medium text-gray-700">Education *</label>
               <input
                 type="text"
                 value={formData.education}
@@ -240,20 +345,43 @@ const FormPage = () => {
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">Gender</label>
-              <input
-                type="text"
-                value={formData.gender}
-                onChange={(e) => setFormData(prev => ({ ...prev, gender: e.target.value }))}
-                className="w-full p-2 border rounded-md"
-                required
-              />
+              <label className="block text-sm font-medium text-gray-700">Gender *</label>
+              <div className="flex gap-4">
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    name="gender"
+                    value="Male"
+                    checked={formData.gender === "Male"}
+                    onChange={(e) => setFormData(prev => ({ ...prev, gender: e.target.value }))}
+                    className="mr-2"
+                    required
+                  />
+                  Male
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    name="gender"
+                    value="Female"
+                    checked={formData.gender === "Female"}
+                    onChange={(e) => setFormData(prev => ({ ...prev, gender: e.target.value }))}
+                    className="mr-2"
+                    required
+                  />
+                  Female
+                </label>
+              </div>
             </div>
 
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center"
-              disabled={isLoading}
+              className={`w-full py-2 px-4 rounded-md transition-colors flex items-center justify-center ${
+                isFormValid 
+                  ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }`}
+              disabled={!isFormValid || isLoading}
             >
               {isLoading ? (
                 <>
