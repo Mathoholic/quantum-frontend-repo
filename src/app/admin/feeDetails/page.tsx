@@ -42,6 +42,7 @@ const FeeDetails = () => {
   const [filteredData, setFilteredData] = useState<StudentData[]>([]);
   const [selectedClass, setSelectedClass] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isLoading, setGenerateLoader] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [checkResponse, setCheckResponse] = useState(false);
@@ -272,7 +273,9 @@ const FeeDetails = () => {
   //   }
   // };
   const generateReceipt = async () => {
+    setGenerateLoader(true);
     if (!customIdInput || selectedInstallments.length === 0 || !date) {
+      setGenerateLoader(false);
       toast.error("Please fill in all required fields");
       return;
     }
@@ -374,6 +377,7 @@ const FeeDetails = () => {
       }
   
       const result = await response.json();
+      setGenerateLoader(false);
       toast.success("Receipt generated successfully!");
 
 
@@ -414,6 +418,7 @@ const FeeDetails = () => {
     } catch (error) {
       console.error("Error generating receipt:", error);
       toast.error("Failed to generate receipt");
+      setGenerateLoader(false);
     }
   };
   
@@ -862,12 +867,14 @@ const FeeDetails = () => {
               </button>
               <button
   onClick={generateReceipt}
-  disabled={areAllInstallmentsPaid(customIdInput) || !selectedInstallments.length || !date}
-  className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+  disabled={isLoading || areAllInstallmentsPaid(customIdInput) || !selectedInstallments.length || !date}
+  className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
 >
-                
-                Generate
-              </button>
+  <span>{isLoading ? <span className="loader mr-2 bg-white"></span> : "Generate"}</span>
+  {isLoading && <span className="loader-text">Generating...</span>}
+</button>
+
+
             </div>
           </div>
         </>
