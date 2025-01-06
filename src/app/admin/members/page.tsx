@@ -34,6 +34,7 @@ const Members = () => {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePath, setImagePath] = useState("");
   const [loader, setLoaderFlag] = useState<boolean>(false);
+  const [isLoading, setGenerateLoader] = useState<boolean>(false);
   const [memberIDPresent, setMemberIDPresent] = useState<boolean>(false);
   const [newMemberData, setNewMemberData] = useState<IMember>({
     uuid: "",
@@ -176,7 +177,7 @@ const Members = () => {
   };
   const handleUpdate = async (id: string) => {
     if (!editFormData) return;
-    debugger;
+    setGenerateLoader(true);
     const formData = new FormData();
     formData.append("memberName", editFormData.memberName);
     formData.append("memberRole", editFormData.memberRole);
@@ -205,9 +206,11 @@ const Members = () => {
       }
 
       setIsEditModalOpen(false);
+      setGenerateLoader(false);
       fetchData();
     } catch (error) {
       console.error("Failed to update member:", error);
+      setGenerateLoader(false);
     }
   };
 
@@ -215,6 +218,8 @@ const Members = () => {
 
   const validateForm = () => {
     const errors: { [key: string]: string } = {};
+    setGenerateLoader(true);
+    setMemberIDPresent(false);
     if (!newMemberData.memberEmail) errors.memberEmail = "Email is required";
     if (!newMemberData.memberMobile) errors.memberMobile = "Mobile is required";
     if (!newMemberData.memberId) errors.memberId = "ID is required";
@@ -264,11 +269,14 @@ const Members = () => {
         const data = await response.json();
         if (data?.data?.memberId === newMemberData.memberId) {
           setMemberIDPresent(true);
+          setGenerateLoader(false);
           return;
         }
       } catch (error) {
         console.error("Failed to fetch data:", error);
         setMemberIDPresent(false);
+        setGenerateLoader(false);
+        
       }
     }
     const file = fileInputRef.current?.files?.[0];
@@ -284,7 +292,6 @@ const Members = () => {
       if (!response.ok) {
         throw new Error("Failed to add new member");
       }
-      debugger;
       const data = await response.json();
       if (data?.error) {
         const errorMessage = data.error;
@@ -313,11 +320,13 @@ const Members = () => {
           order: "",
           userImageFile: null,
         });
+        setGenerateLoader(false);
         setIsAddModalOpen(false);
         fetchData();
       }
     } catch (error) {
       console.error("Failed to add new member:", error);
+      setGenerateLoader(false);
     }
   };
   const [isHovered, setIsHovered] = useState(false);
@@ -593,7 +602,8 @@ const Members = () => {
                   onClick={() => handleUpdate(editFormData.memberId)}
                   className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
                 >
-                  Update
+                   <span>{isLoading ? <span className="loader mr-2 bg-white"></span> : "Update"}</span>
+                   {isLoading && <span className="loader-text">Updating...</span>}
                 </button>
               </div>
             </div>
@@ -786,7 +796,8 @@ const Members = () => {
                     className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
                     // disabled={memberIDPresent}
                   >
-                    Add
+                    <span>{isLoading ? <span className="loader mr-2 bg-white"></span> : "Add"}</span>
+                    {isLoading && <span className="loader-text">Adding...</span>} 
                   </button>
                 </div>
               </form>
