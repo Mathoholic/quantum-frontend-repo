@@ -304,6 +304,33 @@ const FeeDetails = () => {
         (selectedInstallments.includes("3") ? parseFloat(studentData.thirdInstallment) : 0)
       );
   
+      // const payload = {
+      //   customId: customIdInput,
+      //   applicantId: applicantId,
+      //   firstName: firstName,
+      //   lastName: lastName,
+      //   class: userClassName,
+      //   firstInstallment: selectedInstallments.includes("1")
+      //     ? studentData.firstInstallment
+      //     : "0",
+      //   firstInstallmentDate: selectedInstallments.includes("1")
+      //     ? date
+      //     : firstInstallmentDate,
+      //   secondInstallment: selectedInstallments.includes("2")
+      //     ? studentData.secondInstallment
+      //     : "0",
+      //   secondInstallmentDate: selectedInstallments.includes("2")
+      //     ? date
+      //     : secondInstallmentDate,
+      //   thirdInstallment: selectedInstallments.includes("3")
+      //     ? studentData.thirdInstallment
+      //     : "0",
+      //   thirdInstallmentDate: selectedInstallments.includes("3")
+      //     ? date
+      //     : thirdInstallmentDate,
+      //   totalYearlyPayment: studentData.totalYearlyPayment,
+      //   pendingFee: pendingFee,
+      // };
       const payload = {
         customId: customIdInput,
         applicantId: applicantId,
@@ -312,26 +339,25 @@ const FeeDetails = () => {
         class: userClassName,
         firstInstallment: selectedInstallments.includes("1")
           ? studentData.firstInstallment
-          : "0",
+          : previousReceipt?.firstInstallment || studentData.firstInstallment,
         firstInstallmentDate: selectedInstallments.includes("1")
           ? date
-          : firstInstallmentDate,
+          : previousReceipt?.firstInstallmentDate || firstInstallmentDate,
         secondInstallment: selectedInstallments.includes("2")
           ? studentData.secondInstallment
-          : "0",
+          : previousReceipt?.secondInstallment || studentData.secondInstallment,
         secondInstallmentDate: selectedInstallments.includes("2")
           ? date
-          : secondInstallmentDate,
+          : previousReceipt?.secondInstallmentDate || secondInstallmentDate,
         thirdInstallment: selectedInstallments.includes("3")
           ? studentData.thirdInstallment
-          : "0",
+          : previousReceipt?.thirdInstallment || studentData.thirdInstallment,
         thirdInstallmentDate: selectedInstallments.includes("3")
           ? date
-          : thirdInstallmentDate,
+          : previousReceipt?.thirdInstallmentDate || thirdInstallmentDate,
         totalYearlyPayment: studentData.totalYearlyPayment,
         pendingFee: pendingFee,
       };
-  
       const response = await fetch(
         `http://localhost:3002/fee-receipt-generate?customId=${customIdInput}`,
         {
@@ -349,6 +375,39 @@ const FeeDetails = () => {
   
       const result = await response.json();
       toast.success("Receipt generated successfully!");
+
+
+     if(result){
+        try {
+          const pdfResponse = await fetch(
+            `http://localhost:3002/fee-receipt-generate/getReceipt?customId=${customIdInput}&applicantId=${applicantId}`,
+            {
+              method: 'GET',
+              headers: {
+                'Accept': 'application/pdf', 
+              },
+            }
+          );
+      
+          if (!pdfResponse.ok) {
+            throw new Error(`HTTP error! status: ${pdfResponse.status}`);
+          }
+          const blob = await pdfResponse.blob();
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `receipt-${customIdInput}.pdf`; 
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(url);
+      
+        } catch (error) {
+          console.error('Error downloading receipt:', error);
+          throw new Error('Failed to download receipt. Please try again.');
+        }
+     }
+      
       closeModal();
       fetchFeeDetails();
       fetchReceiptGeneratedData();
@@ -482,13 +541,13 @@ const FeeDetails = () => {
       <ToastContainer />
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Fee Details</h1>
-        <button
+        {/* <button
           onClick={getCSVFile}
           className="px-4 py-2 text-sm bg-green-500 text-white rounded hover:bg-green-600 transition-colors duration-200 flex items-center gap-2 shadow-sm"
         >
           <Download className="h-4 w-4" />
           Download CSV
-        </button>
+        </button> */}
       </div>
 
       <div className="mb-6">
