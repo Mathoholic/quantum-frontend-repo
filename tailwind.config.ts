@@ -15,6 +15,15 @@ export default {
       fontFamily: {
         comic: ['"Comic Sans MS"', "cursive"], // Add Comic Sans MS font
       },
+      animation: {
+        'infinite-scroll': 'scroll 15s linear infinite', // Updated animation
+      },
+      keyframes: {
+        scroll: {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-50%)' }, // Adjusted for continuous movement
+        },
+      },
     },
   },
   plugins: [],

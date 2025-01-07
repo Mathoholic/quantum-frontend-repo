@@ -18,6 +18,7 @@
     "@mui/material": "^6.3.0",
     "@radix-ui/react-tooltip": "^1.1.6",
     "@types/react-modal": "^3.16.3",
+    "@types/swiper": "^5.4.3",
     "ag-grid-community": "^33.0.3",
     "ag-grid-enterprise": "^33.0.3",
     "ag-grid-react": "^33.0.3",
@@ -35,7 +36,8 @@
     "react-modal": "^3.16.3",
     "react-router-dom": "^7.1.1",
     "react-toastify": "^11.0.2",
-    "sweetalert2": "^11.15.3"
+    "sweetalert2": "^11.15.3",
+    "swiper": "^11.2.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
