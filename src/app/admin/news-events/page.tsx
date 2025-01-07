@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import NewsEventsList from '@/components/news_events/NewsEventsList';
-import NewsEventsModal from '@/components/news_events/CreateNewsEventsModal';
+import NewsEventsList from '@/components/news_events/admin/NewsEventsList';
+import NewsEventsModal from '@/components/news_events/admin/CreateNewsEventsModal';
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
