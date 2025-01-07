@@ -2,14 +2,15 @@
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import BlogModal from "./BlogModal"; // Import the BlogModal component
+import BlogModal from "./BlogModal"; 
+import { FaShare } from "react-icons/fa";
 
 interface Blog {
   id: number;
   imageUrl: string;
   title: string;
   category: string;
-  date: string;
+  updatedAt: string;
   content: string;
 }
 
@@ -58,7 +59,7 @@ const BlogSection: React.FC = () => {
               <div className="p-6">
                 <p className="text-sm text-gray-500 uppercase tracking-wide mb-2">
                   {blog.category} <span className="text-red-500">•</span>{" "}
-                  {new Date(blog.date).toLocaleDateString()}
+                  {new Date(blog.updatedAt).toLocaleDateString()}
                 </p>
                 <h3 className="text-lg font-semibold mb-4">{blog.title}</h3>
                 <div className="flex items-center justify-between">
@@ -68,22 +69,9 @@ const BlogSection: React.FC = () => {
                   >
                     Read More →
                   </button>
-                  <button className="text-gray-400 hover:text-pink-600">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15 12h7m0 0l-3-3m3 3l-3 3m-6 0H3m0 0l3-3m-3 3l3 3"
-                      />
-                    </svg>
-                  </button>
+                    <button className="text-pink-600 font-medium hover:underline flex items-center">
+                      <FaShare className="mr-2" /> Share
+                    </button>
                 </div>
               </div>
             </div>
