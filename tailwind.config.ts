@@ -12,6 +12,9 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      fontFamily: {
+        comic: ['"Comic Sans MS"', "cursive"], // Add Comic Sans MS font
+      },
     },
   },
   plugins: [],

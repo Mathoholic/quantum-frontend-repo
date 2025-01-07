@@ -110,7 +110,7 @@ const Footer: React.FC = () => {
                 aria-label="Twitter"
               >
                 <Image
-                  src="/icons/twitter.png" // Replace with your Twitter icon path
+                  src="/icons/twitter.png" 
                   alt="Twitter"
                   width={24}
                   height={24}
