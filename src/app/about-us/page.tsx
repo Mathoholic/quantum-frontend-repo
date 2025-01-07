@@ -17,16 +17,19 @@ const AboutUs = () => {
         />
 
         {/* Second Image positioned in the white space */}
-        <div className="absolute inset-0 flex items-center justify-center top-60">
-          <div className="relative w-2/4 h-4/6">
-            <Image
-              src="/about-us/text-aboutus.svg"
-              alt="About Us Text"
-              fill
-              className="object-contain"
-            />
-          </div>
-        </div>
+        <div className="absolute inset-0 flex items-center justify-center top-60 group">
+  <div className="relative w-2/4 h-4/6 transform group-hover:translate-y-4 transition-transform duration-2000 ease-in-out">
+    <Image
+      src="/about-us/text-aboutus.svg"
+      alt="About Us Text"
+      fill
+      className="object-contain"
+    />
+  </div>
+</div>
+
+
+
       </div>
 
       {/* Section with blue background for the mission and vision images */}
