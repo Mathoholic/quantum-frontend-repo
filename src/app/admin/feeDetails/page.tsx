@@ -8,7 +8,7 @@ interface StudentData {
   firstName: string;
   lastName: string;
   email: string;
-  class: string;
+  program: string;
   mobileNumber: string;
   totalYearlyPayment: string;
   firstInstallment: string;
@@ -16,8 +16,9 @@ interface StudentData {
   thirdInstallment: string;
   customId: string;
   applicantId: string;
-  pendingFee:string;
+  pendingFee: string;
 
+  parentName: string;
 }
 
 interface FeeDetailsProps {
@@ -25,15 +26,16 @@ interface FeeDetailsProps {
   applicantId: string;
   firstName: string;
   lastName: string;
-  class: string;
+  program: string;
   firstInstallment: string;
   firstInstallmentDate: string | null;
   secondInstallment: string;
   secondInstallmentDate: string | null;
   thirdInstallment: string;
   thirdInstallmentDate: string | null;
-  pendingFee:string;
+  pendingFee: string;
   totalYearlyPayment: string;
+  parentName: string;
 }
 
 const FeeDetails = () => {
@@ -46,8 +48,8 @@ const FeeDetails = () => {
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [checkResponse, setCheckResponse] = useState(false);
-  const [userClassName ,setUserClassName] = useState<string>("");
-  
+  const [userClassName, setUserClassName] = useState<string>("");
+  const [userParentName, setUserPrentName] = useState<string>("");
   const [selectedInstallments, setSelectedInstallments] = useState<string[]>(
     []
   );
@@ -62,9 +64,12 @@ const FeeDetails = () => {
   >(null);
   const [customIdInput, setCustomIdInput] = useState<string>("");
   const [applicantId, setApplicationId] = useState<string>("");
-  const [userPendingFee,setuserPendingFee] = useState<string>("");
+  const [userPendingFee, setuserPendingFee] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [date, setDate] = useState<string>("");
+  const paymentModes = ["Cash", "UPI", "NEFT/IMPS", "Cheque"];
+  const [paymentMode, setPaymentMode] = useState<string>("");
+  const [transactionId, setTransactionId] = useState<string>("");
   const getAvailableInstallments = (customId: string) => {
     const studentData = filteredData.find(
       (student) => student.customId === customId
@@ -279,7 +284,7 @@ const FeeDetails = () => {
       toast.error("Please fill in all required fields");
       return;
     }
-  
+
     try {
       const studentData = filteredData.find(
         (student) => student.customId === customIdInput
@@ -288,25 +293,33 @@ const FeeDetails = () => {
         toast.error("Student data not found");
         return;
       }
-  
+
       const fullName = name.trim().split(" ");
       const firstName = fullName[0];
       const lastName = fullName.slice(1).join(" ") || "";
-  
+
       // Determine the starting pending fee
-      const previousReceipt = receiptInfo.find(r => r.customId === customIdInput);
-      const initialPendingFee = previousReceipt 
-        ? parseFloat(previousReceipt.pendingFee || "0") 
+      const previousReceipt = receiptInfo.find(
+        (r) => r.customId === customIdInput
+      );
+      const initialPendingFee = previousReceipt
+        ? parseFloat(previousReceipt.pendingFee || "0")
         : parseFloat(studentData.pendingFee || "0");
-  
+
       // Calculate the new pending fee
       const pendingFee = String(
         initialPendingFee -
-        (selectedInstallments.includes("1") ? parseFloat(studentData.firstInstallment) : 0) -
-        (selectedInstallments.includes("2") ? parseFloat(studentData.secondInstallment) : 0) -
-        (selectedInstallments.includes("3") ? parseFloat(studentData.thirdInstallment) : 0)
+          (selectedInstallments.includes("1")
+            ? parseFloat(studentData.firstInstallment)
+            : 0) -
+          (selectedInstallments.includes("2")
+            ? parseFloat(studentData.secondInstallment)
+            : 0) -
+          (selectedInstallments.includes("3")
+            ? parseFloat(studentData.thirdInstallment)
+            : 0)
       );
-  
+
       // const payload = {
       //   customId: customIdInput,
       //   applicantId: applicantId,
@@ -339,7 +352,10 @@ const FeeDetails = () => {
         applicantId: applicantId,
         firstName: firstName,
         lastName: lastName,
-        class: userClassName,
+        parentName: userParentName,
+        program: userClassName,
+        transactionId: transactionId,
+        paymentMode: paymentMode,
         firstInstallment: selectedInstallments.includes("1")
           ? studentData.firstInstallment
           : previousReceipt?.firstInstallment || studentData.firstInstallment,
@@ -371,57 +387,57 @@ const FeeDetails = () => {
           body: JSON.stringify(payload),
         }
       );
-  
+
       if (!response.ok) {
         throw new Error(`Failed to generate receipt: ${response.statusText}`);
       }
-  
+
       const result = await response.json();
       setGenerateLoader(false);
       toast.success("Receipt generated successfully!");
 
-
-     if(result){
+      if (result) {
         try {
           const pdfResponse = await fetch(
             `http://localhost:3002/fee-receipt-generate/getReceipt?customId=${customIdInput}&applicantId=${applicantId}`,
             {
-              method: 'GET',
+              method: "GET",
               headers: {
-                'Accept': 'application/pdf', 
+                Accept: "application/pdf",
               },
             }
           );
-      
+
           if (!pdfResponse.ok) {
             throw new Error(`HTTP error! status: ${pdfResponse.status}`);
           }
           const blob = await pdfResponse.blob();
           const url = window.URL.createObjectURL(blob);
-          const link = document.createElement('a');
+          const link = document.createElement("a");
           link.href = url;
-          link.download = `receipt-${customIdInput}.pdf`; 
+          link.download = `receipt-${customIdInput}.pdf`;
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
           window.URL.revokeObjectURL(url);
-      
         } catch (error) {
-          console.error('Error downloading receipt:', error);
-          throw new Error('Failed to download receipt. Please try again.');
+          console.error("Error downloading receipt:", error);
+          throw new Error("Failed to download receipt. Please try again.");
         }
-     }
-      
+      }
+
       closeModal();
       fetchFeeDetails();
       fetchReceiptGeneratedData();
+      setTransactionId("");
+      setPaymentMode("");
     } catch (error) {
       console.error("Error generating receipt:", error);
       toast.error("Failed to generate receipt");
       setGenerateLoader(false);
     }
   };
-  
+
   useEffect(() => {
     fetchFeeDetails();
     fetchReceiptGeneratedData();
@@ -457,30 +473,20 @@ const FeeDetails = () => {
     }
   };
 
-  const classOptions = [
-    "Nursery",
-    "LKG",
-    "UKG",
-    "Class 1",
-    "Class 2",
-    "Class 3",
-    "Class 4",
-    "Class 5",
-    "Class 6",
-  ];
+  const classOptions = ["Daycare", "Playgroup", "Nursery", "LKG", "UKG"];
 
   const openModal = async (
     customId: string,
     name: string,
     applicantId: string,
-    className :string
+    className: string,
+    parentName: string
   ) => {
-
     setCustomIdInput(customId);
     setName(name);
     setApplicationId(applicantId);
     setUserClassName(className);
-
+    setUserPrentName(parentName);
     let checkResponse;
     try {
       checkResponse = await fetch(
@@ -492,7 +498,6 @@ const FeeDetails = () => {
           },
         }
       );
-      debugger;
       if (checkResponse.ok) {
         checkResponse = await checkResponse.json();
         setCheckResponse(true);
@@ -537,8 +542,8 @@ const FeeDetails = () => {
 
     return Boolean(
       (!hasFirst || receiptData.firstInstallmentDate) &&
-      (!hasSecond || receiptData.secondInstallmentDate) &&
-      (!hasThird || receiptData.thirdInstallmentDate)
+        (!hasSecond || receiptData.secondInstallmentDate) &&
+        (!hasThird || receiptData.thirdInstallmentDate)
     );
   };
   return (
@@ -599,11 +604,11 @@ const FeeDetails = () => {
             <tr className="bg-gray-100">
               <th className="p-3  w-36 text-left">Custom ID</th>
               <th className="p-3  w-36 text-left">Applicant ID</th>
-              <th className="p-3 w-36 text-left">Class</th>
+              <th className="p-3 w-36 text-left">Program</th>
               <th className="p-3 w-36 text-left">Name</th>
               <th className="p-3 w-36 text-left">Email</th>
               <th className="p-3 w-36 text-left">Mobile</th>
-              
+
               <th className="p-3 w-36 text-left">First Installment</th>
               <th className="p-3 w-36 text-left">Second Installment</th>
               <th className="p-3 w-36 text-left">Third Installment</th>
@@ -632,9 +637,9 @@ const FeeDetails = () => {
               filteredData.map((row) => (
                 <tr key={row.uuid} className="border-b">
                   <td className="p-3">{row.customId}</td>
-                
+
                   <td className="p-3">{row.applicantId}</td>
-                  <td className="p-3">{row.class}</td>
+                  <td className="p-3">{row.program}</td>
                   <td className="p-3">{`${row.firstName} ${row.lastName}`}</td>
                   <td className="p-3">{row.email}</td>
                   <td className="p-3">{row.mobileNumber}</td>
@@ -643,19 +648,19 @@ const FeeDetails = () => {
                   <td className="p-3">
                     {row.firstInstallment &&
                     parseFloat(row.firstInstallment) > 0
-                      ? "₹"+ ' '+row.firstInstallment
+                      ? "₹" + " " + row.firstInstallment
                       : "Not Applicable"}
                   </td>
                   <td className="p-3">
                     {row.secondInstallment &&
                     parseFloat(row.secondInstallment) > 0
-                      ? "₹"+ ' '+row.secondInstallment
+                      ? "₹" + " " + row.secondInstallment
                       : "Not Applicable"}
                   </td>
                   <td className="p-3">
                     {row.thirdInstallment &&
                     parseFloat(row.thirdInstallment) > 0
-                      ? "₹"+ ' '+ row.thirdInstallment
+                      ? "₹" + " " + row.thirdInstallment
                       : "Not Applicable"}
                   </td>
                   <td className="p-3">
@@ -688,8 +693,9 @@ const FeeDetails = () => {
                         openModal(
                           row.customId,
                           row.firstName + " " + row.lastName,
-                          row.applicantId,  row.class
-
+                          row.applicantId,
+                          row.program,
+                          row.parentName
                         )
                       }
                       className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 transition-colors"
@@ -717,7 +723,7 @@ const FeeDetails = () => {
           />
 
           <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-xl z-50 w-96">
-            <h2 className="text-xl font-semibold mb-4">Generate Receipt</h2>
+            <h2 className="text-xl font-semibold mb-4">Fee Receipt</h2>
 
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -726,8 +732,9 @@ const FeeDetails = () => {
               <input
                 type="text"
                 value={customIdInput}
-                onChange={(e) => setCustomIdInput(e.target.value)}
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                // onChange={(e) => setCustomIdInput(e.target.value)}
+                readOnly
+                className="w-full p-2 border rounded-md bg-gray-100"
                 placeholder="Enter Custom ID"
               />
             </div>
@@ -738,8 +745,9 @@ const FeeDetails = () => {
               <input
                 type="text"
                 value={applicantId}
-                onChange={(e) => setCustomIdInput(e.target.value)}
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                // onChange={(e) => setCustomIdInput(e.target.value)}
+                readOnly
+                className="w-full p-2 border rounded-md bg-gray-100"
                 placeholder="Enter Custom ID"
               />
             </div>
@@ -750,12 +758,68 @@ const FeeDetails = () => {
               <input
                 type="text"
                 value={name}
-                onChange={(e) => setCustomIdInput(e.target.value)}
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                readOnly
+                // onChange={(e) => setCustomIdInput(e.target.value)}
+                className="w-full p-2 border rounded-md bg-gray-100"
                 placeholder="Enter Custom ID"
               />
             </div>
-           {/* div className="mb-6">
+            {/* <div className="max-w-md mx-auto p-4"> */}
+            {/* Payment Mode Dropdown */}
+            {areAllInstallmentsPaid(customIdInput) ? (
+              // <div className="flex items-center gap-2 p-4 bg-green-50 rounded-md text-green-700 mb-6">
+              //   {/* <Check className="h-5 w-5" /> */}
+              //   {/* <span>All installments have been completed</span> */}
+              // </div>
+              <></>
+            ) : (
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Payment Mode
+                </label>
+                <select
+                  value={paymentMode}
+                  onChange={(e) => setPaymentMode(e.target.value)}
+                  className="w-full p-2 border rounded-md bg-gray-100"
+                >
+                  <option value="">Select Payment Mode</option>
+                  {paymentModes.map((mode) => (
+                    <option key={mode} value={mode}>
+                      {mode}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+            {/* Conditional Input Field for Transaction ID */}
+            {(paymentMode === "NEFT/IMPS" ||
+              paymentMode === "UPI" ||
+              paymentMode === "Cheque") && (
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Transaction ID
+                </label>
+                <input
+                  type="text"
+                  value={transactionId}
+                  onChange={(e) => setTransactionId(e.target.value)}
+                  className="w-full p-2 border rounded-md "
+                  placeholder="Enter Transaction ID"
+                />
+              </div>
+            )}
+
+            {/* Other Payment Modes do not require Transaction ID */}
+            {paymentMode &&
+              paymentMode !== "NEFT/IMPS" &&
+              paymentMode !== "UPI" &&
+              paymentMode !== "Cheque" && (
+                <div className="text-sm text-gray-500">
+                  Transaction ID is not required for this payment mode.
+                </div>
+              )}
+            {/* </div> */}
+            {/* div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Select Installments
               </label>
@@ -797,67 +861,72 @@ const FeeDetails = () => {
               </div>
             </div> < */}
             {areAllInstallmentsPaid(customIdInput) ? (
-        <div className="flex items-center gap-2 p-4 bg-green-50 rounded-md text-green-700 mb-6">
-          <Check className="h-5 w-5" />
-          <span>All installments have been completed</span>
-        </div>
-      ) : (
-        <>
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Select Installments
-            </label>
-            <div className="space-y-2">
-              {getAvailableInstallments(customIdInput).map((installment) => (
-                <label key={installment} className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    value={installment}
-                    checked={selectedInstallments.includes(installment)}
-                    onChange={(e) => {
-                      const { value, checked } = e.target;
-                      setSelectedInstallments((prev) =>
-                        checked
-                          ? [...prev, value]
-                          : prev.filter((i) => i !== value)
-                      );
-                    }}
-                    className="form-checkbox h-4 w-4 text-blue-600 transition"
-                  />
-                  Installment {installment}
-                </label>
-              ))}
-            </div>
+              <div className="flex items-center gap-2 p-4 bg-green-50 rounded-md text-green-700 mb-6">
+                <Check className="h-5 w-5" />
+                <span>All installments have been completed</span>
+              </div>
+            ) : (
+              <>
+                <div className="mb-6 mt-5">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Select Installments
+                  </label>
+                  <div className="space-y-2">
+                    {getAvailableInstallments(customIdInput).map(
+                      (installment) => (
+                        <label
+                          key={installment}
+                          className="flex items-center gap-2"
+                        >
+                          <input
+                            type="checkbox"
+                            value={installment}
+                            checked={selectedInstallments.includes(installment)}
+                            onChange={(e) => {
+                              const { value, checked } = e.target;
+                              setSelectedInstallments((prev) =>
+                                checked
+                                  ? [...prev, value]
+                                  : prev.filter((i) => i !== value)
+                              );
+                            }}
+                            className="form-checkbox h-4 w-4 text-blue-600 transition"
+                          />
+                          Installment {installment}
+                        </label>
+                      )
+                    )}
+                  </div>
 
-            <div className="mb-7 mt-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Select Date
-              </label>
-              <input
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-          </div>
+                  <div className="mb-7 mt-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Select Date
+                    </label>
+                    <input
+                      type="date"
+                      value={date}
+                      onChange={(e) => setDate(e.target.value)}
+                      className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
 
-          <div className="flex justify-end gap-4">
-            {/* <button
+                <div className="flex justify-end gap-4">
+                  {/* <button
               onClick={closeModal}
               className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors"
             >
               Cancel
             </button> */}
-            {/* <button
+                  {/* <button
               onClick={generateReceipt}
               className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
               Generate
             </button> */}
-          </div>
-        </>
-      )}
+                </div>
+              </>
+            )}
             <div className="flex justify-end gap-4">
               <button
                 onClick={closeModal}
@@ -866,15 +935,26 @@ const FeeDetails = () => {
                 Cancel
               </button>
               <button
-  onClick={generateReceipt}
-  disabled={isLoading || areAllInstallmentsPaid(customIdInput) || !selectedInstallments.length || !date}
-  className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
->
-  <span>{isLoading ? <span className="loader mr-2 bg-white"></span> : "Generate"}</span>
-  {isLoading && <span className="loader-text">Generating...</span>}
-</button>
-
-
+                onClick={generateReceipt}
+                disabled={
+                  isLoading ||
+                  areAllInstallmentsPaid(customIdInput) ||
+                  !selectedInstallments.length ||
+                  !date
+                }
+                className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+              >
+                <span>
+                  {isLoading ? (
+                    <span className="loader mr-2 bg-white"></span>
+                  ) : (
+                    "Generate"
+                  )}
+                </span>
+                {isLoading && (
+                  <span className="loader-text">Generating...</span>
+                )}
+              </button>
             </div>
           </div>
         </>

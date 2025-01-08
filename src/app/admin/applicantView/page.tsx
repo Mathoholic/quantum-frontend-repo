@@ -82,7 +82,6 @@ const setFeeStructure = async () => {
       });
       const result = await response.json();
       setLoading(true);
-      debugger;
       const url = result.data
         ? 'http://localhost:3002/form/class/updateReceipt'
         : 'http://localhost:3002/form/class/createReceipt';
@@ -283,7 +282,7 @@ const ApplicationForm = () => {
   const fetchAllData = async () => {
     try {
       setLoading(true);
-      debugger;
+
       const response = await fetch('http://localhost:3002/form/enqueryForm/get');
       const result = await response.json();
       setSubmissions(result.data.data);
