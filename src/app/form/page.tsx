@@ -46,7 +46,7 @@ const FormPage = () => {
     primaryContactName: "",
     program: "",
     parentName: "",
-    addmissionYear: new Date().getFullYear().toString()
+    addmissionYear: ""
   });
 
   const [errors, setErrors] = useState<Errors>({

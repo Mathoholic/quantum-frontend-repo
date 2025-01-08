@@ -1,3 +1,4 @@
+
 import TeamCarousel from "@/components/aboutus/aboutus";
 import Image from "next/image";
 
