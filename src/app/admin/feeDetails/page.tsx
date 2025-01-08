@@ -354,7 +354,7 @@ const FeeDetails = () => {
         lastName: lastName,
         parentName: userParentName,
         program: userClassName,
-        transactionId: transactionId,
+        transactionId: transactionId || 'No Payment Mode',
         paymentMode: paymentMode,
         firstInstallment: selectedInstallments.includes("1")
           ? studentData.firstInstallment
@@ -376,6 +376,20 @@ const FeeDetails = () => {
           : previousReceipt?.thirdInstallmentDate || thirdInstallmentDate,
         totalYearlyPayment: studentData.totalYearlyPayment,
         pendingFee: pendingFee,
+        installmentNumber: (
+          selectedInstallments.includes("1") && 
+          selectedInstallments.includes("2") && 
+          selectedInstallments.includes("3")
+        ) ? "123"  
+          : selectedInstallments.includes("2") && selectedInstallments.includes("3")
+          ? "23"    
+          : selectedInstallments.includes("1")
+          ? "1"     
+          : selectedInstallments.includes("2")
+          ? "2"     
+          : selectedInstallments.includes("3")
+          ? "3"     
+          : undefined,  
       };
       const response = await fetch(
         `http://localhost:3002/fee-receipt-generate?customId=${customIdInput}`,
@@ -398,8 +412,9 @@ const FeeDetails = () => {
 
       if (result) {
         try {
+          const installmentNumber = payload.installmentNumber
           const pdfResponse = await fetch(
-            `http://localhost:3002/fee-receipt-generate/getReceipt?customId=${customIdInput}&applicantId=${applicantId}`,
+            `http://localhost:3002/fee-receipt-generate/getReceipt?customId=${customIdInput}&applicantId=${applicantId}&installmentNumber=${installmentNumber}`,
             {
               method: "GET",
               headers: {
