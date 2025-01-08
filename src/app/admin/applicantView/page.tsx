@@ -12,13 +12,15 @@ interface Submission {
   address: string;
   gender: string;
   submittedAt: string;
-  class: string;
+  program: string;
   totalYearlyPayment: string;
   firstInstallmentFee: string;
   secondInstallmentFee: string;
   thirdInstallmentFee: string;
   applicantId: string;
   pendingFee:string;
+  parentName:string;
+  addmissionYear:string;
 }
 
 interface ReceiptModalProps {
@@ -93,7 +95,8 @@ const setFeeStructure = async () => {
         },
         body: JSON.stringify({
           customId: student.customId,
-          class: student.class,
+          program: student.program,
+          parentName: student.parentName,
           firstName: student.firstName,
           lastName: student.lastName,
           email: student.email,
@@ -103,6 +106,7 @@ const setFeeStructure = async () => {
           secondInstallment: secondInstallment || '0',
           thirdInstallment: thirdInstallment || '0',
           applicantId: student.applicantId,
+          addmissionYear:student.addmissionYear,
           pendingFee:calculateFees().toString()
         }),
       });
@@ -153,7 +157,7 @@ const setFeeStructure = async () => {
             <div>
               <h3 className="font-semibold">Student Information</h3>
               <p>Name: {student.firstName} {student.lastName}</p>
-              <p>Class: {student.class}</p>
+              <p>Class: {student.program}</p>
               <p>CustomId: {student.customId}</p>
               <p>Applicant Id: {student.applicantId}</p>
             </div>
@@ -273,20 +277,13 @@ const ApplicationForm = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const classOptions = [
-    "Nursery",
-    "LKG",
-    "UKG",
-    "Class 1",
-    "Class 2",
-    "Class 3",
-    "Class 4",
-    "Class 5",
-    "Class 6"
+   'Daycare', 'Playgroup','Nursery', 'LKG', 'UKG'
   ];
 
   const fetchAllData = async () => {
     try {
       setLoading(true);
+      debugger;
       const response = await fetch('http://localhost:3002/form/enqueryForm/get');
       const result = await response.json();
       setSubmissions(result.data.data);
@@ -394,98 +391,95 @@ const ApplicationForm = () => {
       </div>
       
       <div className="overflow-x-auto">
-        <div className="inline-block min-w-full align-middle">
-          <div className="border rounded-lg overflow-hidden">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-medium">
-                    Custom ID
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-medium">
-                    Applicant ID
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-medium">
-                    Class
-                  </th>
-                  
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Name
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Gender
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Class
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Gmail
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Number
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Address
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Submitted At
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {submissions.map((submission) => (
-                  <tr key={submission.uuid} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {submission.customId}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      <div className="text-gray-900 font-medium">{submission?.applicantId || '-'}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      <div className="text-gray-900 font-medium">{submission.class || '-'}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      <div className="font-medium">{submission.firstName} {submission.lastName}</div>
-                    </td>
-                    
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      <div className="text-gray-900 font-medium">{submission.gender}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      <div className="text-gray-900 font-medium">{submission.class}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
-                      <div>{submission.email}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
-                      <div>{submission.mobileNumber}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
-                      {submission.address}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
-                      <div className="text-gray-900">
-                        {new Date(submission.submittedAt).toLocaleDateString()}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      <button
-                        onClick={() => handleOpenReceipt(submission)}
-                        className="px-3 py-1 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
-                      >
-                        Create Fee Receipt
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+  <div className="inline-block min-w-full align-middle">
+    <div className="border rounded-lg overflow-hidden">
+      <table className="min-w-full divide-y divide-gray-200">
+        <thead className="bg-gray-50">
+          <tr>
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-medium">
+              Custom ID
+            </th>
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-medium">
+              Applicant ID
+            </th>
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-medium">
+              Program
+            </th>
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-medium">
+              Parent Name
+            </th>
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Name
+            </th>
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Gmail
+            </th>
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Number
+            </th>
+            {/* <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Location
+            </th> */}
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Admission Year
+            </th>
+            {/* <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Submitted At
+            </th> */}
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-200">
+          {submissions.map((submission) => (
+            <tr key={submission.uuid} className="hover:bg-gray-50">
+              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                {submission.customId}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <div className="text-gray-900 font-medium">{submission.applicantId || '-'}</div>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <div className="text-gray-900 font-medium">{submission.program || '-'}</div>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <div className="text-gray-900 font-medium">{submission.parentName || '-'}</div>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <div className="font-medium">{submission.firstName} {submission.lastName}</div>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                <div>{submission.email}</div>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <div className="text-gray-900 font-medium">{submission.mobileNumber}</div>
+              </td>
+              {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <div className="text-gray-900 font-medium">{'-'}</div>
+              </td> */}
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <div className="text-gray-900 font-medium">{submission.addmissionYear}</div>
+              </td>
+              {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                <div>{new Date(submission.submittedAt).toLocaleDateString()}</div>
+              </td> */}
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <button
+                  onClick={() => handleOpenReceipt(submission)}
+                  className="px-3 py-1 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+                >
+                  Create Fee Receipt
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
     </div>
   );
 };
