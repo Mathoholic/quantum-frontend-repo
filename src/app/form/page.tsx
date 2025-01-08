@@ -11,10 +11,10 @@ interface FormData {
   lastName: string;
   email: string;
   mobileNumber: string;
-  address: string;
-  education: string;
-  gender: string;
-  class: string;
+  primaryContactName: string;
+  program: string;
+  addmissionYear: string;
+  parentName:string;
 }
 
 interface Errors {
@@ -31,6 +31,7 @@ const FormPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showForm, setFormFlag] = useState(true);
   const [isFormValid, setIsFormValid] = useState(false);
+  const [userApplicationId ,setUserApplicationId] = useState("")
   const [touchedFields, setTouchedFields] = useState<TouchedFields>({
     email: false,
     mobileNumber: false
@@ -42,21 +43,16 @@ const FormPage = () => {
     lastName: "",
     email: "",
     mobileNumber: "",
-    address: "",
-    education: "",
-    gender: "",
-    class: ""
+    primaryContactName: "",
+    program: "",
+    parentName: "",
+    addmissionYear: new Date().getFullYear().toString()
   });
 
   const [errors, setErrors] = useState<Errors>({
     email: "",
     mobileNumber: ""
   });
-
-  const classOptions = [
-    "Nursery", "LKG", "UKG", "Class 1", "Class 2", "Class 3", "Class 4",
-    "Class 5", "Class 6", "Class 7", "Class 8", "Class 9", "Class 10"
-  ];
 
   const validateField = (name: string, value: string): string => {
     if (!touchedFields[name as keyof TouchedFields]) return "";
@@ -153,11 +149,18 @@ const FormPage = () => {
     const initializeForm = async () => {
       const urlParams = new URLSearchParams(window.location.search);
       const customId = urlParams.get('customId') || '';
+      const program = urlParams.get('program') || '';
+      const parentName = urlParams.get('parentName') || '';
       
       const hasFilledForm = await checkUserFilledForm(customId);
       
       if (!hasFilledForm && customId) {
-        setFormData(prev => ({ ...prev, customId }));
+        setFormData(prev => ({
+          ...prev,
+          customId,
+          program,
+          parentName
+        }));
       }
     };
 
@@ -191,26 +194,30 @@ const FormPage = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
       
       if (response.ok) {
+        const respData = await response.json(); 
         setFormData({
           customId: "",
           firstName: "",
           lastName: "",
           email: "",
           mobileNumber: "",
-          address: "",
-          education: "",
-          gender: "",
-          class: ""
+          primaryContactName: "",
+          program: "",
+          addmissionYear: "",
+          parentName: "",
         });
+        setUserApplicationId(respData.data.applicantId); 
         setFormFlag(false);
         showSuccessToast();
       } else {
-        toast.error('Error submitting form');
+        console.error("Failed to submit form:", response.statusText);
       }
+      
+      
     } catch (error) {
       console.error('Error:', error);
       toast.error('Error submitting form');
@@ -229,7 +236,16 @@ const FormPage = () => {
       </div>
     );
   }
-  
+  const downLoadPDF = () => {
+   
+    const pdfPath = "/ApplicationPdf/admission-form.pdf"; 
+    const link = document.createElement("a");
+    link.href = pdfPath;
+    link.download = "Application.pdf"; 
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
   return (
     <div className="min-h-screen bg-gray-100 py-8 px-4">
       <ToastContainer />
@@ -239,7 +255,7 @@ const FormPage = () => {
           
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">Custom ID</label>
+              <label className="block text-sm font-medium text-gray-700">Enquiry ID</label>
               <input
                 type="text"
                 value={formData.customId}
@@ -249,20 +265,22 @@ const FormPage = () => {
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">Class *</label>
-              <select
-                value={formData.class}
-                onChange={(e) => setFormData(prev => ({ ...prev, class: e.target.value }))}
-                className="w-full p-2 border rounded-md"
-                required
-              >
-                <option value="">Select Class</option>
-                {classOptions.map((classOption) => (
-                  <option key={classOption} value={classOption}>
-                    {classOption}
-                  </option>
-                ))}
-              </select>
+              <label className="block text-sm font-medium text-gray-700">Program *</label>
+              <input
+                type="text"
+                value={formData.program}
+                readOnly
+                className="w-full p-2 border rounded-md bg-gray-100"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">Parent Name *</label>
+              <input
+                type="text"
+                value={formData.parentName}
+                readOnly
+                className="w-full p-2 border rounded-md bg-gray-100"
+              />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -303,7 +321,28 @@ const FormPage = () => {
                 <p className="text-red-500 text-sm mt-1">{errors.email}</p>
               )}
             </div>
-
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">Primary Contact Name *</label>
+              <input
+                type="text"
+                value={formData.primaryContactName}
+                onChange={(e) => setFormData(prev => ({ ...prev, primaryContactName: e.target.value }))}
+                className="w-full p-2 border rounded-md"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">Admission Year *</label>
+              <input
+                type="text"
+                value={formData.addmissionYear}
+                onChange={(e) => setFormData(prev => ({ ...prev, addmissionYear: e.target.value }))}
+                className="w-full p-2 border rounded-md"
+                required
+              />
+            </div>
+              </div>
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">Mobile Number *</label>
               <input
@@ -320,58 +359,6 @@ const FormPage = () => {
               {touchedFields.mobileNumber && errors.mobileNumber && (
                 <p className="text-red-500 text-sm mt-1">{errors.mobileNumber}</p>
               )}
-            </div>
-
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">Address *</label>
-              <textarea
-                value={formData.address}
-                onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
-                className="w-full p-2 border rounded-md"
-                rows={3}
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">Education *</label>
-              <input
-                type="text"
-                value={formData.education}
-                onChange={(e) => setFormData(prev => ({ ...prev, education: e.target.value }))}
-                className="w-full p-2 border rounded-md"
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">Gender *</label>
-              <div className="flex gap-4">
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    name="gender"
-                    value="Male"
-                    checked={formData.gender === "Male"}
-                    onChange={(e) => setFormData(prev => ({ ...prev, gender: e.target.value }))}
-                    className="mr-2"
-                    required
-                  />
-                  Male
-                </label>
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    name="gender"
-                    value="Female"
-                    checked={formData.gender === "Female"}
-                    onChange={(e) => setFormData(prev => ({ ...prev, gender: e.target.value }))}
-                    className="mr-2"
-                    required
-                  />
-                  Female
-                </label>
-              </div>
             </div>
 
             <button
@@ -396,12 +383,26 @@ const FormPage = () => {
         </div>
       ) : (
         <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
-          <div className="flex flex-col items-center">
-            <CheckCircle className="w-16 h-16 text-green-500 mb-4" />
-            <h1 className="text-2xl font-bold mb-2 text-center">Form Submitted</h1>
-            <p className="text-gray-600 text-center">You have submitted the form. Thank you!</p>
+        <div className="flex flex-col items-center text-center">
+          <CheckCircle className="w-16 h-16 text-green-500 mb-4" />
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">Form Submitted</h1>
+          <p className="text-gray-600 mb-4">You have successfully submitted the form. Thank you!</p>
+  
+          <div className="bg-gray-100 p-4 rounded-lg shadow-inner mb-4 w-full">
+            <h2 className="text-lg font-semibold text-gray-800">
+              Your Application ID:
+              <span className="text-blue-600 font-bold"> {userApplicationId ? userApplicationId: '-'}</span>
+            </h2>
           </div>
+  
+          <button
+            onClick={downLoadPDF}
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:ring-4 focus:ring-blue-300"
+          >
+            Download Your Application 
+          </button>
         </div>
+      </div>
       )}
     </div>
   );

@@ -10,7 +10,9 @@ interface IRow {
   email: string;
   phone: string;
   customId: string;
-  category: string;
+  program: string;
+  location:string;
+  parentName:string;
   status: string;
   uuid: string;
   FormLink: string;
@@ -51,7 +53,9 @@ const Admin = () => {
     { field: "fullName", headerName: "Full Name" },
     { field: "email", headerName: "Email" },
     { field: "phone", headerName: "Phone" },
-    { field: "category", headerName: "Category" },
+    { field: "parentName", headerName: "Parent Name" },
+    { field: "program", headerName: "Program" },
+    { field: "location", headerName: "Location" },
     { field: "status", headerName: "Status" },
     {
       field: "generateFormLink",
@@ -75,7 +79,9 @@ const Admin = () => {
   const handleGenerateLink = async (row: IRow) => {
     setShowForm(true);
     const baseUrl = window.location.origin;
-    const formUrl = `${baseUrl}/form?customId=${row.customId}`;
+    // i wnt to send row.program in formUrl;
+    const formUrl = `${baseUrl}/form?customId=${row.customId}&program=${encodeURIComponent(row.program)}&parentName=${encodeURIComponent(row.parentName)}`;
+
 
     try {
       await fetch("http://localhost:3002/form/enqueryForm", {
@@ -160,9 +166,11 @@ const Admin = () => {
         email: item.email,
         phone: item.mobileNumber,
         customId: item.customId,
-        category: item.category,
+        program: item.program,
         status: item.status,
         uuid: item.uuid,
+        parentName: item.parentName,
+        location: item.location,
         googleFormLink: item.googleFormLink,
       }));
 
