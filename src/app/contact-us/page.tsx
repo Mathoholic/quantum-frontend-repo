@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import CommonForm from "@/components/common_form";
-import ContactForm from "@/components/contact_us/ContactForm";
 import ContactInfo from "@/components/contact_us/ContactInfo";
 import ContactSection from "@/components/contact_us/ContactSection";
 
@@ -10,12 +9,10 @@ const Contact = () => {
   const [showCommonForm, setShowCommonForm] = useState(true);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 
-
   const handleFormSubmit = () => {
     setIsFormSubmitted(true);
     setShowCommonForm(false);
   };
-
 
   const toggleForm = () => {
     setShowCommonForm(!showCommonForm);
@@ -23,17 +20,13 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen bg-blue-100 relative overflow-hidden">
-  
+      {/* Top Section */}
       <ContactSection />
-      
-
-      <div className="min-h-screen bg-[#E8F9FF] flex items-center justify-center">
-        <div className="w-full max-w-7xl grid grid-cols-1 md:grid-cols-2 gap-0">
-       
+      {/* Main Content */}
+      <div className="bg-[#E8F9FF] flex items-center justify-center">
+        <div className="w-full px-8 py-12">
+          {/* Centered Contact Info */}
           <ContactInfo />
-          
-     
-          <ContactForm />
         </div>
       </div>
 
@@ -51,14 +44,12 @@ const Contact = () => {
           }`}
           onClick={(e) => e.stopPropagation()}
         >
-
           <button
             onClick={toggleForm}
             className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition-colors"
           >
             <X className="h-6 w-6 text-gray-500" />
           </button>
-
 
           <div className="p-6">
             <CommonForm onSubmit={handleFormSubmit} />

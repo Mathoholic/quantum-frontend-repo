@@ -10,7 +10,7 @@ const images = [
 
 const Carousel: React.FC = () => {
   return (
-    <div className="relative w-full h-[400px] overflow-hidden bg-blue-100 flex items-center justify-center">
+    <div className="relative w-full h-[400px] overflow-hidden bg-[#DFF9FA] flex items-center justify-center">
       <div className="flex animate-infinite-scroll space-x-4">
         {/* Original images */}
         {images.map((src, index) => (

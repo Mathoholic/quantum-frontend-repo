@@ -21,7 +21,17 @@ const ProgramSection = () => {
       {/* Nursery Section */}
       <div className="grid md:grid-cols-2 gap-10 items-center">
         <div>
-          <h2 className="w-full h-auto text-[48px] font-normal mb-6 font-[Comic Sans MS] text-left underline-from-font decoration-skip-ink leading-[66.89px]">
+          <h2
+            className="w-full h-auto text-[48px] font-normal mb-6 font-comic text-left underline-from-font decoration-skip-ink leading-[66.89px]"
+            style={{
+              fontFamily: "Comic Sans MS",
+              fontSize: "48px",
+              fontWeight: 400,
+              lineHeight: "66.89px",
+              textUnderlinePosition: "from-font",
+              textDecorationSkipInk: "none",
+            }}
+          >
             <span style={{ color: "#6ab846" }}>N</span>
             <span style={{ color: "#8d549e" }}>U</span>
             <span style={{ color: "#8d549e" }}>R</span>
@@ -30,7 +40,20 @@ const ProgramSection = () => {
             <span style={{ color: "#087278" }}>R</span>
             <span style={{ color: "#087278" }}>Y</span>
           </h2>
-          <p className="text-lg font-medium text-pink-700 mt-2">Age Group: 3+ years.</p>
+          <p
+            className="text-lg font-medium text-pink-700 mt-2"
+            style={{
+              fontFamily: "Outfit",
+              fontSize: "20px",
+              fontWeight: 500,
+              lineHeight: "25.2px",
+              letterSpacing: "0.02em",
+              textUnderlinePosition: "from-font",
+              textDecorationSkipInk: "none",
+            }}
+          >
+            Age Group: 3+ years.
+          </p>
           <ul className="space-y-4 mt-4">
             {featuresNursery.map((feature, index) => (
               <li key={index} className="flex items-start">
@@ -63,13 +86,26 @@ const ProgramSection = () => {
           />
         </div>
         <div>
-          <h2 className="w-full h-auto text-[48px] font-normal mb-6 font-[Comic Sans MS] text-left underline-from-font decoration-skip-ink leading-[66.89px]">
+          <h2 className="w-full h-auto text-[48px] font-normal mb-6 font-comic text-left underline-from-font decoration-skip-ink leading-[66.89px]">
             <span style={{ color: "#ed477c" }}>L</span>
             <span style={{ color: "#e04a2f" }}>K</span>
             <span style={{ color: "#652f8f" }}>G</span>
             <span style={{ color: "#087278" }}>:</span>
           </h2>
-          <p className="text-lg font-medium text-pink-700 mt-2">Age Group: 4+ years.</p>
+          <p
+            className="text-lg font-medium text-pink-700 mt-2"
+            style={{
+              fontFamily: "Outfit",
+              fontSize: "20px",
+              fontWeight: 500,
+              lineHeight: "25.2px",
+              letterSpacing: "0.02em",
+              textUnderlinePosition: "from-font",
+              textDecorationSkipInk: "none",
+            }}
+          >
+            Age Group: 4+ years.
+          </p>
           <ul className="space-y-4 mt-4">
             {featuresLKG.map((feature, index) => (
               <li key={index} className="flex items-start">

@@ -27,7 +27,14 @@ const ProgramHero = () => {
         <div>
           <h2
             className="text-left text-[36px] md:text-[48px] font-comic font-normal leading-[50px] md:leading-[66.89px] underline-from-font decoration-skip-ink"
-            style={{ textUnderlinePosition: "from-font", textDecorationSkipInk: "none" }}
+            style={{
+              fontFamily: "Comic Sans MS",
+              fontSize: "48px",
+              fontWeight: 400,
+              lineHeight: "66.89px",
+              textUnderlinePosition: "from-font",
+              textDecorationSkipInk: "none",
+            }}
           >
             <span className="bg-gradient-to-r from-green-400 to-green-600 text-transparent bg-clip-text">Toddler</span>-
             <span className="bg-gradient-to-r from-purple-400 to-purple-600 text-transparent bg-clip-text">parent</span>{" "}
@@ -80,7 +87,14 @@ const ProgramHero = () => {
         <div>
           <h2
             className="text-left text-[36px] md:text-[48px] font-comic font-normal leading-[50px] md:leading-[66.89px] underline-from-font decoration-skip-ink"
-            style={{ textUnderlinePosition: "from-font", textDecorationSkipInk: "none" }}
+            style={{
+              fontFamily: "Comic Sans MS",
+              fontSize: "48px",
+              fontWeight: 400,
+              lineHeight: "66.89px",
+              textUnderlinePosition: "from-font",
+              textDecorationSkipInk: "none",
+            }}
           >
             <span className="bg-gradient-to-r from-pink-400 to-pink-600 text-transparent bg-clip-text">Playgroup:</span>
           </h2>
@@ -105,6 +119,20 @@ const ProgramHero = () => {
               </li>
             ))}
           </ul>
+          <p
+            className="text-lg font-medium text-pink-700 mt-2"
+            style={{
+              fontFamily: "Outfit",
+              fontSize: "20px",
+              fontWeight: 500,
+              lineHeight: "25.2px",
+              letterSpacing: "0.02em",
+              textUnderlinePosition: "from-font",
+              textDecorationSkipInk: "none",
+            }}
+          >
+            Age Group: 3+ years.
+          </p>
         </div>
       </div>
     </div>

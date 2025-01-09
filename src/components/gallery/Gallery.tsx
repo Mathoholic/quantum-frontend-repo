@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import GalleryCard from './GalleryCard';
+import Carousel from './Carousel';
 
 interface Image {
   id: number;
@@ -13,7 +13,6 @@ interface Image {
 const Gallery: React.FC = () => {
   const [images, setImages] = useState<Image[]>([]);
 
-  // Fetch images from backend
   useEffect(() => {
     async function fetchImages() {
       try {
@@ -31,20 +30,18 @@ const Gallery: React.FC = () => {
     fetchImages();
   }, []);
 
+  const middleIndex = Math.ceil(images.length / 2);
+  const latestImages = images.slice(-middleIndex);
+  const olderImages = images.slice(0, middleIndex);
+
   return (
     <div className="bg-blue-100 py-10 px-6">
       <h2 className="text-center mb-8 text-pink-500 font-comic text-4xl sm:text-5xl font-bold underline underline-offset-8">
         Gallery
       </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {images.map((image) => (
-          <GalleryCard
-            key={image.id}
-            imageUrl={image.image}
-            altText={image.alt}
-            title={image.title}
-          />
-        ))}
+      <div >
+        <Carousel images={latestImages} reverse={false} />
+        <Carousel images={olderImages} reverse={true} />
       </div>
     </div>
   );

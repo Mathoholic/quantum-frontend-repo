@@ -24,7 +24,17 @@ const UKGDaycareInfo: React.FC = () => {
       {/* UKG Section */}
       <div className="grid md:grid-cols-2 gap-10 items-center">
         <div>
-          <h2 className="text-left text-[36px] md:text-[48px] font-comic font-normal leading-[50px] md:leading-[66.89px] underline-from-font decoration-skip-ink">
+          <h2
+            className="text-left text-[36px] md:text-[48px] font-comic font-normal leading-[50px] md:leading-[66.89px]"
+            style={{
+              fontFamily: "Comic Sans MS",
+              fontSize: "48px",
+              fontWeight: 400,
+              lineHeight: "66.89px",
+              textUnderlinePosition: "from-font",
+              textDecorationSkipInk: "none",
+            }}
+          >
             <span className="bg-gradient-to-r from-pink-400 to-pink-600 text-transparent bg-clip-text">UKG:</span>
           </h2>
           <ul className="space-y-4 mt-6 font-comic">
@@ -48,6 +58,20 @@ const UKGDaycareInfo: React.FC = () => {
               </li>
             ))}
           </ul>
+          <p
+            className="text-lg font-medium text-pink-700 mt-2"
+            style={{
+              fontFamily: "Outfit",
+              fontSize: "20px",
+              fontWeight: 500,
+              lineHeight: "25.2px",
+              letterSpacing: "0.02em",
+              textUnderlinePosition: "from-font",
+              textDecorationSkipInk: "none",
+            }}
+          >
+            Age Group: 3+ years.
+          </p>
         </div>
         <div className="flex justify-center items-center">
           <Image
@@ -72,7 +96,17 @@ const UKGDaycareInfo: React.FC = () => {
           />
         </div>
         <div>
-          <h2 className="text-left text-[36px] md:text-[48px] font-comic font-normal leading-[50px] md:leading-[66.89px] underline-from-font decoration-skip-ink">
+          <h2
+            className="text-left text-[36px] md:text-[48px] font-comic font-normal leading-[50px] md:leading-[66.89px]"
+            style={{
+              fontFamily: "Comic Sans MS",
+              fontSize: "48px",
+              fontWeight: 400,
+              lineHeight: "66.89px",
+              textUnderlinePosition: "from-font",
+              textDecorationSkipInk: "none",
+            }}
+          >
             <span className="bg-gradient-to-r from-green-400 to-green-600 text-transparent bg-clip-text">Daycare:</span>
           </h2>
           <ul className="space-y-4 mt-6 font-comic">

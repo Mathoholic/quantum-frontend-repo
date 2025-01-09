@@ -3,11 +3,11 @@ import Image from 'next/image';
 
 const HeroSection: React.FC = () => {
   return (
-    <div className="bg-blue-100 min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
+    <div className="bg-[#DFF9FA] min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
       {/* Decorative images container */}
       <div className="absolute inset-x-0 top-1/4 flex justify-between">
         {/* Left decorative image */}
-        <div className="ml-4">
+        <div>
           <Image
             src="/rocket.svg"
             alt="Left Decorative"
@@ -18,7 +18,7 @@ const HeroSection: React.FC = () => {
         </div>
 
         {/* Right decorative image */}
-        <div className="mr-4">
+        <div >
           <Image
             src="/pencil.svg"
             alt="Right Decorative"
@@ -30,8 +30,8 @@ const HeroSection: React.FC = () => {
       </div>
 
       {/* Main Content */}
-      <main className="flex flex-col items-center text-center py-16">
-        <h1 className="text-4xl font-extrabold text-gray-800 mb-4">
+      <main className="flex flex-col items-center text-center py-16 w-[922px] h-[401px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 gap-[20px]">
+        <h1 className="text-4xl font-extrabold text-gray-800 mb-4 w-[576px] h-[150px] gap-0 font-comic text-[60px] font-bold leading-[75px] text-center ">
           Take A Quantum Leap Into Learning
         </h1>
         <p className="text-gray-600 text-lg max-w-2xl">
@@ -46,11 +46,11 @@ const HeroSection: React.FC = () => {
         </button>
       </main>
 
-      {/* Decorative Footer Icons */}
+      {/* Decorative Footer Icons
       <div className="flex space-x-4 mt-10">
         <div className="bg-orange-400 w-12 h-12 rounded-full"></div>
         <div className="bg-teal-400 w-12 h-12 rounded-full"></div>
-      </div>
+      </div> */}
     </div>
   );
 };
