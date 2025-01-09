@@ -14,6 +14,10 @@ const Navbar = () => {
         setShowForm(!showForm);
     };
 
+    const handleClose = () => {
+        setShowForm(false);
+    };
+
     return (
         <nav className="relative bg-white flex justify-between items-center px-6 py-4 shadow-md border border-blue-300">
             <div className="text-2xl font-bold">
@@ -42,7 +46,13 @@ const Navbar = () => {
 
             {showForm && (
                 <div className="fixed inset-0 flex justify-center items-center z-50 bg-black bg-opacity-50">
-                    <div className="bg-white p-8 shadow-lg rounded-lg w-full max-w-lg">
+                    <div className="bg-white p-8 shadow-lg rounded-lg w-full max-w-lg relative">
+                        <button
+                            onClick={handleClose}
+                            className="absolute top-2 right-2 w-8 h-8 flex items-center justify-center bg-pink-500 text-white text-2xl rounded-full hover:bg-pink-600 focus:outline-none transition-colors duration-300"
+                        >
+                            &times;
+                        </button>
                         <CommonForm />
                     </div>
                 </div>

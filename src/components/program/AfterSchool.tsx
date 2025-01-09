@@ -9,6 +9,9 @@ const AfterSchoolPrograms: React.FC = () => {
       const handleClick = () => {
           setShowForm(!showForm);
       };
+      const handleClose = () => {
+        setShowForm(false);
+    };
   return (
     <div className="w-full h-auto py-16 px-8 md:px-20 font-sans gap-20 bg-[#fcf2a2]">
       <div className="grid md:grid-cols-2 gap-10 items-center">
@@ -26,7 +29,13 @@ const AfterSchoolPrograms: React.FC = () => {
         </div>
         {showForm && (
                 <div className="fixed inset-0 flex justify-center items-center z-50 bg-black bg-opacity-50">
-                    <div className="bg-white p-8 shadow-lg rounded-lg w-full max-w-lg">
+                    <div className="bg-white p-8 shadow-lg rounded-lg w-full max-w-lg relative">
+                        <button
+                            onClick={handleClose}
+                            className="absolute top-2 right-2 w-8 h-8 flex items-center justify-center bg-pink-500 text-white text-2xl rounded-full hover:bg-pink-600 focus:outline-none transition-colors duration-300"
+                        >
+                            &times;
+                        </button>
                         <CommonForm />
                     </div>
                 </div>
