@@ -1,7 +1,14 @@
-import React from 'react';
+"use client"
+import React, { useState } from 'react';
 import Image from 'next/image';
+import CommonForm from '../common_form';
 
 const AfterSchoolPrograms: React.FC = () => {
+  const [showForm, setShowForm] = useState(false);
+  
+      const handleClick = () => {
+          setShowForm(!showForm);
+      };
   return (
     <div className="w-full h-auto py-16 px-8 md:px-20 font-sans gap-20 bg-[#fcf2a2]">
       <div className="grid md:grid-cols-2 gap-10 items-center">
@@ -13,11 +20,17 @@ const AfterSchoolPrograms: React.FC = () => {
           <p className="mt-6 text-base md:text-lg text-gray-700 font-comic">
             Our After School Programs are crafted to keep children engaged, productive, and inspired in a fun and safe setting. We offer a diverse range of activities, including Art and Craft, Music, Dance, Fitness and Yoga, STEM, Tuitions, and Homework assistance (subject to availability). Please reach out to us for further details.
           </p>
-          <button className="mt-6 px-6 py-2 bg-red-500 text-white font-semibold rounded hover:bg-red-600 transition">
+          <button   onClick={handleClick}  className="mt-6 px-6 py-2 bg-red-500 text-white font-semibold rounded hover:bg-red-600 transition">
             Enquire Now
           </button>
         </div>
-
+        {showForm && (
+                <div className="fixed inset-0 flex justify-center items-center z-50 bg-black bg-opacity-50">
+                    <div className="bg-white p-8 shadow-lg rounded-lg w-full max-w-lg">
+                        <CommonForm />
+                    </div>
+                </div>
+            )}
         {/* Image Content */}
         <div className="flex justify-center items-center">
           <Image
