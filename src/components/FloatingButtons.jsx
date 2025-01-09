@@ -38,12 +38,7 @@ const FloatingButtons = () => {
 
       {/* ChatBot with proper positioning and z-index */}
       {isChatOpen && (
-        <div 
-          className="fixed bottom-32 right-10 z-60 bg-white p-4 shadow-xl rounded-lg" 
-          style={{ width: '300px', height: '400px' }} // Customize the size of the chatbot
-        >
           <ChatBot />
-        </div>
       )}
     </>
   );
