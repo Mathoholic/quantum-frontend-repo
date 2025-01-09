@@ -2,23 +2,17 @@
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-interface IMember {
+interface TeamMember {
   uuid: string;
   memberName: string;
   memberRole: string;
-  memberEmail: string;
-  memberMobile: string;
-  memberId: string;
-  memberDesination: string;
   description: string;
-  profilePic: string | null;
-  order: string;
-  userImageFile: File | null;
+  profilePic?: string;
 }
 
 const TeamCarousel = () => {
-  const [members, setMembers] = useState<IMember[]>([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [members, setMembers] = useState<TeamMember[]>([]);
+  const [currentSlide, setCurrentSlide] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -40,76 +34,81 @@ const TeamCarousel = () => {
   }, []);
 
   const handlePrevious = () => {
-    setCurrentIndex((prev) => (prev === 0 ? members.length - 1 : prev - 1));
+    setCurrentSlide((prev) => (prev === 0 ? members.length - 1 : prev - 1));
   };
 
   const handleNext = () => {
-    setCurrentIndex((prev) => (prev === members.length - 1 ? 0 : prev + 1));
+    setCurrentSlide((prev) => (prev === members.length - 1 ? 0 : prev + 1));
   };
 
   if (loading) return <div className="text-center py-8">Loading...</div>;
   if (error) return <div className="text-center text-red-500 py-8">{error}</div>;
   if (members.length === 0) return <div className="text-center py-8">No team members found</div>;
 
+  const visibleMembers = members.slice(currentSlide, currentSlide + 4);
+  if (visibleMembers.length < 4) {
+    visibleMembers.push(...members.slice(0, 4 - visibleMembers.length));
+  }
+
   return (
-    <div className="w-full bg-[#FEDFB2] min-h-screen py-8">
+    <div className="w-full min-h-screen bg-[#FEDFB2] py-16">
       <div className="max-w-7xl mx-auto px-4">
-        <h1 className="text-3xl font-bold text-center mb-8">Team</h1>
+        <h1 className="text-4xl font-bold text-center mb-16">Team</h1>
         
-        {/* Full width card */}
-        <div className="relative bg-white shadow-lg min-h-[500px] mb-8">
-          {/* Red top border */}
-          <div className="absolute top-0 left-0 right-0 h-2 bg-red-500"></div>
-          
-          <div className="max-w-7xl mx-auto p-6 ">
-            <div className="flex flex-col md:flex-row gap-8 mt-10">
-              <div className="md:w-1/2">
-                {members[currentIndex].profilePic ? (
-                  <img
-                    src={members[currentIndex].profilePic}
-                    alt={members[currentIndex].memberName}
-                    className="w-full h-[300px] object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-[300px] bg-gray-200 flex items-center justify-center">
-                    <span className="text-gray-500">No image available</span>
+        <div className="relative mb-8">
+          <div className="flex justify-between gap-6">
+            {visibleMembers.map((member, index) => (
+              <div key={member.uuid} className="w-1/4 perspective">
+                <div className="relative preserve-3d duration-500 group-hover:rotate-y-180 cursor-pointer group">
+                  {/* Card Front */}
+                  <div className="w-full bg-white rounded-lg shadow-lg backface-hidden">
+                    {member.profilePic ? (
+                      <img
+                        src={member.profilePic}
+                        alt={member.memberName}
+                        className="w-full h-64 object-cover rounded-lg"
+                      />
+                    ) : (
+                      <div className="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center">
+                        <span className="text-gray-500">No image available</span>
+                      </div>
+                    )}
+                    <div className="p-4 text-center">
+                      <h2 className="text-xl font-bold text-gray-800">{member.memberName}</h2>
+                      <p className="text-sm text-gray-500">{member.memberRole}</p>
+                    </div>
                   </div>
-                )}
+
+                  {/* Card Back */}
+                  {/* <div className="absolute inset-0 w-full h-full bg-white rounded-lg shadow-lg p-6 rotate-y-180 backface-hidden">
+                    <div className="flex items-center justify-center h-full">
+                      <p className="text-gray-600 text-center">{member.description}</p>
+                    </div>
+                  </div> */}
+                </div>
               </div>
-              
-              <div className="md:w-1/2">
-                <h2 className="text-2xl font-bold text-gray-800">
-                  {members[currentIndex].memberName}
-                </h2>
-                <p className="text-red-500 font-semibold mt-1">
-                  {members[currentIndex].memberRole}
-                </p>
-                <p className="mt-4 text-gray-600 leading-relaxed">
-                  {members[currentIndex].description}
-                </p>
-              </div>
-            </div>
+            ))}
           </div>
-          <div className="absolute bottom-0 left-0 right-0 h-2 bg-red-500"></div>
         </div>
-                
-        {/* External Navigation */}
-        <div className="flex justify-between items-center px-4 max-w-7xl mx-auto">
+
+        {/* Navigation moved below cards */}
+        <div className="flex justify-between items-center max-w-md mx-auto mt-12">
           <button 
             onClick={handlePrevious}
-            className="bg-white rounded-full p-3 shadow-lg hover:bg-gray-50"
+            className="bg-white rounded-full p-3 shadow-lg hover:bg-gray-50 transition-colors"
+            aria-label="Previous slide"
           >
             <ChevronLeft className="w-8 h-8 text-gray-600" />
           </button>
-          
+
           {/* Dots */}
           <div className="flex gap-2">
             {members.map((_, index) => (
               <button
                 key={index}
-                onClick={() => setCurrentIndex(index)}
-                className={`w-2 h-2 rounded-full ${
-                  index === currentIndex ? 'bg-red-500' : 'bg-gray-300'
+                onClick={() => setCurrentSlide(index)}
+                className={`w-2 h-2 rounded-full transition-colors ${
+                  index === currentSlide ? 'bg-red-500' : 'bg-gray-300'
                 }`}
                 aria-label={`Go to slide ${index + 1}`}
               />
@@ -118,7 +117,8 @@ const TeamCarousel = () => {
 
           <button 
             onClick={handleNext}
-            className="bg-white rounded-full p-3 shadow-lg hover:bg-gray-50"
+            className="bg-white rounded-full p-3 shadow-lg hover:bg-gray-50 transition-colors"
+            aria-label="Next slide"
           >
             <ChevronRight className="w-8 h-8 text-gray-600" />
           </button>
