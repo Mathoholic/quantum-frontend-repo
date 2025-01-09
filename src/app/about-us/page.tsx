@@ -3,22 +3,20 @@ import Image from "next/image";
 
 const AboutUs = () => {
   return (
-    <div className="w-screen relative">
-      {/* Full width of the screen */}
+    <div className="w-full relative overflow-x-hidden">
+      {/* Hero section */}
       <div className="relative w-full h-[calc(100vh-80px)] mt-[3px]">
-        {/* First Image */}
         <Image
           src="/about-us/aboutus.svg"
           alt="About Us Banner"
           layout="fill"
           objectFit="cover"
-          className="w-full h-full"
           priority
         />
 
-        {/* Second Image positioned in the white space */}
-        <div className="absolute inset-0 flex items-center justify-center top-60 group">
-          <div className="relative w-2/4 h-4/6 transform group-hover:translate-y-4 transition-transform duration-2000 ease-in-out">
+        {/* Centered text image */}
+        <div className="absolute inset-0 flex items-center justify-center top-60 px-4 group">
+          <div className="relative w-full max-w-2xl h-4/6 transform group-hover:translate-y-4 transition-transform duration-2000 ease-in-out">
             <Image
               src="/about-us/text-aboutus.svg"
               alt="About Us Text"
@@ -29,38 +27,26 @@ const AboutUs = () => {
         </div>
       </div>
 
-      {/* Section with blue background for the mission and vision images */}
-      <div className="bg-[#D4F3F5]">
-        <div className="py-8 flex justify-center ">
-          <h1 className="text-center text-4xl font-bold">
-            <span className="font-serif text-[#EE487C]">M</span>
-            <span className="font-serif text-[#EE487C]">i</span>
-            <span className="font-serif text-[#EE487C]">s</span>
-            <span className="font-serif text-[#EE487C]">s</span>
-            <span className="font-serif text-[#EE487C]">i</span>
-            <span className="font-serif text-[#EE487C]">o</span>
-            <span className="font-serif text-[#EE487C]">n</span>
-            <span className="font-serif text-[#EE487C]"> & </span>
-            <span className="font-sans text-[#EE487C]">V</span>
-            <span className="font-sans text-[#EE487C]">i</span>
-            <span className="font-sans text-[#EE487C]">s</span>
-            <span className="font-sans text-[#EE487C]">i</span>
-            <span className="font-sans text-[#EE487C]">o</span>
-            <span className="font-sans text-[#EE487C]">n</span>
+      {/* Mission and Vision section */}
+      <div className="bg-[#D4F3F5] w-full">
+        <div className="py-8">
+          <h1 className="text-center text-4xl font-bold px-4">
+            <span className="font-serif text-[#EE487C]">Mission </span>
+            <span className="font-serif text-[#EE487C]">&amp; </span>
+            <span className="font-sans text-[#EE487C]">Vision</span>
           </h1>
         </div>
 
-        <div className="bg-[#D4F3F5] py-8">
-          <div className="flex justify-center space-x-8">
-            {/* First Box */}
-            <div className="bg-white p-6 rounded-lg shadow-lg w-1/3 text-center">
-              <div className="relative w-full h-64 mb-4">
+        <div className="py-8 px-4">
+          <div className="flex flex-col md:flex-row justify-center md:space-x-8 space-y-8 md:space-y-0 max-w-6xl mx-auto">
+            {/* Mission Box */}
+            <div className="bg-white p-6 rounded-lg shadow-lg w-full md:w-1/3 text-center">
+              <div className="relative w-full h-48 md:h-64 mb-4">
                 <Image
                   src="/about-us/target.svg"
                   alt="Mission Vision Icon"
                   layout="fill"
                   objectFit="contain"
-                  className="mx-auto"
                 />
               </div>
               <h3 className="font-bold text-xl mb-2">Mission</h3>
@@ -71,15 +57,14 @@ const AboutUs = () => {
               </p>
             </div>
 
-            {/* Second Box */}
-            <div className="bg-white p-6 rounded-lg shadow-lg w-1/3 text-center">
-              <div className="relative w-full h-64 mb-4">
+            {/* Vision Box */}
+            <div className="bg-white p-6 rounded-lg shadow-lg w-full md:w-1/3 text-center">
+              <div className="relative w-full h-48 md:h-64 mb-4">
                 <Image
                   src="/about-us/mission-board.svg"
                   alt="Mission and Vision"
                   layout="fill"
                   objectFit="contain"
-                  className="mx-auto"
                 />
               </div>
               <h3 className="font-bold text-xl mb-2">Vision</h3>
@@ -91,10 +76,23 @@ const AboutUs = () => {
               </p>
             </div>
           </div>
-          <div className="mt-6">
-            <TeamCarousel />
-          </div>
         </div>
+      </div>
+
+      {/* Values section */}
+      <div className="bg-[#EE487C33] w-full py-8">
+        <div className="max-w-full px-4">
+          <img
+            src="/about-us/Values-with-text.png"
+            alt="Value with Text"
+            className="w-full h-auto object-contain"
+          />
+        </div>
+      </div>
+
+      {/* Team section */}
+      <div>
+        <TeamCarousel />
       </div>
     </div>
   );
