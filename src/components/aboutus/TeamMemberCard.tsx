@@ -26,7 +26,7 @@ const TeamMemberCard: React.FC<TeamMemberCardProps> = ({ member }) => {
             <img
               src={member.profilePic || "/placeholder.png"}
               alt={member.memberName}
-              className="w-20 h-20 rounded-full mb-4"
+              className="w-full h-3/4 object-cover mb-4 rounded-lg"
             />
             <h3 className="text-lg font-bold">{member.memberName}</h3>
             <p className="text-gray-600">{member.memberRole}</p>
