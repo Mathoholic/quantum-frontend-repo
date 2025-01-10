@@ -36,7 +36,7 @@ const Gallery: React.FC = () => {
 
   return (
     <div className="bg-blue-100 py-10 px-6">
-      <h2 className="text-center mb-8 text-pink-500 font-comic text-4xl sm:text-5xl font-bold underline underline-offset-8">
+      <h2 className="text-center mb-8 text-pink-500 font-comic text-4xl sm:text-5xl font-bold ">
         Gallery
       </h2>
       <div >

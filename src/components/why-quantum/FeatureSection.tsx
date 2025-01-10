@@ -33,7 +33,7 @@ const FeatureSection = ({
         {title}
       </h2>
       {content && (
-        <p className="text-base sm:text-lg lg:text-xl font-serif max-w-2xl" style={{ fontFamily: 'Outfit', fontSize: '20px', fontWeight: 600, lineHeight: '25.2px', letterSpacing: '0.02em', textAlign: 'left', textUnderlinePosition: 'from-font', textDecorationSkipInk: 'none' }}>
+        <p className="text-base sm:text-lg lg:text-xl font-outfit max-w-2xl" style={{ fontFamily: 'Outfit', fontSize: '20px', fontWeight: 600, lineHeight: '25.2px', letterSpacing: '0.02em', textAlign: 'left', textUnderlinePosition: 'from-font', textDecorationSkipInk: 'none' }}>
           {content}
         </p>
       )}
@@ -51,7 +51,7 @@ const FeatureSection = ({
                   {item.title}
                 </h3>
               </div>
-              <p className="text-sm sm:text-base text-black ml-9">
+              <p className="text-sm sm:text-base text-black font-outfit ml-9">
                 {item.description}
               </p>
             </div>

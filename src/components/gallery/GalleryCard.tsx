@@ -37,7 +37,7 @@ const GalleryCard: React.FC<GalleryCardProps> = ({ imageUrl, altText, title }) =
           />
         </div>
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-transparent to-transparent text-white p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <h3 className="text-lg font-semibold">{title}</h3>
+          <h3 className="text-lg font-semibold text-center">{title}</h3>
         </div>
       </div>
 
