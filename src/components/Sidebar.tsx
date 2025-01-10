@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { FaBars, FaHome, FaUsers, FaEdit, FaWpforms, FaMoneyBillWave, FaWallet, FaDollarSign, FaNewspaper, FaImages } from "react-icons/fa";
+import { FaBars, FaHome, FaUsers, FaEdit, FaWpforms, FaMoneyBillWave, FaWallet, FaDollarSign, FaNewspaper, FaImages, FaUserSecret, FaSignOutAlt, FaLock } from "react-icons/fa";
 
 interface SidebarProps {
   isSidebarOpen: boolean;
@@ -16,7 +16,10 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }: SidebarProps) => {
     {name : "Applicant View", path:"/admin/applicantView", icon:<FaWpforms />},
     {name : "Fee Management", path:"/admin/feeDetails", icon:<FaDollarSign />},
     { name: "News & Events", path: "/admin/news-events", icon: <FaNewspaper /> },
-    { name: "Picture Gallery", path: "/admin/picture-gallery", icon: <FaImages /> }
+    { name: "Picture Gallery", path: "/admin/picture-gallery", icon: <FaImages /> },
+    { name: "Change Password", path: "/admin/changePassword", icon: <FaLock   /> },
+    { name: "Logout", path: "/admin/logout", icon: <FaSignOutAlt   /> }
+
   ];
 
   return (

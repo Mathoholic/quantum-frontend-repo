@@ -28,8 +28,8 @@ const AdminLogin = () => {
       }
 
       const data = await response.json();
-      // Handle successful login here (e.g., store token, redirect)
       console.log('Login successful:', data);
+      localStorage.setItem('authToken', data.token);
       router.push('/admin');
       
     } catch (err) {
@@ -40,7 +40,7 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+    <div className="min-h-screen max-h-screen flex items-center justify-center bg-gray-50 p-4">
       <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-6">
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-gray-900">Admin Login</h2>
