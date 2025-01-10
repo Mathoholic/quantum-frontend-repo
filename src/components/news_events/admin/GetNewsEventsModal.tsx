@@ -12,18 +12,25 @@ interface GetNewsEventsModalProps {
   isEditing: boolean;
 }
 
-export default function GetNewsEventsModal({ newsEventId, closeModal, onNewsEventUpdated, isEditing }: GetNewsEventsModalProps) {
+export default function GetNewsEventsModal({
+  newsEventId,
+  closeModal,
+  onNewsEventUpdated,
+  isEditing,
+}: GetNewsEventsModalProps) {
   const [newsEvent, setNewsEvent] = useState<{
     title: string;
     description: string;
-    imageUrl: string | null;
+    imageUrls: string[];
     eventDate: string;
   } | null>(null);
+
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     eventDate: '',
-    image: null as File | null,
+    images: [] as File[],
+    imagePreviews: [] as string[],
   });
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -37,7 +44,8 @@ export default function GetNewsEventsModal({ newsEventId, closeModal, onNewsEven
           title: response.data.title,
           description: response.data.description,
           eventDate: new Date(response.data.eventDate).toISOString().split('T')[0],
-          image: null,
+          images: [],
+          imagePreviews: response.data.imageUrls.map((url: string) => `http://localhost:3002${url}`),
         });
       } catch (error) {
         console.error('Error fetching news/event:', error);
@@ -49,17 +57,22 @@ export default function GetNewsEventsModal({ newsEventId, closeModal, onNewsEven
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [name]: value,
-    });
+    }));
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      image: e.target.files ? e.target.files[0] : null,
-    });
+    if (e.target.files) {
+      const files = Array.from(e.target.files);
+      const previews = files.map((file) => URL.createObjectURL(file));
+      setFormData((prev) => ({
+        ...prev,
+        images: files,
+        imagePreviews: [...prev.imagePreviews, ...previews],
+      }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -69,9 +82,7 @@ export default function GetNewsEventsModal({ newsEventId, closeModal, onNewsEven
     updatedNewsEvent.append('title', formData.title);
     updatedNewsEvent.append('description', formData.description);
     updatedNewsEvent.append('eventDate', formData.eventDate);
-    if (formData.image) {
-      updatedNewsEvent.append('image', formData.image);
-    }
+    formData.images.forEach((image) => updatedNewsEvent.append('images', image));
 
     try {
       const response = await axios.patch(`http://localhost:3002/news-events/${newsEventId}`, updatedNewsEvent, {
@@ -82,23 +93,15 @@ export default function GetNewsEventsModal({ newsEventId, closeModal, onNewsEven
       console.log('News/Event updated:', response.data);
       setNewsEvent(response.data);
       onNewsEventUpdated();
-      toast.success("News/Event updated successfully!", {
-        position: "top-right",
+      toast.success('News/Event updated successfully!', {
+        position: 'top-right',
         autoClose: 500,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
       });
     } catch (error) {
       console.error('Error updating news/event:', error);
-      toast.error("Error updating news/event!", {
-        position: "top-right",
+      toast.error('Error updating news/event!', {
+        position: 'top-right',
         autoClose: 500,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
       });
     }
   };
@@ -107,12 +110,12 @@ export default function GetNewsEventsModal({ newsEventId, closeModal, onNewsEven
     return null;
   }
 
-  const imageUrl = newsEvent.imageUrl ? `http://localhost:3002${newsEvent.imageUrl}` : null;
-
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto pt-10">
       <div className="bg-white p-6 rounded-lg shadow-md max-w-2xl w-full mx-4">
-        <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">{isEditing ? 'Edit News/Event' : newsEvent.title}</h2>
+        <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">
+          {isEditing ? 'Edit News/Event' : newsEvent.title}
+        </h2>
         {isEditing ? (
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
@@ -152,11 +155,22 @@ export default function GetNewsEventsModal({ newsEventId, closeModal, onNewsEven
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Image</label>
+              <label className="block text-sm font-medium text-gray-700">Images</label>
+              <div className="grid grid-cols-3 gap-4 mb-4">
+                {formData.imagePreviews.map((preview, index) => (
+                  <img
+                    key={index}
+                    src={preview}
+                    alt="Preview"
+                    className="w-full h-32 object-cover rounded-md"
+                  />
+                ))}
+              </div>
               <input
                 type="file"
-                name="image"
+                name="images"
                 accept="image/*"
+                multiple
                 ref={fileInputRef}
                 onChange={handleFileChange}
                 className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border file:border-gray-300 file:text-sm file:font-medium file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100"
@@ -181,17 +195,16 @@ export default function GetNewsEventsModal({ newsEventId, closeModal, onNewsEven
           </form>
         ) : (
           <>
-            {imageUrl ? (
-              <img
-                src={imageUrl}
-                alt={newsEvent.title}
-                className="w-full h-48 object-cover rounded-md mb-4"
-              />
-            ) : (
-              <div className="w-full h-48 bg-gray-200 rounded-md mb-4 flex items-center justify-center">
-                <span className="text-gray-500">No image available</span>
-              </div>
-            )}
+            <div className="grid grid-cols-3 gap-4 mb-4">
+              {newsEvent.imageUrls.map((url, index) => (
+                <img
+                  key={index}
+                  src={`http://localhost:3002${url}`}
+                  alt={newsEvent.title}
+                  className="w-full h-32 object-cover rounded-md"
+                />
+              ))}
+            </div>
             <p className="text-gray-700 mb-4">{newsEvent.description}</p>
             <p className="text-gray-700 mb-4">{new Date(newsEvent.eventDate).toLocaleDateString()}</p>
             <div className="flex justify-end">

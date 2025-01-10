@@ -67,15 +67,15 @@ export default function NewsEventsList() {
                                 Event Date: {new Date(newsEvent.eventDate).toLocaleDateString()}
                             </p>
                             <div className="flex justify-end space-x-4">
-                                <button
+                                {/* <button
                                     onClick={() => {
                                         setSelectedNewsEventId(newsEvent.id);
                                         setIsEditing(true);
                                     }}
                                     className="text-blue-600 hover:text-blue-800 text-xl"
-                                >
-                                    <FaEdit />
-                                </button>
+                                > */}
+                                    {/* <FaEdit /> */}
+                                {/* </button> */}
                                 <button
                                     onClick={() => handleDelete(newsEvent.id)}
                                     className="text-red-600 hover:text-red-800 text-xl"
