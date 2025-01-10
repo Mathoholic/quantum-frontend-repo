@@ -108,7 +108,7 @@ const Footer: React.FC = () => {
                 aria-label="Twitter"
               >
                 <Image
-                  src="/icons/twitter.png" 
+                  src="/icons/Linkedin.png" 
                   alt="Twitter"
                   width={24}
                   height={24}
