@@ -17,7 +17,6 @@ export default function GetNewsEvents({ newsEventId, closeModal }: GetNewsEvents
   } | null>(null);
 
   useEffect(() => {
-    debugger;
     const fetchNewsEvent = async () => {
       try {
         const response = await axios.get(`http://localhost:3002/news-events/${newsEventId}`);
