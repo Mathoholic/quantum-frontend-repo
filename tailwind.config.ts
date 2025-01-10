@@ -38,6 +38,9 @@ const config = {
           "100%": { opacity: 1 },
         },
       },
+      lineClamp: {
+        10: '10',
+      },
     },
   },
   plugins: [],

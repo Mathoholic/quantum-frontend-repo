@@ -1,46 +1,65 @@
+'use client';
+
 import React from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/effect-coverflow';
+import 'swiper/css/pagination';
+import '../styles/globals.css';
 
-const images = [
-  'https://wowslider.com/sliders/demo-93/data1/images/sunset.jpg',
-  'https://mdbcdn.b-cdn.net/img/Photos/Slides/img%20(31).webp',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrd3dQTKHapOH0Pir-VG7Lf9DwLzYuwgVhbg&s',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFU7U2h0umyF0P6E_yhTX45sGgPEQAbGaJ4g&s',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReqXUWHhvgS_uCZR1vCu0jYrGiSS_5OahAeA&s',
-];
+import { EffectCoverflow, Pagination, Autoplay } from 'swiper/modules';
 
-const Carousel: React.FC = () => {
+export default function Carousel() {
+  const images = [
+    { id: 'nature-1', src: 'https://swiperjs.com/demos/images/nature-1.jpg' },
+    { id: 'nature-2', src: 'https://swiperjs.com/demos/images/nature-2.jpg' },
+    { id: 'nature-3', src: 'https://swiperjs.com/demos/images/nature-3.jpg' },
+    { id: 'nature-4', src: 'https://swiperjs.com/demos/images/nature-4.jpg' },
+    { id: 'nature-5', src: 'https://swiperjs.com/demos/images/nature-5.jpg' },
+    { id: 'nature-6', src: 'https://swiperjs.com/demos/images/nature-6.jpg' },
+    { id: 'nature-7', src: 'https://swiperjs.com/demos/images/nature-7.jpg' },
+    { id: 'nature-8', src: 'https://swiperjs.com/demos/images/nature-8.jpg' },
+    { id: 'nature-9', src: 'https://swiperjs.com/demos/images/nature-9.jpg' },
+  ];
+
   return (
-    <div className="relative w-full h-[400px] overflow-hidden bg-[#DFF9FA] flex items-center justify-center">
-      <div className="flex animate-infinite-scroll space-x-4">
-        {/* Original images */}
-        {images.map((src, index) => (
-          <div
-            key={index}
-            className="w-[300px] flex-shrink-0 transform scale-95 transition-transform duration-300 hover:scale-100"
-          >
-            <img
-              src={src}
-              alt={`Carousel ${index}`}
-              className="rounded-lg shadow-lg w-full h-full object-cover"
-            />
-          </div>
+    <div className="w-full h-full bg-[#d5f3f5] flex items-center justify-center">
+      <Swiper
+        effect={'coverflow'}
+        grabCursor={true}
+        centeredSlides={true}
+        slidesPerView={5} // Set slidesPerView dynamically
+        loop={true}
+        autoplay={{
+          delay: 3000,
+          disableOnInteraction: true, // Updated to match specific UX intent
+        }}
+        coverflowEffect={{
+          rotate: 0,
+          stretch: -50,
+          depth: 150,
+          modifier: 1.5,
+          slideShadows: true,
+        }}
+        pagination={{ clickable: true, el: '.swiper-pagination', type: 'bullets' }}
+        modules={[EffectCoverflow, Pagination, Autoplay]}
+        className="w-full max-w-6xl transform -translate-x-12" // Shift slides to the left
+      >
+        {images.map((image) => (
+          <SwiperSlide key={image.id} className="flex items-center justify-center">
+            <div
+              className="overflow-hidden rounded-xl shadow-2xl transition-transform duration-500 ease-in-out hover:scale-105 w-[70vw] max-w-[320px] h-[70vw] max-h-[320px] bg-white border border-gray-200 flex items-center justify-center"
+            >
+              <img
+                src={image.src}
+                alt={`Slide for ${image.id}`}
+                className="object-cover w-full h-full rounded-xl"
+              />
+            </div>
+          </SwiperSlide>
         ))}
-        {/* Duplicate images for seamless looping */}
-        {images.map((src, index) => (
-          <div
-            key={index + images.length}
-            className="w-[300px] flex-shrink-0 transform scale-95 transition-transform duration-300 hover:scale-100"
-          >
-            <img
-              src={src}
-              alt={`Carousel duplicate ${index}`}
-              className="rounded-lg shadow-lg w-full h-full object-cover"
-            />
-          </div>
-        ))}
-      </div>
+        <div className="swiper-pagination swiper-pagination-vertical right-0"></div> {/* Pagination on the right */}
+      </Swiper>
     </div>
   );
-};
-
-export default Carousel;
+}

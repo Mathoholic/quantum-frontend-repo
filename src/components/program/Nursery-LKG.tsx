@@ -1,64 +1,40 @@
-import Image from 'next/image';
+import React from "react";
+import Image from "next/image";
 import { FaCheckCircle } from "react-icons/fa";
+import "@/styles/globals.css";
 
-const ProgramSection = () => {
+const ProgramSection: React.FC = () => {
   const featuresNursery = [
-    { text: "Build a strong foundation for academic and personal growth.", color: "text-green-600" },
-    { text: "Focus on literacy, social skills, creativity, and independence.", color: "text-blue-600" },
-    { text: "Experiential activities to explore and understand the world.", color: "text-orange-600" },
-    { text: "3 hours with a 12:1 student-teacher ratio.", color: "text-purple-700" },
+    { text: "Build a strong foundation for academic and personal growth.", color: "bg-green-100 text-green-800" },
+    { text: "Focus on literacy, social skills, creativity, and independence.", color: "bg-blue-100 text-blue-800" },
+    { text: "Experiential activities to explore and understand the world.", color: "bg-orange-100 text-orange-800" },
+    { text: "3 hours with a 12:1 student-teacher ratio.", color: "bg-purple-100 text-purple-800" },
   ];
 
   const featuresLKG = [
-    { text: "Develop critical thinking, pre-reading, writing, and math skills.", color: "text-green-600" },
-    { text: "Encourages problem-solving, teamwork, and creativity.", color: "text-blue-600" },
-    { text: "Prepares children for structured learning while nurturing confidence.", color: "text-orange-600" },
-    { text: "4 hours with a 15:1 student-teacher ratio.", color: "text-purple-700" },
+    { text: "Develop critical thinking, pre-reading, writing, and math skills.", color: "bg-green-100 text-green-800" },
+    { text: "Encourages problem-solving, teamwork, and creativity.", color: "bg-blue-100 text-blue-800" },
+    { text: "Prepares children for structured learning while nurturing confidence.", color: "bg-orange-100 text-orange-800" },
+    { text: "4 hours with a 15:1 student-teacher ratio.", color: "bg-purple-100 text-purple-800" },
   ];
 
   return (
-    <div className="w-full h-auto py-16 px-8 md:px-20 font-sans gap-20 bg-gradient-to-r from-[#fcbbd0] to-yellow-50">
+    <div className="w-full py-16 px-8 md:px-20 font-poppins bg-gradient-to-r from-[#fcbbd0] to-yellow-50">
       {/* Nursery Section */}
       <div className="grid md:grid-cols-2 gap-10 items-center">
         <div>
-          <h2
-            className="w-full h-auto text-[48px] font-normal mb-6 font-comic text-left underline-from-font decoration-skip-ink leading-[66.89px]"
-            style={{
-              fontFamily: "Comic Sans MS",
-              fontSize: "48px",
-              fontWeight: 400,
-              lineHeight: "66.89px",
-              textUnderlinePosition: "from-font",
-              textDecorationSkipInk: "none",
-            }}
-          >
-            <span style={{ color: "#6ab846" }}>N</span>
-            <span style={{ color: "#8d549e" }}>U</span>
-            <span style={{ color: "#8d549e" }}>R</span>
-            <span style={{ color: "#f06f13" }}>S</span>
-            <span style={{ color: "#f06f13" }}>E</span>
-            <span style={{ color: "#087278" }}>R</span>
-            <span style={{ color: "#087278" }}>Y</span>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
+            <span className="bg-gradient-to-r from-green-400 to-green-600 text-transparent bg-clip-text">Nursery</span>
           </h2>
-          <p
-            className="text-lg font-medium text-pink-700 mt-2"
-            style={{
-              fontFamily: "Outfit",
-              fontSize: "20px",
-              fontWeight: 500,
-              lineHeight: "25.2px",
-              letterSpacing: "0.02em",
-              textUnderlinePosition: "from-font",
-              textDecorationSkipInk: "none",
-            }}
-          >
-            Age Group: 3+ years.
-          </p>
+          <p className="text-pink-700 mt-2">Age Group: 3+ years.</p>
           <ul className="space-y-4 mt-4">
             {featuresNursery.map((feature, index) => (
-              <li key={index} className="flex items-start">
-                <FaCheckCircle className={`w-6 h-6 mr-3 ${feature.color}`} />
-                <span className={`text-lg ${feature.color}`}>{feature.text}</span>
+              <li
+                key={index}
+                className={`flex items-center ${feature.color} rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow`}
+              >
+                <FaCheckCircle className={`w-6 h-6 mr-3 ${feature.color.split(" ")[1]}`} />
+                <span className="text-sm md:text-base font-medium">{feature.text}</span>
               </li>
             ))}
           </ul>
@@ -66,10 +42,10 @@ const ProgramSection = () => {
         <div className="flex justify-center items-center">
           <Image
             src="/program/nursery.svg"
-            alt="Illustration of Nursery"
+            alt="Illustration of children engaging in nursery activities"
             width={596}
             height={529}
-            className="rounded-lg transform hover:scale-105 transition-transform duration-300 "
+            className="rounded-lg transform hover:scale-105 transition-transform duration-300"
           />
         </div>
       </div>
@@ -79,38 +55,25 @@ const ProgramSection = () => {
         <div className="flex justify-center items-center">
           <Image
             src="/program/lkg.svg"
-            alt="Illustration of LKG"
+            alt="Illustration of children participating in LKG activities"
             width={590}
             height={504}
-            className="rounded-lg transform hover:scale-105 transition-transform duration-300 "
+            className="rounded-lg transform hover:scale-105 transition-transform duration-300"
           />
         </div>
         <div>
-          <h2 className="w-full h-auto text-[48px] font-normal mb-6 font-comic text-left underline-from-font decoration-skip-ink leading-[66.89px]">
-            <span style={{ color: "#ed477c" }}>L</span>
-            <span style={{ color: "#e04a2f" }}>K</span>
-            <span style={{ color: "#652f8f" }}>G</span>
-            <span style={{ color: "#087278" }}>:</span>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
+            <span className="bg-gradient-to-r from-pink-400 to-pink-600 text-transparent bg-clip-text">LKG:</span>
           </h2>
-          <p
-            className="text-lg font-medium text-pink-700 mt-2"
-            style={{
-              fontFamily: "Outfit",
-              fontSize: "20px",
-              fontWeight: 500,
-              lineHeight: "25.2px",
-              letterSpacing: "0.02em",
-              textUnderlinePosition: "from-font",
-              textDecorationSkipInk: "none",
-            }}
-          >
-            Age Group: 4+ years.
-          </p>
+          <p className="text-pink-700 mt-2">Age Group: 4+ years.</p>
           <ul className="space-y-4 mt-4">
             {featuresLKG.map((feature, index) => (
-              <li key={index} className="flex items-start">
-                <FaCheckCircle className={`w-6 h-6 mr-3 ${feature.color}`} />
-                <span className={`text-lg ${feature.color}`}>{feature.text}</span>
+              <li
+                key={index}
+                className={`flex items-center ${feature.color} rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow`}
+              >
+                <FaCheckCircle className={`w-6 h-6 mr-3 ${feature.color.split(" ")[1]}`} />
+                <span className="text-sm md:text-base font-medium">{feature.text}</span>
               </li>
             ))}
           </ul>

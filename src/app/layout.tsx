@@ -32,9 +32,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 
   return (
     <html lang="en">
-      <body>
+      <body className="min-h-screen flex flex-col">
         {showHeaderFooter && <Header />}
-        <main>{children}</main>
+        <main className="flex-grow">{children}</main>
         {showHeaderFooter && <Footer />}
         {showFloatingButtons && <FloatingButtons />}
       </body>

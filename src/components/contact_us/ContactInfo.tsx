@@ -61,7 +61,7 @@ const ContactInfo: React.FC = () => {
         {/* Right Side: Map */}
         <div className="w-[765px] h-[478px] gap-0">
           <iframe
-            src="https://maps.google.com/maps?q=Sompura%20Village,%20Bangalore,%20Karnataka&t=&z=13&ie=UTF8&iwloc=&output=embed"
+            src="https://www.google.com/maps/place/12.864800,77.773698/data=!4m6!3m5!1s0!7e2!8m2!3d12.864799999999999!4d77.773698?entry=gps&coh=192189&g_ep=CAESBzI0LjQ5LjYYACCenQoqkAEsOTQyMjYwNDYsOTQyNDI1ODksOTQyMjMyOTksOTQyMTY0MTMsOTQyMTI0OTYsOTQyMDczOTQsOTQyMDc1MDYsOTQyMDg1MDYsOTQyMTc1MjMsOTQyMTg2NTMsOTQyMjgyMDQsOTQyMjk4MzksOTQyMzkxMjcsNDcwODcxMTgsNDcwODQzOTMsOTQyMTMyMDBCAklO"
             className="w-full h-full rounded-tl-[12px] border shadow-sm"
             loading="lazy"
             title="Location Map"
