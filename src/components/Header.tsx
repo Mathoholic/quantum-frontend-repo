@@ -35,8 +35,8 @@ const Navbar = () => {
             </div>
 
             {/* Navigation Links */}
-            <ul className={`flex gap-2 item-center w-full transition-all duration-500 ${isLinksVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10'}`}>
-                {['Home', 'Why Quantum?', 'Our Programs', 'Blogs', 'About Us', 'Contact Us', 'Gallery'].map((item, index) => {
+            <ul className={`flex gap-2   item-center w-screen transition-all duration-500 ${isLinksVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10'}`}>
+                {['Home', 'Why Quantum?', 'Our Programs', 'QK Circle', 'About Us', 'Contact Us', 'Gallery'].map((item, index) => {
                     const path = item === 'Home' ? '/' : `/${item.toLowerCase().replace(/\s+/g, '-')}`;
                     const isActive = currentPath === path;
                     const colors = ['bg-purple-500', 'bg-blue-500', 'bg-green-500', 'bg-yellow-500', 'bg-orange-500', 'bg-red-500', 'bg-indigo-500'];

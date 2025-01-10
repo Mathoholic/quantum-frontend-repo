@@ -14,7 +14,7 @@ const AfterSchoolPrograms: React.FC = () => {
   };
 
   return (
-    <div className="w-full py-16 px-8 md:px-20 font-comic gap-20 bg-gradient-to-r from-[#d5f3f5] to-purple-50">
+    <div className="w-full py-16 px-8 md:px-20 font-comic bg-[#fcf2a2]">
       <div className="grid md:grid-cols-2 gap-10 items-center">
         {/* Text Content */}
         <div>

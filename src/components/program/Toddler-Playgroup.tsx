@@ -6,11 +6,10 @@ import "../../styles/globals.css";
 const ProgramHero = () => {
   const featuresToddler = [
     { text: "Ease toddlers into preschool while strengthening parent-child bonds.", color: "bg-red-100 text-red-800" },
-    { text: "Session Duration: 1.5 hours.", color: "bg-green-100 text-green-800" },
     { text: "Interactive Learning: Focused on child-centered play.", color: "bg-blue-100 text-blue-800" },
     { text: "Enhances physical, social, emotional, and intellectual growth.", color: "bg-orange-100 text-orange-800" },
     { text: "Helps toddlers feel confident and secure with their parents present.", color: "bg-purple-100 text-purple-800" },
-    { text: "Student-teacher ratio of 10:1.", color: "bg-pink-100 text-pink-800" },
+    { text: "1.5 hours with 10:1 student-teacher ratio.", color: "bg-green-100 text-green-800" },
   ];
 
   const featuresPlaygroup = [
@@ -22,14 +21,17 @@ const ProgramHero = () => {
   ];
 
   return (
-    <div className="w-full py-16 px-8 md:px-20 font-poppins bg-gradient-to-r from-[#d5f3f5] to-purple-50">
+    <div className="w-full py-16 px-8 md:px-20 font-poppins bg-[#d5f3f5]">
       {/* Toddler-parent program */}
       <div className="grid md:grid-cols-2 gap-10 items-center">
         <div>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
+          <h2
+            className="text-left mb-6 text-[36px] md:text-[44px] font-comic font-normal leading-[50px] md:leading-[66.89px] underline-from-font decoration-skip-ink"
+            style={{ textUnderlinePosition: "from-font", textDecorationSkipInk: "none" }}
+          >
             <span className="bg-gradient-to-r from-green-400 to-green-600 text-transparent bg-clip-text">Toddler</span>-
-            <span className="bg-gradient-to-r from-purple-400 to-purple-600 text-transparent bg-clip-text">Parent</span>{" "}
-            <span className="bg-gradient-to-r from-orange-400 to-orange-600 text-transparent bg-clip-text">Program</span>
+            <span className="bg-gradient-to-r from-purple-400 to-purple-600 text-transparent bg-clip-text">parent</span>{" "}
+            <span className="bg-gradient-to-r from-orange-400 to-orange-600 text-transparent bg-clip-text">program:</span>
           </h2>
           <ul className="space-y-4">
             {featuresToddler.map((feature, index) => (
@@ -66,8 +68,10 @@ const ProgramHero = () => {
           />
         </div>
         <div>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
-            <span className="bg-gradient-to-r from-pink-400 to-pink-600 text-transparent bg-clip-text">Playgroup</span>
+          <h2 className="text-left text-[36px] mb-6 md:text-[48px] font-comic font-normal leading-[50px] md:leading-[66.89px] underline-from-font decoration-skip-ink"
+            style={{ textUnderlinePosition: "from-font", textDecorationSkipInk: "none" }}
+          >
+            <span className="bg-gradient-to-r from-pink-400 to-pink-600 text-transparent bg-clip-text">Playgroup:</span>
           </h2>
           <ul className="space-y-4">
             {featuresPlaygroup.map((feature, index) => (
