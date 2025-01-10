@@ -198,7 +198,7 @@ const ChatBot = () => {
     }
   };
 
-  if (!isChatBotVisible) return null; // Do not render if hidden
+  if (!isChatBotVisible) return null; 
 
   return (
     <div className="fixed bottom-4 right-4 bg-white shadow-lg rounded-lg w-80 h-[80vh] flex flex-col">
