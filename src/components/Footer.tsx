@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-[#E8F9FF] py-12">
+    <footer className="bg-[#E8F9FF] pt-12 pb-4">
       <div className="container mx-auto flex flex-col md:flex-row gap-12 px-6 md:px-16">
         {/* Address Section */}
         <div className="md:w-1/2">
@@ -16,18 +16,20 @@ const Footer: React.FC = () => {
           <p className="text-sm text-gray-700 leading-7">
             Quantum Kids preschool and daycare
             <br />
-            123 Quantum Street, Sector 45, Gurgaon,
+            56, Sy no. 25, Sompura Village, Sarjapura hobli, Anekal Taluk,
             <br />
-            Haryana 122003, India
+            Bangalore, Karnataka - 562125.
             <br />
-            +91 9876543210
+            Landmark: Next to ARS SIGNATURE Phase 2
+            <br />
+            +91 8971133673
           </p>
           <p className="mt-4 text-sm text-gray-700">
             <a
-              href="mailto:info@quantumschool.in"
+              href="mailto:contact@quantumkids.in"
               className="block hover:underline"
             >
-              info@quantumschool.in
+              contact@quantumkids.in
             </a>
             <a
               href="mailto:admissions@quantumschool.in"
@@ -103,19 +105,19 @@ const Footer: React.FC = () => {
             </h3>
             <div className="flex space-x-4">
               <a
-                href="https://twitter.com"
+                href="https://www.linkedin.com/company/quantum-kids-preschool-and-daycare"
                 className="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow hover:bg-gray-200 transition"
-                aria-label="Twitter"
+                aria-label="LinkedIn"
               >
                 <Image
                   src="/icons/Linkedin.png" 
-                  alt="Twitter"
+                  alt="LinkedIn"
                   width={24}
                   height={24}
                 />
               </a>
               <a
-                href="https://facebook.com"
+                href="https://www.facebook.com/profile.php?id=61571464794833&mibextid=ZbWKwL"
                 className="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow hover:bg-gray-200 transition"
                 aria-label="Facebook"
               >
@@ -127,7 +129,7 @@ const Footer: React.FC = () => {
                 />
               </a>
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/quantumkidspreschoolanddaycare/"
                 className="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow hover:bg-gray-200 transition"
                 aria-label="Instagram"
               >
@@ -147,7 +149,7 @@ const Footer: React.FC = () => {
       <div className="mt-12 text-center text-sm text-gray-600">
         Copyright © Quantum School. All rights reserved.
         <br />
-        <a href="https://maps.google.com" className="hover:underline">
+        <a href="https://www.google.com/maps/place/12.864800,77.773698/data=!4m6!3m5!1s0!7e2!8m2!3d12.864799999999999!4d77.773698?entry=gps&coh=192189&g_ep=CAESBzI0LjQ5LjYYACCenQoqkAEsOTQyMjYwNDYsOTQyNDI1ODksOTQyMjMyOTksOTQyMTY0MTMsOTQyMTI0OTYsOTQyMDczOTQsOTQyMDc1MDYsOTQyMDg1MDYsOTQyMTc1MjMsOTQyMTg2NTMsOTQyMjgyMDQsOTQyMjk4MzksOTQyMzkxMjcsNDcwODcxMTgsNDcwODQzOTMsOTQyMTMyMDBCAklO" className="hover:underline">
           Find us on maps
         </a>
       </div>
