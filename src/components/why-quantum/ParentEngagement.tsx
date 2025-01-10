@@ -6,7 +6,7 @@ const ParentEngagement = () => (
     bgColor="bg-[#FEDFB2]"
     title="Parent Engagement & Support"
     titleColor="text-[#E14B30]"
-    imageSrc="/why-quantum/teacher-handwash.svg"
+    imageSrc="/why-quantum/teacher-laptop.svg"
     imageAlt="Parent Engagement"
     checklistItems={[
       {
