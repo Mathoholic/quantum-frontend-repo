@@ -7,9 +7,9 @@ const MissionVisionSection = () => {
     <div className="bg-[#D4F3F5] w-full px-16">
       <div className="py-8">
         <h1 className="text-center text-4xl font-bold px-4">
-          <span className="font-serif text-[#EE487C]">Mission </span>
-          <span className="font-serif text-[#EE487C]">&amp; </span>
-          <span className="font-sans text-[#EE487C]">Vision</span>
+          <span className="font-comic text-[#EE487C]">Mission </span>
+          <span className="font-comic text-[#EE487C]">&amp; </span>
+          <span className="font-comic text-[#EE487C]">Vision</span>
         </h1>
       </div>
       <div className="py-8 px-4">
