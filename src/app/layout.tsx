@@ -15,6 +15,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   const showHeaderFooter = pathname !== null && 
     !pathname.startsWith('/admin') && 
     !noHeaderFooterRoutes.some(route => pathname.startsWith(route));
+  
+  const showFloatingButtons = pathname !== null && !pathname.startsWith('/admin');
 
   const isAuthenticated = typeof window !== 'undefined' && localStorage.getItem('authToken');
 
@@ -30,11 +32,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 
   return (
     <html lang="en">
-      <body>
+      <body className="min-h-screen flex flex-col">
         {showHeaderFooter && <Header />}
-        <main>{children}</main>
+        <main className="flex-grow">{children}</main>
         {showHeaderFooter && <Footer />}
-        <FloatingButtons />
+        {showFloatingButtons && <FloatingButtons />}
       </body>
     </html>
   );

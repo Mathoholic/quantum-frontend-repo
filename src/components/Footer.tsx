@@ -8,16 +8,19 @@ const Footer: React.FC = () => {
         {/* Address Section */}
         <div className="md:w-1/2">
           <Image
-            src="/logo.png" // Replace with your logo path
+            src="/logo.svg" // Replace with your logo path
             alt="Quantum School Logo"
-            width={60} // Adjust as needed
-            height={60} // Adjust as needed
+            width={97} height={76}
             className="mb-6"
           />
           <p className="text-sm text-gray-700 leading-7">
+            Quantum Kids preschool and daycare
+            <br />
             123 Quantum Street, Sector 45, Gurgaon,
             <br />
-            Haryana 122003, India, +91 9876543210
+            Haryana 122003, India
+            <br />
+            +91 9876543210
           </p>
           <p className="mt-4 text-sm text-gray-700">
             <a
@@ -42,7 +45,7 @@ const Footer: React.FC = () => {
             <h3 className="font-semibold text-lg text-gray-900 mb-4">Explore</h3>
             <ul className="space-y-3">
               <li>
-                <a href="/welcome" className="text-sm text-gray-700 hover:underline">
+                <a href="/" className="text-sm text-gray-700 hover:underline">
                   Welcome
                 </a>
               </li>
@@ -52,13 +55,13 @@ const Footer: React.FC = () => {
                 </a>
               </li>
               <li>
-                <a href="/news" className="text-sm text-gray-700 hover:underline">
-                  News
+                <a href="/gallery" className="text-sm text-gray-700 hover:underline">
+                  Gallery & News
                 </a>
               </li>
               <li>
-                <a href="/gallery" className="text-sm text-gray-700 hover:underline">
-                  Gallery
+                <a href="/our-programs" className="text-sm text-gray-700 hover:underline">
+                  Our Programs
                 </a>
               </li>
             </ul>
@@ -73,11 +76,6 @@ const Footer: React.FC = () => {
               <li>
                 <a href="/faculty" className="text-sm text-gray-700 hover:underline">
                   Faculty
-                </a>
-              </li>
-              <li>
-                <a href="/admissions" className="text-sm text-gray-700 hover:underline">
-                  Admissions
                 </a>
               </li>
               <li>
@@ -148,6 +146,10 @@ const Footer: React.FC = () => {
       {/* Footer Bottom */}
       <div className="mt-12 text-center text-sm text-gray-600">
         Copyright © Quantum School. All rights reserved.
+        <br />
+        <a href="https://maps.google.com" className="hover:underline">
+          Find us on maps
+        </a>
       </div>
     </footer>
   );

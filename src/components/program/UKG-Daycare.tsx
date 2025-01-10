@@ -1,5 +1,5 @@
-import React from 'react';
-import Image from 'next/image';
+import React from "react";
+import Image from "next/image";
 import { FaCheckCircle } from "react-icons/fa";
 
 const UKGDaycareInfo: React.FC = () => {
@@ -20,31 +20,18 @@ const UKGDaycareInfo: React.FC = () => {
   ];
 
   return (
-    <div className="w-full h-auto py-16 px-8 md:px-20 font-sans gap-20 bg-gradient-to-r from-orange-50 to-yellow-50">
+    <div className="w-full py-16 px-8 md:px-20 font-sans bg-gradient-to-r from-orange-50 to-yellow-50">
       {/* UKG Section */}
       <div className="grid md:grid-cols-2 gap-10 items-center">
         <div>
-          <h2 className="text-left text-[36px] md:text-[48px] font-comic font-normal leading-[50px] md:leading-[66.89px] underline-from-font decoration-skip-ink">
-            <span className="bg-gradient-to-r from-pink-400 to-pink-600 text-transparent bg-clip-text">UKG:</span>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-800">
+            <span className="bg-gradient-to-r from-pink-400 to-pink-600 text-transparent bg-clip-text">UKG</span>
           </h2>
-          <ul className="space-y-4 mt-6 font-comic">
+          <ul className="space-y-4 mt-6">
             {featuresUKG.map((feature, index) => (
               <li key={index} className="flex items-start">
                 <FaCheckCircle className={`w-6 h-6 mr-3 ${feature.color}`} />
-                <span
-                  className={`text-base md:text-lg ${feature.color}`}
-                  style={{
-                    fontFamily: "Outfit",
-                    fontSize: "16px",
-                    fontWeight: 500,
-                    lineHeight: "20px",
-                    letterSpacing: "0.02em",
-                    textUnderlinePosition: "from-font",
-                    textDecorationSkipInk: "none",
-                  }}
-                >
-                  {feature.text}
-                </span>
+                <span className={`text-base md:text-lg ${feature.color}`}>{feature.text}</span>
               </li>
             ))}
           </ul>
@@ -72,27 +59,14 @@ const UKGDaycareInfo: React.FC = () => {
           />
         </div>
         <div>
-          <h2 className="text-left text-[36px] md:text-[48px] font-comic font-normal leading-[50px] md:leading-[66.89px] underline-from-font decoration-skip-ink">
-            <span className="bg-gradient-to-r from-green-400 to-green-600 text-transparent bg-clip-text">Daycare:</span>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-800">
+            <span className="bg-gradient-to-r from-green-400 to-green-600 text-transparent bg-clip-text">Daycare</span>
           </h2>
-          <ul className="space-y-4 mt-6 font-comic">
+          <ul className="space-y-4 mt-6">
             {featuresDaycare.map((feature, index) => (
               <li key={index} className="flex items-start">
                 <FaCheckCircle className={`w-6 h-6 mr-3 ${feature.color}`} />
-                <span
-                  className={`text-base md:text-lg ${feature.color}`}
-                  style={{
-                    fontFamily: "Outfit",
-                    fontSize: "16px",
-                    fontWeight: 500,
-                    lineHeight: "20px",
-                    letterSpacing: "0.02em",
-                    textUnderlinePosition: "from-font",
-                    textDecorationSkipInk: "none",
-                  }}
-                >
-                  {feature.text}
-                </span>
+                <span className={`text-base md:text-lg ${feature.color}`}>{feature.text}</span>
               </li>
             ))}
           </ul>
