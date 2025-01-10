@@ -10,11 +10,11 @@ const ImageModal: React.FC<ImageModalProps> = ({ imageUrl, altText, onClose }) =
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75"
-      onClick={onClose} // Close modal when clicking outside the content
+      onClick={onClose}
     >
       <div
         className="relative w-[90vw] max-w-4xl h-[500px] bg-white rounded-lg shadow-lg overflow-hidden"
-        onClick={(e) => e.stopPropagation()} // Prevent close on content click
+        onClick={(e) => e.stopPropagation()}
       >
         <button
           className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 focus:outline-none text-2xl"
