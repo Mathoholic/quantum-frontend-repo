@@ -156,8 +156,8 @@ const CommonForm = ({ onSubmit }: any) => {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto p-2 sm:p-4 lg:p-6">
-      <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2">
+    <div className="w-full max-w-md mx-auto p-4 h-fit ">
+      <h1 className="text-3xl font-bold mb-2">
         <span className="text-red-400">Register Now </span> for{" "}
         <span className="text-blue-400">AY</span>{" "}
         <span className="text-green-500">
