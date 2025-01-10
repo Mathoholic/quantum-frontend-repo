@@ -9,35 +9,55 @@ interface NewsEventsModalProps {
   newsEventId?: string | null;
 }
 
+interface FormData {
+  title: string;
+  description: string;
+  eventDate: string;
+  images: File[];
+}
+
 export default function NewsEventsModal({ closeModal, newsEventId }: NewsEventsModalProps) {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     title: '',
     description: '',
     eventDate: '',
-    image: null as File | null,
+    images: [],
   });
-
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (newsEventId) {
-      const fetchNewsEvent = async () => {
-        try {
-          const response = await axios.get(`http://localhost:3002/news-events/${newsEventId}`);
-          const { title, description, eventDate, imageUrl } = response.data;
-          setFormData({
-            title,
-            description,
-            eventDate: new Date(eventDate).toISOString().split('T')[0],
-            image: null,
-          });
-        } catch (error) {
-          console.error('Error fetching news/event:', error);
+    const fetchNewsEvent = async () => {
+      debugger;
+      try {
+        const response = await axios.get(`http://localhost:3002/news-events`);
+        const newsEvents = response.data;
+  
+        if (newsEventId) {
+
+          const selectedNewsEvent = newsEvents.find((event: any) => event.id.toString() === newsEventId);
+          if (selectedNewsEvent) {
+            const { title, description, eventDate, imageUrls } = selectedNewsEvent;
+            setFormData({
+              title,
+              description,
+              eventDate: new Date(eventDate).toISOString().split('T')[0],
+              images: [],
+            });
+
+            if (imageUrls && Array.isArray(imageUrls)) {
+              setImagePreviews(imageUrls.map((url: string) => `http://localhost:3002${url}`));
+            }
+          }
         }
-      };
-      fetchNewsEvent();
-    }
+      } catch (error) {
+        console.error('Error fetching news/events:', error);
+      }
+    };
+  
+    fetchNewsEvent();
   }, [newsEventId]);
+  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -48,10 +68,28 @@ export default function NewsEventsModal({ closeModal, newsEventId }: NewsEventsM
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
     setFormData({
       ...formData,
-      image: e.target.files ? e.target.files[0] : null,
+      images: [...formData.images, ...files],
     });
+
+    // Generate previews for new images
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreviews(prev => [...prev, reader.result as string]);
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const removeImage = (index: number) => {
+    setFormData({
+      ...formData,
+      images: formData.images.filter((_, i) => i !== index),
+    });
+    setImagePreviews(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -61,10 +99,11 @@ export default function NewsEventsModal({ closeModal, newsEventId }: NewsEventsM
     form.append('title', formData.title);
     form.append('description', formData.description);
     form.append('eventDate', formData.eventDate);
-    const file = fileInputRef.current?.files?.[0];
-    if (file) {
-      form.append('image', file);
-    }
+    
+    // Append each image to the form data
+    formData.images.forEach((image, index) => {
+      form.append('images', image);
+    });
 
     try {
       const response = await axios.post('http://localhost:3002/news-events', form, {
@@ -85,8 +124,9 @@ export default function NewsEventsModal({ closeModal, newsEventId }: NewsEventsM
         title: '',
         description: '',
         eventDate: '',
-        image: null,
+        images: [],
       });
+      setImagePreviews([]);
       closeModal();
     } catch (error) {
       console.error('Error creating news/event:', error);
@@ -103,8 +143,10 @@ export default function NewsEventsModal({ closeModal, newsEventId }: NewsEventsM
 
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white p-6 rounded-lg shadow-md max-w-2xl w-full">
-        <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">{newsEventId ? 'View News/Event' : 'Create a News/Event'}</h2>
+      <div className="bg-white p-6 rounded-lg shadow-md max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">
+          {newsEventId ? 'View News/Event' : 'Create a News/Event'}
+        </h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-gray-700">Title</label>
@@ -147,15 +189,40 @@ export default function NewsEventsModal({ closeModal, newsEventId }: NewsEventsM
 
           {!newsEventId && (
             <div>
-              <label className="block text-sm font-medium text-gray-700">Image</label>
+              <label className="block text-sm font-medium text-gray-700">Images</label>
               <input
                 type="file"
-                name="image"
+                name="images"
                 accept="image/*"
+                multiple
                 ref={fileInputRef}
                 onChange={handleFileChange}
                 className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border file:border-gray-300 file:text-sm file:font-medium file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100"
               />
+            </div>
+          )}
+
+          {/* Image previews */}
+          {imagePreviews.length > 0 && (
+            <div className="grid grid-cols-3 gap-4">
+              {imagePreviews.map((preview, index) => (
+                <div key={index} className="relative">
+                  <img
+                    src={preview}
+                    alt={`Preview ${index + 1}`}
+                    className="w-full h-32 object-cover rounded-md"
+                  />
+                  {!newsEventId && (
+                    <button
+                      type="button"
+                      onClick={() => removeImage(index)}
+                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600"
+                    >
+                      ×
+                    </button>
+                  )}
+                </div>
+              ))}
             </div>
           )}
 
