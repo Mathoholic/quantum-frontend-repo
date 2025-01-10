@@ -5,6 +5,7 @@ import { Eye, EyeOff, CheckCircle2, XCircle } from 'lucide-react';
 
 export default function ChangePassword() {
   const [username, setUsername] = useState('');
+  const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
@@ -37,10 +38,27 @@ export default function ChangePassword() {
     }
 
     try {
-      // Simulated API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const response = await fetch(`http://localhost:3002/admin/reset-password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          currentPassword,
+          newPassword
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error("Could not create a new password");
+      }
+
+      const res = await response.json();
+      console.log(res);
       setSuccess('Password changed successfully');
       setUsername('');
+      setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
     } catch (err) {
@@ -84,6 +102,20 @@ export default function ChangePassword() {
                 required
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                 placeholder="Enter your username"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Current Password
+              </label>
+              <input
+                type="password"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                required
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                placeholder="Enter current password"
               />
             </div>
 
