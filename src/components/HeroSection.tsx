@@ -7,7 +7,6 @@ import MainContent from './MainContent';
 import QuantumHover from './QuantumHover';
 
 const HeroSection: React.FC = () => {
-  const [showQuantumHover, setShowQuantumHover] = useState(false);
   const [isButtonVisible, setIsButtonVisible] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -21,7 +20,6 @@ const HeroSection: React.FC = () => {
   }, [buttonRef]); // Removed currentPath as a dependency
 
   const scrollToQuantumHover = () => {
-    setShowQuantumHover(true);
     const element = document.getElementById("quantum-hover");
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
@@ -43,7 +41,6 @@ const HeroSection: React.FC = () => {
           Let's Get Started
         </button>
       </div>
-      {showQuantumHover && <QuantumHover />}
     </div>
   );
 };
