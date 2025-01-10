@@ -68,11 +68,12 @@ const Contact = () => {
 
       {!showCommonForm && !isFormSubmitted && (
         <button
-          onClick={toggleForm}
-          className="fixed left-4 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-600 transition-colors"
-        >
-          Open Form
-        </button>
+        onClick={toggleForm}
+        className="fixed left-4 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-600 transition-colors duration-300 opacity-0 animate-fade-in-out"
+      >
+        Open Form
+      </button>
+      
       )}
     </div>
   );
