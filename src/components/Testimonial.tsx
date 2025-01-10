@@ -1,5 +1,11 @@
-import React from "react";
+'use client'
+
+import React, { useEffect, useRef } from "react";
 import Image from "next/image";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const testimonials = [
   {
@@ -17,16 +23,72 @@ const testimonials = [
 ];
 
 const Testimonials: React.FC = () => {
+  const paintImageRef = useRef(null);
+  const testimonialRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    if (headingRef.current) {
+      gsap.from(headingRef.current, {
+        opacity: 1,
+        y: -50,
+        duration: 1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: headingRef.current,
+          start: "top 80%",
+          toggleActions: "play none none none",
+        },
+      });
+    }
+
+    gsap.fromTo(
+      paintImageRef.current,
+      { x: "-100vw", rotation: 0 },
+      {
+        x: 0,
+        rotation: 360,
+        duration: 2,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: paintImageRef.current,
+          start: "top bottom",
+        },
+      }
+    );
+
+    testimonialRefs.current.forEach((ref, index) => {
+      if (ref) {
+        gsap.fromTo(
+          ref,
+          { opacity: 0, y: 50 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: ref,
+              start: "top bottom",
+            },
+            delay: index * 0.2,
+          }
+        );
+      }
+    });
+  }, []);
+
   return (
     <div className="bg-[#fcdce6] py-24 relative">
-      <Image 
-        src="paint.svg" 
-        alt="Decorative Image" 
-        width={158.06} 
-        height={166.79} 
-        className="absolute top-[-50px] left-10 m-4"
-      />
-      <h2 className="text-4xl font-bold font-comic text-center mb-8">Stories That Speak for Themselves</h2>
+      <div ref={paintImageRef} className="absolute top-[-50px] left-10 m-4">
+        <Image 
+          src="paint.svg" 
+          alt="Decorative Image" 
+          width={158.06} 
+          height={166.79} 
+        />
+      </div>
+      <h2 ref={headingRef} className="text-4xl font-bold font-comic text-center ">Stories That Speak for Themselves</h2>
       <p className="text-center text-gray-600 mb-8 text-outfit">
         Discover What Our Customers Have to Say About Their Experience with Us
       </p>  
@@ -34,9 +96,12 @@ const Testimonials: React.FC = () => {
         {testimonials.map((testimonial, index) => (
           <div
             key={index}
-            className="bg-[#ed477c] rounded-lg p-6 shadow-md flex flex-col justify-between relative"
+            ref={(el) => {
+              testimonialRefs.current[index] = el;
+            }}
+            className="bg-[#ed477c] rounded-lg p-6 shadow-md flex flex-col justify-between relative transform transition-transform duration-300 hover:scale-105 hover:shadow-lg hover:rotate-1"
           >
-            <p className="text-white italic mb-4 mt-20">"{testimonial.text}"</p>
+            <p className="text-white italic mb-4">"{testimonial.text}"</p>
             <p className="text-white font-semibold">— {testimonial.author}</p>
           </div>
         ))}

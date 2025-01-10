@@ -1,5 +1,11 @@
-import React from "react";
+'use client'
+
+import React, { useEffect, useRef } from "react";
 import Image from "next/image";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const highlights = [
   {
@@ -33,14 +39,53 @@ const highlights = [
 ];
 
 const Highlights: React.FC = () => {
+  const highlightsRef = useRef<HTMLDivElement[]>([]);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    if (headingRef.current) {
+      gsap.from(headingRef.current, {
+        opacity: 1,
+        y: -50,
+        duration: 1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: headingRef.current,
+          start: "top 80%",
+          toggleActions: "play none none none",
+        },
+      });
+    }
+
+    highlightsRef.current.forEach((el, index) => {
+      gsap.from(el, {
+        opacity: 0,
+        y: 50,
+        duration: 1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: el,
+          start: "top 80%",
+          toggleActions: "play none none none",
+          onEnter: () => {
+            gsap.to(el, { opacity: 1, y: 0, duration: 1, ease: "power3.out" });
+          },
+        },
+      });
+    });
+  }, []);
+
   return (
     <div className="bg-[#ffe0b3] py-12">
-      <h2 className="text-4xl font-bold font-comic text-center mb-8">Highlights</h2>
+      <h2 ref={headingRef} className="text-4xl font-bold font-comic text-center mb-8">Highlights</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto px-4">
         {highlights.map((highlight, index) => (
           <div
             key={index}
-            className="bg-[#fcb13f] rounded-lg p-6 shadow-md text-outfit flex flex-col items-center text-center"
+            ref={(el) => {
+              highlightsRef.current[index] = el!;
+            }}
+            className="bg-[#fcb13f] rounded-lg p-6 shadow-md text-outfit flex flex-col items-center text-center transform transition-transform duration-300 hover:scale-105 hover:shadow-lg hover:rotate-1"
           >
             <Image
               src={highlight.imageSrc}
