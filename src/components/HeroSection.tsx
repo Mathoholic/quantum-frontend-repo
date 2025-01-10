@@ -18,7 +18,7 @@ const HeroSection: React.FC = () => {
         { opacity: 1, y: 0, scale: 1, duration: 1, ease: 'power3.out', onComplete: () => setIsButtonVisible(true) }
       );
     }
-  }, []);
+  }, [buttonRef]); // Removed currentPath as a dependency
 
   const scrollToQuantumHover = () => {
     setShowQuantumHover(true);

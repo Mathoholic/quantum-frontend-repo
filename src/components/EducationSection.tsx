@@ -1,9 +1,38 @@
+'use client'
+
 import Image from "next/image";
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const EarlyEducationSection = () => {
+  const plusImageRef = useRef(null);
+
+  useEffect(() => {
+    gsap.fromTo(
+      plusImageRef.current,
+      { x: "-100vw", rotation: 0 },
+      {
+        x: 0,
+        rotation: 360,
+        duration: 2,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: plusImageRef.current,
+          start: "top bottom",
+        },
+      }
+    );
+  }, []);
+
   return (
     <section className="bg-[#fcd4df] py-16 relative">
-      <div className="absolute top-[-70px] right-20 m-4">
+      <div
+        ref={plusImageRef}
+        className="absolute top-[-70px] right-20 m-4"
+      >
         <Image src="/plus.svg" alt="Top Right Image" width={100} height={100} />
       </div>
       <div className="container mx-auto px-8 lg:px-16">
