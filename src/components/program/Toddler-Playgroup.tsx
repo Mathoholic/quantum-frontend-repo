@@ -40,7 +40,7 @@ const ProgramHero = () => {
                 className={`flex items-center ${feature.color} rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow`}
               >
                 <FaCheckCircle className={`w-6 h-6 mr-3 ${feature.color.split(" ")[1]}`} />
-                <span className="text-sm md:text-base font-medium">{feature.text}</span>
+                <span className="text-[10px] md:text-base font-medium">{feature.text}</span>
               </li>
             ))}
           </ul>

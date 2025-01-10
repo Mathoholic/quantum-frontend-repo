@@ -12,33 +12,35 @@ const FloatingButtons = () => {
   
   return (
     <>
-      <div className="fixed bottom-10 right-10 z-50 space-y-4">
-        {/* Floating ChatBot button */}
-        <button
-          onClick={toggleChatBot}
-          className="bg-blue-500 p-4 rounded-full text-white shadow-md hover:bg-blue-600 transition-all flex items-center justify-center"
-        >
-          <span className="text-2xl">
-            <MessageCircle />
-          </span>
-        </button>
-
+      <div className="fixed bottom-10 right-10 z-50 flex space-x-4">
         {/* WhatsApp Button */}
         <a
           href={`https://wa.me/${8971133673}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="bg-green-500 p-4 rounded-full text-white shadow-md hover:bg-green-600 transition-all flex items-center justify-center"
+          className="bg-green-500 p-2 rounded-full text-white shadow-md hover:bg-green-600 transition-all flex items-center justify-center"
         >
-          <span className="text-2xl">
+          <span className="text-xl">
             <FaWhatsapp /> 
           </span>
         </a>
+
+        {/* Floating ChatBot button */}
+        <button
+          onClick={toggleChatBot}
+          className="bg-blue-500 p-2  rounded-full text-white shadow-md hover:bg-blue-600 transition-all flex items-center justify-center"
+        >
+          <span className="text-xl">
+            <MessageCircle />
+          </span>
+        </button>
       </div>
 
       {/* ChatBot with proper positioning and z-index */}
       {isChatOpen && (
+        <div className="fixed bottom-[200px] right-10 z-50">
           <ChatBot />
+        </div>
       )}
     </>
   );
