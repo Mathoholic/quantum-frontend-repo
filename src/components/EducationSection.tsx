@@ -9,6 +9,8 @@ gsap.registerPlugin(ScrollTrigger);
 
 const EarlyEducationSection = () => {
   const plusImageRef = useRef(null);
+  const textContentRef = useRef(null);
+  const videoRef = useRef(null);
 
   useEffect(() => {
     gsap.fromTo(
@@ -25,6 +27,38 @@ const EarlyEducationSection = () => {
         },
       }
     );
+
+    gsap.fromTo(
+      textContentRef.current,
+      { opacity: 0, y: 50 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 1.5,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: textContentRef.current,
+          start: "top 80%",
+        },
+        stagger: 0.3,
+      }
+    );
+
+    gsap.fromTo(
+      videoRef.current,
+      { opacity: 0, scale: 0.8, rotation: -10 },
+      {
+        opacity: 1,
+        scale: 1,
+        rotation: 0,
+        duration: 1.5,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: videoRef.current,
+          start: "top 80%",
+        },
+      }
+    );
   }, []);
 
   return (
@@ -38,7 +72,7 @@ const EarlyEducationSection = () => {
       <div className="container mx-auto px-8 lg:px-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-24">
           {/* Left Column: Text Content */}
-          <div className="text-center lg:text-left">
+          <div ref={textContentRef} className="text-center lg:text-left">
             <h3 className="text-pink-600 text-sm font-semibold uppercase">Play based learning</h3>
             <h1 className="text-4xl font-bold font-comic text-black mt-4">
               Early education is not a luxury, but a necessity!
@@ -61,7 +95,7 @@ const EarlyEducationSection = () => {
 
           {/* Right Column: Diagram */}
           <div className="flex justify-center items-center">
-            <div className="relative w-full h-full">
+            <div ref={videoRef} className="relative w-full h-full">
               <video
                 src="/flow-pink.mp4"
                 className="w-full h-full"
