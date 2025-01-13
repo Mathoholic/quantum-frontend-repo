@@ -76,22 +76,22 @@ const Footer: React.FC = () => {
             </h3>
             <ul className="space-y-3">
               <li>
-                <a href="/faculty" className="text-sm text-gray-700 hover:underline">
-                  Faculty
+                <a href="/about-us" className="text-sm text-gray-700 hover:underline">
+                  About Us
                 </a>
               </li>
               <li>
-                <a href="/admission-guide" className="text-sm text-gray-700 hover:underline">
+                <a href="/why-quantum" className="text-sm text-gray-700 hover:underline">
                   Admission Guide
                 </a>
               </li>
               <li>
-                <a href="/location" className="text-sm text-gray-700 hover:underline">
+                <a href="https://www.google.com/maps/place/12.864800,77.773698/data=!4m6!3m5!1s0!7e2!8m2!3d12.864799999999999!4d77.773698?entry=gps&coh=192189&g_ep=CAESBzI0LjQ5LjYYACCenQoqkAEsOTQyMjYwNDYsOTQyNDI1ODksOTQyMjMyOTksOTQyMTY0MTMsOTQyMTI0OTYsOTQyMDczOTQsOTQyMDc1MDYsOTQyMDg1MDYsOTQyMTc1MjMsOTQyMTg2NTMsOTQyMjgyMDQsOTQyMjk4MzksOTQyMzkxMjcsNDcwODcxMTgsNDcwODQzOTMsOTQyMTMyMDBCAklO" className="text-sm text-gray-700 hover:underline">
                   Location
                 </a>
               </li>
               <li>
-                <a href="/contact" className="text-sm text-gray-700 hover:underline">
+                <a href="/contact-us" className="text-sm text-gray-700 hover:underline">
                   Contact
                 </a>
               </li>
