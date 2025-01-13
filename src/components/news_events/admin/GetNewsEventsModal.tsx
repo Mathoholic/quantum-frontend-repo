@@ -38,14 +38,14 @@ export default function GetNewsEventsModal({
   useEffect(() => {
     const fetchNewsEvent = async () => {
       try {
-        const response = await axios.get(`http://localhost:3002/news-events/${newsEventId}`);
+        const response = await axios.get(`http://208.109.214.146:3002/news-events/${newsEventId}`);
         setNewsEvent(response.data);
         setFormData({
           title: response.data.title,
           description: response.data.description,
           eventDate: new Date(response.data.eventDate).toISOString().split('T')[0],
           images: [],
-          imagePreviews: response.data.imageUrls.map((url: string) => `http://localhost:3002${url}`),
+          imagePreviews: response.data.imageUrls.map((url: string) => `http://208.109.214.146:3002${url}`),
         });
       } catch (error) {
         console.error('Error fetching news/event:', error);
@@ -85,7 +85,7 @@ export default function GetNewsEventsModal({
     formData.images.forEach((image) => updatedNewsEvent.append('images', image));
 
     try {
-      const response = await axios.patch(`http://localhost:3002/news-events/${newsEventId}`, updatedNewsEvent, {
+      const response = await axios.patch(`http://208.109.214.146:3002/news-events/${newsEventId}`, updatedNewsEvent, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -199,7 +199,7 @@ export default function GetNewsEventsModal({
               {newsEvent.imageUrls.map((url, index) => (
                 <img
                   key={index}
-                  src={`http://localhost:3002${url}`}
+                  src={`http://208.109.214.146:3002${url}`}
                   alt={newsEvent.title}
                   className="w-full h-32 object-cover rounded-md"
                 />
