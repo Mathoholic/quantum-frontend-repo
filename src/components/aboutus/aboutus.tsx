@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import TeamMemberCard from './TeamMemberCard';
 import CarouselNavigation from './CarouselNavigation';
+import "../../styles/about-us.css";
 
 interface TeamMember {
   uuid: string;
@@ -35,6 +36,21 @@ const TeamCarousel = () => {
     fetchMembers();
   }, []);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const elements = document.querySelectorAll(".fade-in, .slide-up");
+      elements.forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight) {
+          el.classList.add("visible");
+        }
+      });
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const handlePrevious = () => {
     setCurrentSlide((prev) => (prev === 0 ? members.length - 1 : prev - 1));
   };
@@ -53,9 +69,9 @@ const TeamCarousel = () => {
   }
 
   return (
-    <div className="w-full min-h-screen bg-[#FEDFB2] py-16">
+    <div className="w-full min-h-screen bg-[#FEDFB2] py-16 fade-in">
       <div className="max-w-7xl mx-auto px-4">
-        <h1 className="text-4xl font-bold text-center mb-16">Team</h1>
+        <h1 className="text-4xl font-bold text-center mb-16 slide-up">Team</h1>
         
         <div className="relative mb-8">
           <div className="flex justify-between gap-6">

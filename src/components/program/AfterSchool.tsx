@@ -1,11 +1,13 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import CommonForm from '../common_form';
 
 const AfterSchoolPrograms: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
-  
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
+
   const handleClick = () => {
     setShowForm(!showForm);
   };
@@ -13,11 +15,33 @@ const AfterSchoolPrograms: React.FC = () => {
     setShowForm(false);
   };
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
+    };
+  }, []);
+
   return (
-    <div className="w-full py-16 px-8 md:px-20 font-comic bg-[#fcf2a2]">
+    <div ref={sectionRef} className={`w-full py-16 px-8 md:px-20 font-comic bg-[#fcf2a2] ${isVisible ? 'animate-fadeIn' : ''}`}>
       <div className="grid md:grid-cols-2 gap-10 items-center">
         {/* Text Content */}
-        <div>
+        <div className={`${isVisible ? 'animate-slideInLeft' : ''}`}>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
             <span className="bg-gradient-to-r from-red-400 to-red-600 text-transparent bg-clip-text">After School Programs:</span>
           </h2>
@@ -29,7 +53,7 @@ const AfterSchoolPrograms: React.FC = () => {
           </button>
         </div>
         {showForm && (
-          <div className="fixed inset-0 flex justify-center items-center z-50 bg-black bg-opacity-50">
+          <div className="fixed inset-0 flex justify-center items-center z-50 bg-black bg-opacity-50 animate-fadeIn">
             <div className="bg-white p-8 shadow-lg rounded-lg w-full max-w-lg relative">
               <button
                 onClick={handleClose}
@@ -42,7 +66,7 @@ const AfterSchoolPrograms: React.FC = () => {
           </div>
         )}
         {/* Image Content */}
-        <div className="flex justify-center items-center">
+        <div className={`flex justify-center items-center ${isVisible ? 'animate-slideInRight' : ''}`}>
           <Image
             src="/program/After-School.svg"
             alt="Children on a rainbow"
