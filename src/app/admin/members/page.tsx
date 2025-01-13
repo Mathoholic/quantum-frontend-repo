@@ -63,8 +63,8 @@ const Members = () => {
 
     try {
       const response = await fetch(
-        // `http://localhost:3002/team/get?offset=${payload.offset}&pageSize=${payload.pageSize}`,
-        `http://localhost:3002/team`,
+        // `http://208.109.214.146:3002/team/get?offset=${payload.offset}&pageSize=${payload.pageSize}`,
+        `http://208.109.214.146:3002/team`,
         {
           method: "GET",
           headers: {
@@ -118,7 +118,7 @@ const Members = () => {
     });
     if (result.isConfirmed) {
       try {
-        await fetch(`http://localhost:3002/team/delete?memberId=${memberId}`, {
+        await fetch(`http://208.109.214.146:3002/team/delete?memberId=${memberId}`, {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
@@ -196,7 +196,7 @@ const Members = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:3002/team/edit/${id}`, {
+      const response = await fetch(`http://208.109.214.146:3002/team/edit/${id}`, {
         method: "PATCH",
         body: formData,
       });
@@ -255,7 +255,7 @@ const Members = () => {
     if (newMemberData?.memberId) {
       try {
         const response = await fetch(
-          `http://localhost:3002/team/member/${newMemberData.memberId}`,
+          `http://208.109.214.146:3002/team/member/${newMemberData.memberId}`,
           {
             method: "GET",
             headers: {
@@ -285,7 +285,7 @@ const Members = () => {
       setImageFile(file);
     }
     try {
-      const response = await fetch(`http://localhost:3002/team/add`, {
+      const response = await fetch(`http://208.109.214.146:3002/team/add`, {
         method: "POST",
         body: formData,
       });
