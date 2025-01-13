@@ -3,6 +3,7 @@ import FeatureSection from './FeatureSection';
 
 const SafetyAndSecurity = () => (
   <FeatureSection
+    className="animate-fade-in"
     bgColor="bg-[#FCDAE5]"
     title="Safety & Security"
     titleColor="text-[#EE487C]"

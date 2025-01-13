@@ -3,6 +3,7 @@ import FeatureSection from './FeatureSection';
 
 const ParentEngagement = () => (
   <FeatureSection
+    className="animate-fade-in"
     bgColor="bg-[#FEDFB2]"
     title="Parent Engagement & Support"
     titleColor="text-[#E14B30]"

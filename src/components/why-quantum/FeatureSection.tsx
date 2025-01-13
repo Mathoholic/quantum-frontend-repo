@@ -16,7 +16,8 @@ const FeatureSection = ({
     imageSrc, 
     imageAlt,
     reverse = false,
-    checklistItems = [] as ChecklistItem[]
+    checklistItems = [] as ChecklistItem[],
+    className = ''
   }: {
     bgColor: string;
     title: React.ReactNode;
@@ -26,6 +27,7 @@ const FeatureSection = ({
     imageAlt: string;
     reverse?: boolean;
     checklistItems?: ChecklistItem[];
+    className?: string;
   }) => {
   const ContentSection = () => (
     <div className="flex-1 space-y-6 lg:p-8">
@@ -76,7 +78,7 @@ const FeatureSection = ({
   );
 
   return (
-    <div className={`${bgColor} w-full py-4 lg:py-8`}>
+    <div className={`${bgColor} ${className} w-full py-4 lg:py-8`}>
       <div className="container  px-16">
         <div className={`flex flex-col lg:flex-row items-center gap-8 ${reverse ? 'lg:flex-row-reverse' : ''}`}>
           <ContentSection />

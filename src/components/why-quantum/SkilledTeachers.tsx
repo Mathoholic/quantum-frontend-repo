@@ -3,6 +3,7 @@ import FeatureSection from './FeatureSection';
 
 const SkilledTeachers = () => (
   <FeatureSection
+    className="animate-slide-in"
     bgColor="bg-[#FEDFB2]"
     title="Highly Skilled, Approachable Teachers"
     titleColor="text-[#111111]"

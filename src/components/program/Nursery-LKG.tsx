@@ -1,9 +1,36 @@
-import React from "react";
+'use client'
+
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { FaCheckCircle } from "react-icons/fa";
 import "@/styles/globals.css";
 
 const ProgramSection: React.FC = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
+    };
+  }, []);
+
   const featuresNursery = [
     { text: "Age Group: 3+ years.", color: "bg-pink-100 text-pink-800" },
     { text: "Build a strong foundation for academic and personal growth.", color: "bg-green-100 text-green-800" },
@@ -21,10 +48,10 @@ const ProgramSection: React.FC = () => {
   ];
 
   return (
-    <div className="w-full py-16 px-8 md:px-20 font-poppins bg-[#fcbbd0]">
+    <div ref={sectionRef} className={`w-full py-16 px-8 md:px-20 font-poppins bg-[#fcbbd0] ${isVisible ? 'animate-fadeIn' : ''}`}>
       {/* Nursery Section */}
       <div className="grid md:grid-cols-2 gap-10 items-center">
-        <div>
+        <div className={`${isVisible ? 'animate-slideInLeft' : ''}`}>
           <h2 className="text-3xl md:text-4xl font-bold font-comic text-gray-800 mb-6">
             <span style={{ color: "#6ab846" }}>N</span>
             <span style={{ color: "#8d549e" }}>U</span>
@@ -46,7 +73,7 @@ const ProgramSection: React.FC = () => {
             ))}
           </ul>
         </div>
-        <div className="flex justify-center items-center">
+        <div className={`flex justify-center items-center ${isVisible ? 'animate-slideInRight' : ''}`}>
           <Image
             src="/program/nursery.svg"
             alt="Illustration of children engaging in nursery activities"
@@ -59,7 +86,7 @@ const ProgramSection: React.FC = () => {
 
       {/* LKG Section */}
       <div className="grid md:grid-cols-2 gap-10 mt-16 items-center">
-        <div className="flex justify-center items-center">
+        <div className={`flex justify-center items-center ${isVisible ? 'animate-slideInLeft' : ''}`}>
           <Image
             src="/program/lkg.svg"
             alt="Illustration of children participating in LKG activities"
@@ -68,7 +95,7 @@ const ProgramSection: React.FC = () => {
             className="rounded-lg transform hover:scale-105 transition-transform duration-300"
           />
         </div>
-        <div>
+        <div className={`${isVisible ? 'animate-slideInRight' : ''}`}>
           <h2 className="text-3xl md:text-4xl font-bold font-comic text-gray-800 mb-6">
             <span style={{ color: "#ed477c" }}>L</span>
             <span style={{ color: "#e04a2f" }}>K</span>

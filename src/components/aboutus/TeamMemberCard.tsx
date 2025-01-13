@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TeamMemberModal from "./TeamMemberModal";
+import "../../styles/about-us.css";
 
 interface TeamMember {
   uuid: string;
@@ -16,13 +17,28 @@ interface TeamMemberCardProps {
 const TeamMemberCard: React.FC<TeamMemberCardProps> = ({ member }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const elements = document.querySelectorAll(".fade-in, .slide-up");
+      elements.forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight) {
+          el.classList.add("visible");
+        }
+      });
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <div>
+    <div className="fade-in">
       <div className="group [perspective:1000px] w-64 h-80">
         {/* Card Inner */}
         <div className="relative w-full h-full transition-transform duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
           {/* Front Side */}
-          <div className="absolute w-full h-full [backface-visibility:hidden] bg-white shadow-lg rounded-lg flex flex-col items-center justify-center p-4">
+          <div className="absolute w-full h-full [backface-visibility:hidden] bg-[#FEDFB2] shadow-lg rounded-lg flex flex-col items-center justify-center p-4">
             <img
               src={member.profilePic || "/placeholder.png"}
               alt={member.memberName}

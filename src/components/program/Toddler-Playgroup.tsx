@@ -1,9 +1,37 @@
-import React from "react";
+'use client'
+
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { FaCheckCircle } from "react-icons/fa";
 import "../../styles/globals.css";
+import "../../styles/program.css";
 
 const ProgramHero = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
+    };
+  }, []);
+
   const featuresToddler = [
     { text: "Ease toddlers into preschool while strengthening parent-child bonds.", color: "bg-red-100 text-red-800" },
     { text: "Interactive Learning: Focused on child-centered play.", color: "bg-blue-100 text-blue-800" },
@@ -21,10 +49,10 @@ const ProgramHero = () => {
   ];
 
   return (
-    <div className="w-full py-16 px-8 md:px-20 font-poppins bg-[#d5f3f5]">
+    <div ref={sectionRef} className={`w-full py-16 px-8 md:px-20 font-poppins bg-[#d5f3f5] ${isVisible ? 'animate-fadeIn' : ''}`}>
       {/* Toddler-parent program */}
       <div className="grid md:grid-cols-2 gap-10 items-center">
-        <div>
+        <div className={`${isVisible ? 'animate-slideInLeft' : ''}`}>
           <h2
             className="text-left mb-6 text-[36px] md:text-[44px] font-comic font-normal leading-[50px] md:leading-[66.89px] underline-from-font decoration-skip-ink"
             style={{ textUnderlinePosition: "from-font", textDecorationSkipInk: "none" }}
@@ -38,6 +66,7 @@ const ProgramHero = () => {
               <li
                 key={index}
                 className={`flex items-center ${feature.color} rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow`}
+                style={{ animation: `fadeIn 1s ease-in-out ${index * 0.2}s` }}
               >
                 <FaCheckCircle className={`w-6 h-6 mr-3 ${feature.color.split(" ")[1]}`} />
                 <span className="text-[10px] md:text-base font-medium">{feature.text}</span>
@@ -45,7 +74,7 @@ const ProgramHero = () => {
             ))}
           </ul>
         </div>
-        <div className="flex justify-center items-center">
+        <div className={`flex justify-center items-center ${isVisible ? 'animate-slideInRight' : ''}`}>
           <Image
             src="/program/toddler-parent.svg"
             alt="Illustration of Toddler-parent program"
@@ -58,7 +87,7 @@ const ProgramHero = () => {
 
       {/* Playgroup */}
       <div className="grid md:grid-cols-2 gap-10 mt-16 items-center">
-        <div className="flex justify-center items-center">
+        <div className={`flex justify-center items-center ${isVisible ? 'animate-slideInLeft' : ''}`}>
           <Image
             src="/program/playground.svg"
             alt="Illustration of Playgroup"
@@ -67,7 +96,7 @@ const ProgramHero = () => {
             className="rounded-lg transform hover:scale-105 transition-transform duration-300"
           />
         </div>
-        <div>
+        <div className={`${isVisible ? 'animate-slideInRight' : ''}`}>
           <h2 className="text-left text-[36px] mb-6 md:text-[48px] font-comic font-normal leading-[50px] md:leading-[66.89px] underline-from-font decoration-skip-ink"
             style={{ textUnderlinePosition: "from-font", textDecorationSkipInk: "none" }}
           >
@@ -78,6 +107,7 @@ const ProgramHero = () => {
               <li
                 key={index}
                 className={`flex items-center ${feature.color} rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow`}
+                style={{ animation: `fadeIn 1s ease-in-out ${index * 0.2}s` }}
               >
                 <FaCheckCircle className={`w-6 h-6 mr-3 ${feature.color.split(" ")[1]}`} />
                 <span className="text-sm md:text-base font-medium">{feature.text}</span>
