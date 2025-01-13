@@ -82,7 +82,7 @@ const Footer: React.FC = () => {
               </li>
               <li>
                 <a href="/why-quantum" className="text-sm text-gray-700 hover:underline">
-                  Admission Guide
+                  Why Quantum
                 </a>
               </li>
               <li>
