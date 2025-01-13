@@ -17,7 +17,6 @@
     "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.2.0",
     "@mui/material": "^6.3.0",
-    "@next/font": "^14.2.15",
     "@radix-ui/react-tooltip": "^1.1.6",
     "@types/react-modal": "^3.16.3",
     "@types/swiper": "^5.4.3",
