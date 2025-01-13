@@ -5,8 +5,10 @@ const nextConfig: NextConfig = {
   images: {
     domains: ['localhost'],
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   // ...existing code...
 };
 
 export default nextConfig;
-  

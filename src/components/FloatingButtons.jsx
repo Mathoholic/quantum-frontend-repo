@@ -15,7 +15,7 @@ const FloatingButtons = () => {
       <div className="fixed bottom-10 right-10 z-50 flex space-x-4">
         {/* WhatsApp Button */}
         <a
-          href={`https://wa.me/${8971133673}`}
+          href={`https://wa.me/${918971133673}`}
           target="_blank"
           rel="noopener noreferrer"
           className="bg-green-500 p-2 rounded-full text-white shadow-md hover:bg-green-600 transition-all flex items-center justify-center"
