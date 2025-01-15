@@ -19,7 +19,7 @@ export default function GetNewsEvents({ newsEventId, closeModal }: GetNewsEvents
   useEffect(() => {
     const fetchNewsEvent = async () => {
       try {
-        const response = await axios.get(`http://208.109.214.146:3002/news-events/${newsEventId}`);
+        const response = await axios.get(`http://localhost:3002/news-events/${newsEventId}`);
         setNewsEvent(response.data);
       } catch (error) {
         console.error('Error fetching news/event:', error);
@@ -34,7 +34,7 @@ export default function GetNewsEvents({ newsEventId, closeModal }: GetNewsEvents
   }
 
 
-  const imageUrls = newsEvent.imageUrls.map((url) => `http://208.109.214.146:3002${url}`);
+  const imageUrls = newsEvent.imageUrls.map((url) => `http://localhost:3002${url}`);
 
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto pt-10">
