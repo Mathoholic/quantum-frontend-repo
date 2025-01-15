@@ -49,7 +49,7 @@ const DecorativeImages: React.FC = () => {
   }, []);
 
   return (
-    <div className="absolute inset-x-0 top-10 sm:top-16 lg:top-20 flex justify-between px-0">
+    <div className="absolute inset-x-0 top-10 sm:top-16 lg:top-20 xl:top-24 2xl:top-28 flex justify-between px-0">
       {/* Rocket with Animation */}
       <div ref={rocketRef} className="flex justify-start opacity-0">
         <Image
@@ -57,7 +57,7 @@ const DecorativeImages: React.FC = () => {
           alt="Left Decorative"
           width={192}
           height={192}
-          className="w-20 sm:w-28 lg:w-40"
+          className="w-20 sm:w-28 lg:w-40 xl:w-48 2xl:w-[250px]"
         />
       </div>
       {/* Pencil with Animation */}
@@ -67,7 +67,7 @@ const DecorativeImages: React.FC = () => {
           alt="Right Decorative"
           width={192}
           height={192}
-          className="w-20 sm:w-28 lg:w-40"
+          className="w-20 sm:w-28 lg:w-40 xl:w-48 2xl:w-[250px]"
         />
       </div>
     </div>

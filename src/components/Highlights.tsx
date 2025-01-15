@@ -77,25 +77,25 @@ const Highlights: React.FC = () => {
 
   return (
     <div className="bg-[#ffe0b3] py-12">
-      <h2 ref={headingRef} className="text-4xl font-bold font-comic text-center mb-8">Highlights</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto px-4">
+      <h2 ref={headingRef} className="2xl:text-[52px] text-4xl font-bold font-comic text-center text-gray-800 mb-14">Highlights</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 2xl:gap-8 2xl:max-w-[1440px] max-w-[1120px] mx-auto px-2 ">
         {highlights.map((highlight, index) => (
           <div
             key={index}
             ref={(el) => {
               highlightsRef.current[index] = el!;
             }}
-            className="bg-[#fcb13f] rounded-lg p-6 shadow-md text-outfit flex flex-col items-center text-center transform transition-transform duration-300 hover:scale-105 hover:shadow-lg hover:rotate-1"
+            className="bg-[#fcb13f] rounded-lg p-10 shadow-md text-outfit flex flex-col items-center text-center transform transition-transform duration-300 hover:scale-105 hover:shadow-lg hover:rotate-1"
           >
             <Image
               src={highlight.imageSrc}
               alt={highlight.alt}
-              width={217}
-              height={153}
-              className="mb-4"
+              width={300}
+              height={250}
+              className="mb-4 rounded-lg 2xl:w-[300px] 2xl:h-[250px] xl:w-[250px] xl:h-[200px] "
             />
-            <h3 className="text-xl font-semibold mb-2">{highlight.title}</h3>
-            <p className="text-gray-700">{highlight.description}</p>
+            <h3 className="text-lg 2xl:text-2xl font-semibold mb-2 text-gray-900 ">{highlight.title}</h3>
+            <p className="text-lg text-gray-700 2xl:text-2xl">{highlight.description}</p>
           </div>
         ))}
       </div>

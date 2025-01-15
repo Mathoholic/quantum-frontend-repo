@@ -41,6 +41,9 @@ const config = {
       lineClamp: {
         10: '10',
       },
+      screens: {
+        '2xl': '1440px', // Added new breakpoint for screens larger than 1280px
+      },
     },
   },
   plugins: [],

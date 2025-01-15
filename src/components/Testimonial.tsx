@@ -88,7 +88,7 @@ const Testimonials: React.FC = () => {
           height={166.79} 
         />
       </div>
-      <h2 ref={headingRef} className="text-4xl font-bold font-comic text-center ">Stories That Speak for Themselves</h2>
+      <h2 ref={headingRef} className="2xl:text-[52px] text-4xl font-bold font-comic text-center text-pink-600 ">Stories That Speak for Themselves</h2>
       <p className="text-center text-gray-600 mb-8 text-outfit">
         Discover What Our Customers Have to Say About Their Experience with Us
       </p>  

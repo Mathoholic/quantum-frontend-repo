@@ -17,7 +17,7 @@ const Navbar = () => {
     { name: "Home", path: "/" },
     { name: "Why Quantum?", path: "/why-quantum" },
     { name: "Our Programs", path: "/our-programs" },
-    { name: "QK Circle", path: "/qk-circle" },
+    { name: "Quantum Circle", path: "/qk-circle" },
     { name: "About Us", path: "/about-us" },
     { name: "Contact Us", path: "/contact-us" },
     { name: "Gallery", path: "/gallery" },
@@ -38,66 +38,79 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="relative bg-[#d5f3f5] flex justify-between items-center px-6 py-3 w-full shadow-md h-auto transition-all duration-500 ease-in-out md:px-10">
+    <nav className="relative bg-[#d5f3f5] flex justify-around items-center  w-full shadow-md h-full transition-all duration-500 ease-in-out md:px-10 lg:px-16 xl:px-10 2xl:px-20">
       <div
         className={`flex transition-all duration-500 ${
-          isLogoVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-10"
+          isLogoVisible
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 -translate-y-10"
         }`}
       >
-        <Image
-          src="/logo.svg"
-          alt="Logo"
-          width={80}
-          height={60}
-          className="transition-transform duration-500 hover:scale-110"
-        />
+        <Link href="/">
+          <Image
+            src="/logo.svg"
+            alt="Logo"
+            width={80}
+            height={60}
+            className="transition-transform duration-500 hover:scale-110 2xl:w-44 2xl:h-32 lg:w-36 lg:h-28 md:w-32 md:h-24 w-28 h-20"
+          />
+        </Link>
       </div>
-      <ul
-        className={`flex flex-wrap justify-center items-center gap-4 transition-all duration-500 ${
-          isLinksVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-10"
-        }`}
-      >
-        {navigationLinks.map((link, index) => {
-          const isActive = currentPath === link.path;
-          const colors = [
-            "bg-purple-500",
-            "bg-blue-500",
-            "bg-green-500",
-            "bg-yellow-500",
-            "bg-orange-500",
-            "bg-red-500",
-            "bg-indigo-500",
-          ];
+      <div className="w-full flex justify-center items-center">
+        <ul
+          className={`flex flex-wrap justify-center items-center xl:gap-2 2xl:gap-6 w-full transition-all duration-500 ${
+            isLinksVisible
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 -translate-y-10"
+          }`}
+        >
+          {navigationLinks.map((link, index) => {
+            const isActive = currentPath === link.path;
+            const colors = [
+              "bg-purple-500",
+              "bg-blue-500",
+              "bg-green-500",
+              "bg-yellow-500",
+              "bg-orange-500",
+              "bg-red-500",
+              "bg-indigo-500",
+            ];
 
-          return (
-            <li
-              key={link.name}
-              className="w-full sm:w-auto text-center transition-transform duration-300"
-            >
-              <Link
-                href={link.path}
-                className={`block text-white text-sm font-medium px-4 py-2 rounded-lg ${colors[index]} ${
-                  isActive ? "opacity-90" : "hover:opacity-80"
-                } transition-transform duration-300 hover:scale-105`}
+            return (
+              <li
+                key={link.name}
+                className="w-full sm:w-auto text-center transition-transform duration-300"
               >
-                {link.name}
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
+                <Link
+                  href={link.path}
+                  className={`block text-white text-sm font-medium px-4 py-2 rounded-lg ${
+                    colors[index]
+                  } ${
+                    isActive ? "opacity-90" : "hover:opacity-80"
+                  } transition-transform duration-300 hover:scale-105 2xl:text-lg 2xl:px-6 2xl:py-3`}
+                >
+                  {link.name}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+
       <div
         className={`relative cursor-pointer transition-all duration-500 ${
-          isButtonVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-10"
+          isButtonVisible
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 -translate-y-10"
         } hover:scale-110`}
         onClick={handleClick}
       >
         <Image
           src="/cloud.svg"
           alt="Enquire Now"
-          height={150}
-          width={150}
-          className="transition-opacity duration-500 hover:opacity-80"
+          height={234}
+          width={105}
+          className="transition-opacity duration-500 hover:opacity-80 2xl:w-64 xl:w-56 lg:w-48 md:w-40 w-32"
         />
       </div>
       {showForm && (

@@ -61,7 +61,7 @@ body {
 
 .custom-paragraph {
   font-family: 'Outfit';
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 400;
   line-height: 36px;
   letter-spacing: 0.2px;
@@ -83,4 +83,24 @@ body {
 
 .rotate-y-180 {
   transform: rotateY(180deg);
+}
+
+
+/* globals.css */
+.panorama-slider {
+  overflow: hidden;
+}
+
+.mySwiper .swiper-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mySwiper img {
+  transition: transform 0.3s ease;
+}
+
+.mySwiper img:hover {
+  transform: scale(1.05);
 }

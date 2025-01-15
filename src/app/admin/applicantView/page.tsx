@@ -84,9 +84,10 @@ const setFeeStructure = async () => {
       setLoading(true);
       const url = result.data
         ? 'http://208.109.214.146:3002/form/class/updateReceipt'
-        : 'http://208.109.214.146:3002/form/class/createReceipt';
+        : 'http://208.109.214.146:3002/class/createReceipt';
+        
       const method = result.data ? 'PATCH' : 'POST';
-
+      debugger;
       const responseSave = await fetch(url, {
         method: method,
         headers: {
