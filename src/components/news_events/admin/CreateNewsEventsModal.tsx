@@ -29,7 +29,7 @@ export default function NewsEventsModal({ closeModal, newsEventId }: NewsEventsM
   useEffect(() => {
     const fetchNewsEvent = async () => {
       try {
-        const response = await axios.get(`http://208.109.214.146:3002/news-events`);
+        const response = await axios.get(`http://localhost:3002/news-events`);
         const newsEvents = response.data;
   
         if (newsEventId) {
@@ -45,7 +45,7 @@ export default function NewsEventsModal({ closeModal, newsEventId }: NewsEventsM
             });
 
             if (imageUrls && Array.isArray(imageUrls)) {
-              setImagePreviews(imageUrls.map((url: string) => `http://208.109.214.146:3002${url}`));
+              setImagePreviews(imageUrls.map((url: string) => `http://localhost:3002${url}`));
             }
           }
         }
@@ -105,7 +105,7 @@ export default function NewsEventsModal({ closeModal, newsEventId }: NewsEventsM
     });
 
     try {
-      const response = await axios.post('http://208.109.214.146:3002/news-events', form, {
+      const response = await axios.post('http://localhost:3002/news-events', form, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

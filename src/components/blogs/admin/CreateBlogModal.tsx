@@ -23,7 +23,7 @@ export default function BlogModal({ closeModal, blogId }: BlogModalProps) {
     if (blogId) {
       const fetchBlog = async () => {
         try {
-          const response = await axios.get(`http://208.109.214.146:3002/blogs/${blogId}`);
+          const response = await axios.get(`http://localhost:3002/blogs/${blogId}`);
           const { title, content, tags, imageUrl } = response.data;
           setFormData({
             title,
@@ -67,7 +67,7 @@ export default function BlogModal({ closeModal, blogId }: BlogModalProps) {
     }
 
     try {
-      const response = await axios.post('http://208.109.214.146:3002/blogs', form, {
+      const response = await axios.post('http://localhost:3002/blogs', form, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

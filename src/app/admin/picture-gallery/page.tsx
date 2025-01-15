@@ -22,7 +22,7 @@ const PictureGallery: React.FC = () => {
   useEffect(() => {
     const fetchPictures = async () => {
       try {
-        const response = await axios.get('http://208.109.214.146:3002/picture-gallery');
+        const response = await axios.get('http://localhost:3002/picture-gallery');
         setPictures(response.data);
       } catch (error) {
         console.error('Error fetching pictures:', error);
@@ -34,7 +34,7 @@ const PictureGallery: React.FC = () => {
 
   const deletePicture = async (id: number) => {
     try {
-      await axios.delete(`http://208.109.214.146:3002/picture-gallery/${id}`);
+      await axios.delete(`http://localhost:3002/picture-gallery/${id}`);
       setPictures(pictures.filter((picture) => picture.id !== id));
     } catch (error) {
       console.error('Error deleting picture:', error);
@@ -72,7 +72,7 @@ const PictureGallery: React.FC = () => {
   
     try {
       if (editId) {
-        const response = await axios.patch(`http://208.109.214.146:3002/picture-gallery/${editId}`, pictureData);
+        const response = await axios.patch(`http://localhost:3002/picture-gallery/${editId}`, pictureData);
         setPictures(
           pictures.map((picture) =>
             picture.id === editId
@@ -82,7 +82,7 @@ const PictureGallery: React.FC = () => {
         );
         setEditId(null);
       } else {
-        const response = await axios.post('http://208.109.214.146:3002/picture-gallery', pictureData);
+        const response = await axios.post('http://localhost:3002/picture-gallery', pictureData);
         setPictures([...pictures, response.data]);
       }
   
