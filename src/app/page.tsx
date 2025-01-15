@@ -9,7 +9,7 @@ import Testimonials from '@/components/Testimonial';
 const Home: React.FC = () => {
   return (
     <div>
-      <HeroSection /> {/* Ensure this is correctly placed */}
+      <HeroSection /> 
       <Carousel />
       <QuantumHover />
       <EarlyEducationSection />

@@ -1,6 +1,7 @@
-'use client';
+// PanoramaSlider.tsx
+"use client";
 
-import React, {useEffect} from 'react';
+import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/effect-coverflow';
@@ -23,49 +24,24 @@ const images = [
 ];
 
 const PanoramaSlider: React.FC = () => {
-  useEffect(() => {
-    // Dynamically load external scripts
-    const script = document.createElement("script");
-    script.src = "https://panorama-slider.uiinitiative.com/assets/index.d2ce9dca.js";
-    script.type = "module";
-    script.crossOrigin = "anonymous";
-    document.body.appendChild(script);
-
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
-
   return (
-    <>
-      {/* Preload the vendor script */}
-      <link
-        rel="modulepreload"
-        href="https://panorama-slider.uiinitiative.com/assets/vendor.dba6b2d2.js"
-      />
-      {/* Link the external stylesheet */}
-      <link
-        rel="stylesheet"
-        href="https://panorama-slider.uiinitiative.com/assets/index.c1d53924.css"
-      />
-      <div className="panorama-slider w-full mx-auto p-4" style={{ backgroundColor: '#d5f3f5' }}>
-        <div className="swiper">
-          <div className="swiper-wrapper">
-            {images.map(image => (
-              <div className="swiper-slide" key={image.id}>
-                <img
-                  className="slide-image"
-                  src={image.src}
-                  alt={image.id}
-                />
-              </div>
-            ))}
-          </div>
-          {/* Pagination */}s
-          <div className="swiper-pagination"></div>
+    <div className="panorama-slider w-full h-full mx-auto pt-4" style={{ backgroundColor: '#d5f3f5' }}>
+      <div className="swiper">
+        <div className="swiper-wrapper">
+          {images.map(image => (
+            <div className="swiper-slide" key={image.id}>
+              <img
+                className="slide-image"
+                src={image.src}
+                alt={image.id}
+              />
+            </div>
+          ))}
         </div>
+        {/* Pagination */}
+        <div className="swiper-pagination"></div>
       </div>
-    </>
+    </div>
   );
 };
 

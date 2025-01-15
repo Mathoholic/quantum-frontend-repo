@@ -16,7 +16,6 @@ const config = {
       },
       fontFamily: {
         comic: ['"Comic Sans MS"', "cursive"],
-        roboto: ['"Roboto"', "sans-serif"], // Added Roboto font
         outfit: ['"Outfit"', "sans-serif"], // Added Outfit font
       },
       animation: {
