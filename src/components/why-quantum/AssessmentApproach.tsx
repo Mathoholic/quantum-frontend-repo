@@ -5,6 +5,7 @@ const AssessmentApproach = () => (
   <FeatureSection
     className="animate-fade-in"
     bgColor="bg-[#FEDFB2]"
+    bgcontentColor = "bg-[#FFF6C8]"
     title="Assessment Approach"
     titleColor="text-[#E14B30]"
     imageSrc="/why-quantum/teacher-teaching.svg"
@@ -24,6 +25,7 @@ const AssessmentApproach = () => (
         titleColor: "text-[#E14B30]"
       }
     ]}
+    initialReverse={true}
   />
 );
 

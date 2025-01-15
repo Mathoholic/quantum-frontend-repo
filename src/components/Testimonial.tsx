@@ -88,11 +88,11 @@ const Testimonials: React.FC = () => {
           height={166.79} 
         />
       </div>
-      <h2 ref={headingRef} className="text-4xl font-bold font-comic text-center ">Stories That Speak for Themselves</h2>
-      <p className="text-center text-gray-600 mb-8 text-outfit">
+      <h2 ref={headingRef} className="2xl:text-[52px] text-4xl font-bold font-comic text-center text-pink-600 mb-2 2xl:mb-4 ">Stories That Speak for Themselves</h2>
+      <p className="text-center text-gray-600 mb-8 text-outfit 2xl:text-[24px] 2xl:mb-12">
         Discover What Our Customers Have to Say About Their Experience with Us
       </p>  
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto px-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 2xl:max-w-[1440px] max-w-6xl mx-auto px-4">
         {testimonials.map((testimonial, index) => (
           <div
             key={index}
@@ -101,8 +101,8 @@ const Testimonials: React.FC = () => {
             }}
             className="bg-[#ed477c] rounded-lg p-6 shadow-md flex flex-col justify-between relative transform transition-transform duration-300 hover:scale-105 hover:shadow-lg hover:rotate-1"
           >
-            <p className="text-white italic mb-4">"{testimonial.text}"</p>
-            <p className="text-white font-semibold">— {testimonial.author}</p>
+            <p className="text-white italic font-outfit mb-4  2xl:text-[24px]">"{testimonial.text}"</p>
+            <p className="text-white font-outfit 2xl:text-[24px]">— {testimonial.author}</p>
           </div>
         ))}
       </div>

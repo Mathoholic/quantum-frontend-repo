@@ -16,7 +16,6 @@ const config = {
       },
       fontFamily: {
         comic: ['"Comic Sans MS"', "cursive"],
-        roboto: ['"Roboto"', "sans-serif"], // Added Roboto font
         outfit: ['"Outfit"', "sans-serif"], // Added Outfit font
       },
       animation: {
@@ -40,6 +39,9 @@ const config = {
       },
       lineClamp: {
         10: '10',
+      },
+      screens: {
+        '2xl': '1440px', // Added new breakpoint for screens larger than 1280px
       },
     },
   },

@@ -5,6 +5,7 @@ const SkilledTeachers = () => (
   <FeatureSection
     className="animate-slide-in"
     bgColor="bg-[#FEDFB2]"
+    bgcontentColor = "bg-[#F0F0F0]"
     title="Highly Skilled, Approachable Teachers"
     titleColor="text-[#111111]"
     imageSrc="/why-quantum/teacher-thinking.svg"
@@ -29,6 +30,7 @@ const SkilledTeachers = () => (
         titleColor: "text-[#E14B30]"
       }
     ]}
+    initialReverse={true} 
   />
 );
 
