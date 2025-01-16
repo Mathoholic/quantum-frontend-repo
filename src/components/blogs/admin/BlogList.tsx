@@ -20,7 +20,7 @@ export default function BlogList() {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const response = await axios.get('http://localhost:3002/blogs');
+        const response = await axios.get('http://208.109.214.146:3002/blogs');
         setBlogs(response.data);
       } catch (error) {
         console.error('Error fetching blogs:', error);
@@ -34,7 +34,7 @@ export default function BlogList() {
     // Fetch the updated list of blogs
     const fetchBlogs = async () => {
       try {
-        const response = await axios.get('http://localhost:3002/blogs');
+        const response = await axios.get('http://208.109.214.146:3002/blogs');
         setBlogs(response.data);
       } catch (error) {
         console.error('Error fetching blogs:', error);
@@ -46,7 +46,7 @@ export default function BlogList() {
 
   const handleDelete = async (blogId: string) => {
     try {
-      await axios.delete(`http://localhost:3002/blogs/${blogId}`);
+      await axios.delete(`http://208.109.214.146:3002/blogs/${blogId}`);
       handleBlogUpdated();
     } catch (error) {
       console.error('Error deleting blog:', error);

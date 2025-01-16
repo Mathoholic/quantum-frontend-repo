@@ -16,7 +16,7 @@ const Gallery: React.FC = () => {
   useEffect(() => {
     async function fetchImages() {
       try {
-        const response = await fetch('http://localhost:3002/picture-gallery');
+        const response = await fetch('http://208.109.214.146:3002/picture-gallery');
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }

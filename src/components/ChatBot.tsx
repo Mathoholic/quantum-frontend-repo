@@ -159,7 +159,7 @@ const ChatBot = () => {
   const handleSubmit = async (submissionData: any) => {
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:3002/form/submit", {
+      const response = await fetch("http://208.109.214.146:3002/form/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(submissionData),
