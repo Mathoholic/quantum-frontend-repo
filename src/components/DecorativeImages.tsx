@@ -57,7 +57,7 @@ const DecorativeImages: React.FC = () => {
           alt="Left Decorative"
           width={192}
           height={192}
-          className="w-20 sm:w-28 lg:w-40 xl:w-48 2xl:w-[250px]"
+          className="w-20 sm:w-28 md:w-32 lg:w-40 xl:w-48 2xl:w-[250px]" // Adjusted sizes
         />
       </div>
       {/* Pencil with Animation */}
@@ -67,7 +67,7 @@ const DecorativeImages: React.FC = () => {
           alt="Right Decorative"
           width={192}
           height={192}
-          className="w-20 sm:w-28 lg:w-40 xl:w-48 2xl:w-[250px]"
+          className="w-20 sm:w-28 md:w-32 lg:w-40 xl:w-48 2xl:w-[250px]" // Adjusted sizes
         />
       </div>
     </div>

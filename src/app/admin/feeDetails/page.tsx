@@ -112,7 +112,7 @@ const FeeDetails = () => {
     setError(null);
     try {
       const response = await fetch(
-        "http://208.109.214.146:3002/form/getAllClass/receipt"
+        "http://localhost:3002/form/getAllClass/receipt"
       );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -136,7 +136,7 @@ const FeeDetails = () => {
   const fetchReceiptGeneratedData = async () => {
     try {
       const response = await fetch(
-        "http://208.109.214.146:3002/fee-receipt-generate"
+        "http://localhost:3002/fee-receipt-generate"
       );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -173,7 +173,7 @@ const FeeDetails = () => {
     setError(null);
     try {
       const response = await fetch(
-        `http://208.109.214.146:3002/form/getClassName?class=${encodeURIComponent(
+        `http://localhost:3002/form/getClassName?class=${encodeURIComponent(
           selectedClass
         )}`,
         {
@@ -252,7 +252,7 @@ const FeeDetails = () => {
   //     console.log("Payload:", payload);
 
   //     const response = await fetch(
-  //       `http://208.109.214.146:3002/fee-receipt-generate?customId=${customIdInput}`,
+  //       `http://localhost:3002/fee-receipt-generate?customId=${customIdInput}`,
   //       {
   //         method: checkResponse ? "PATCH" : "POST",
   //         headers: {
@@ -392,7 +392,7 @@ const FeeDetails = () => {
           : undefined,  
       };
       const response = await fetch(
-        `http://208.109.214.146:3002/fee-receipt-generate?customId=${customIdInput}`,
+        `http://localhost:3002/fee-receipt-generate?customId=${customIdInput}`,
         {
           method: checkResponse ? "PATCH" : "POST",
           headers: {
@@ -414,7 +414,7 @@ const FeeDetails = () => {
         try {
           const installmentNumber = payload.installmentNumber
           const pdfResponse = await fetch(
-            `http://208.109.214.146:3002/fee-receipt-generate/getReceipt?customId=${customIdInput}&applicantId=${applicantId}&installmentNumber=${installmentNumber}`,
+            `http://localhost:3002/fee-receipt-generate/getReceipt?customId=${customIdInput}&applicantId=${applicantId}&installmentNumber=${installmentNumber}`,
             {
               method: "GET",
               headers: {
@@ -461,7 +461,7 @@ const FeeDetails = () => {
   const getCSVFile = async () => {
     try {
       const response = await fetch(
-        "http://208.109.214.146:3002/fee-receipt-generate/fee/details/csv",
+        "http://localhost:3002/fee-receipt-generate/fee/details/csv",
         {
           method: "GET",
           headers: {
@@ -505,7 +505,7 @@ const FeeDetails = () => {
     let checkResponse;
     try {
       checkResponse = await fetch(
-        `http://208.109.214.146:3002/fee-receipt-generate/byId?customId=${customId}`,
+        `http://localhost:3002/fee-receipt-generate/byId?customId=${customId}`,
         {
           method: "GET",
           headers: {

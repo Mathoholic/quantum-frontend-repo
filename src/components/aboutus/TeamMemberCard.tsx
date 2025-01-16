@@ -33,19 +33,19 @@ const TeamMemberCard: React.FC<TeamMemberCardProps> = ({ member }) => {
   }, []);
 
   return (
-    <div className="fade-in">
-      <div className="group [perspective:1000px] w-64 h-80">
+    <div className="fade-in" key={member.uuid}>
+      <div className="group [perspective:1000px] w-64 h-80 lg:w-60 lg:h-76 xl:w-72 xl:h-88  2xl:h-[500] 2xl:w-[350] mx-4 my-4">
         {/* Card Inner */}
         <div className="relative w-full h-full transition-transform duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
           {/* Front Side */}
-          <div className="absolute w-full h-full [backface-visibility:hidden] bg-[#FEDFB2] shadow-lg rounded-lg flex flex-col items-center justify-center p-4">
+          <div className="absolute w-full h-full [backface-visibility:hidden] bg-white shadow-lg rounded-lg flex flex-col items-center justify-center p-4">
             <img
               src={member.profilePic || "/placeholder.png"}
               alt={member.memberName}
               className="w-full h-3/4 object-cover mb-4 rounded-lg"
             />
-            <h3 className="text-lg font-bold">{member.memberName}</h3>
-            <p className="text-gray-600">{member.memberRole}</p>
+            <h3 className="text-lg text-center lg:text-xl 2xl:text-3xl font-bold">{member.memberName}</h3>
+            <p className="text-gray-600 text-center lg:text-lg 2xl:text-xl">{member.memberRole}</p>
           </div>
 
           {/* Back Side */}

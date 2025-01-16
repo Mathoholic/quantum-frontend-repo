@@ -64,7 +64,7 @@ const QuantumHover: React.FC = () => {
       <div className="mt-8">
         {(hoveredLetterId || hoveredLetterId === null) && (
           <div
-            className="font-comic font-bold text-center transition-all duration-300 text-pink-500"
+            className="font-aladin aladin-regular text-center transition-all duration-300 text-pink-500"
             style={{
               fontSize: "calc(20px + 10vw)", // Responsive font size
               lineHeight: "calc(30px + 15vw)", // Responsive line height

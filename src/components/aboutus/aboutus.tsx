@@ -22,7 +22,7 @@ const TeamCarousel = () => {
   useEffect(() => {
     const fetchMembers = async () => {
       try {
-        const response = await fetch('http://208.109.214.146:3002/team');
+        const response = await fetch('http://localhost:3002/team');
         if (!response.ok) throw new Error('Failed to fetch team members');
         const data = await response.json();
         setMembers(data);
@@ -61,20 +61,19 @@ const TeamCarousel = () => {
 
   if (loading) return <div className="text-center py-8">Loading...</div>;
   if (error) return <div className="text-center text-red-500 py-8">{error}</div>;
-  if (members.length === 0) return <div className="text-center py-8">No team members found</div>;
+  if (members.length === 0) return <div className="text-center text-2xl lg:text-3xl 2xl:4xl text py-8">No team members found</div>;
 
-  const visibleMembers = members.slice(currentSlide, currentSlide + 4);
-  if (visibleMembers.length < 4) {
-    visibleMembers.push(...members.slice(0, 4 - visibleMembers.length));
-  }
+  const visibleMembers = members.length > 4 
+    ? members.slice(currentSlide, currentSlide + 4)
+    : members;
 
   return (
-    <div className="w-full min-h-screen bg-[#FEDFB2] py-16 fade-in">
-      <div className="max-w-7xl mx-auto px-4">
-        <h1 className="text-4xl font-bold text-center mb-16 slide-up">Team</h1>
+    <div className="w-full min-h-full   bg-[#FEDFB2] py-16 fade-in">
+      <div className="max-w-7xl lg:max-w-4xl 2xl:max-w-[1600px] mx-auto ">
+        <h1 className="text-4xl lg:text-5xl 2xl:text-[54px] font-comic font-bold text-center lg:mb-8 2xl:mb-10 slide-up">Team Members</h1>
         
-        <div className="relative mb-8">
-          <div className="flex justify-between gap-6">
+        <div className="relative mb-8 max-w-7xl lg:max-w-4xl 2xl:max-w-[1600px] mx-auto">
+          <div className="flex justify-between lg:gap-4 2xl:gap-6">
             {visibleMembers.map((member) => (
               <TeamMemberCard key={member.uuid} member={member} />
             ))}

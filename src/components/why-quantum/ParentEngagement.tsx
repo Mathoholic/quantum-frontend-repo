@@ -5,7 +5,7 @@ const ParentEngagement = () => (
   <FeatureSection
     className="animate-fade-in"
     bgColor="bg-[#FEDFB2]"
-    bgcontentColor = "bg-[#F0F0F0]"
+    bgcontentColor = "bg-[#FFF6C8]"
     title="Parent Engagement & Support"
     titleColor="text-[#E14B30]"
     imageSrc="/why-quantum/teacher-laptop.svg"

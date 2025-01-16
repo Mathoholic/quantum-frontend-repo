@@ -21,7 +21,7 @@ const BlogSection: React.FC = () => {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const response = await axios.get('http://208.109.214.146:3002/blogs');
+        const response = await axios.get('http://localhost:3002/blogs');
         setBlogs(response.data);
       } catch (error) {
         console.error('Error fetching blogs:', error);
@@ -32,13 +32,13 @@ const BlogSection: React.FC = () => {
   }, []);
 
   return (
-    <div className="container bg-sky-100 pt-10 smx-auto px-6">
+    <div className="bg-sky-100 pt-10 smx-auto px-6 w-full flex items-center justify-center flex-col">
         {/* Header */}
         <div className="text-center mb-12">
-          <h2 className="text-sm text-gray-500 font-roboto uppercase tracking-wide mb-2">
+          <h2 className="text-sm text-gray-500 2xl:text-xl font-outfit uppercase tracking-wide mb-2">
             Building the Future
           </h2>
-          <h1 className="text-3xl font-bold font-comic text-pink-600">
+          <h1 className="text-3xl 2xl:text-[54px] font-bold font-comic text-pink-600">
             Latest From the <span className="text-black">Social Media</span>
           </h1>
         </div>

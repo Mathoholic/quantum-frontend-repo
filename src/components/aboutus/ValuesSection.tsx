@@ -19,7 +19,7 @@ const ValuesSection = () => {
 
   return (
     <div className="bg-[#EE487C33] w-full py-8 px-16 fade-in">
-      <div className="max-w-full px-4">
+      <div className="max-w-[1600px] mx-auto px-4">
         <img
           src="/about-us/Values-with-text.png"
           alt="Value with Text"
