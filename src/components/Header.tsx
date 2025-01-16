@@ -58,7 +58,7 @@ const Navbar = () => {
             alt="Logo"
             width={80}
             height={60}
-            className="transition-transform duration-500 hover:scale-110 2xl:w-48 2xl:h-28 xl:w-36 xl:h-20 lg:w-28 lg:h-16 md:w-20 md:h-14 w-16 h-12"
+            className="transition-transform duration-500 2xl:my-2 hover:scale-110 2xl:w-48 2xl:h-28 xl:w-36 xl:h-20 lg:w-28 lg:h-16 md:w-20 md:h-14 w-16 h-12"
           />
         </Link>
       </div>

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Aladin&display=swap');
+
 html,
 body {
   position: relative;
@@ -154,4 +156,10 @@ body {
 
 .animate-slide-in-right {
   animation: slideInRight 1s ease-in-out forwards;
+}
+
+.aladin-regular {
+  font-family: "Aladin", serif;
+  font-weight: 400;
+  font-style: normal;
 }

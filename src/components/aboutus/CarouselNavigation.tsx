@@ -17,7 +17,7 @@ const CarouselNavigation: React.FC<CarouselNavigationProps> = ({
   setCurrentSlide,
 }) => {
   return (
-    <div className='w-full py-16'> 
+    <div className='w-full'> 
         <div className="flex justify-between  items-center max-w-md mx-auto mt-12">
       <button 
         onClick={handlePrevious}

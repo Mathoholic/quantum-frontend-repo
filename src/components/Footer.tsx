@@ -27,7 +27,7 @@ const Footer: React.FC = () => {
             +91 8971133673
           </p>
           <p className="mt-2 text-base text-gray-700 font-semibold">
-            <a href="mailto:contact@quantumkids.in" className="block underline">
+            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=contact@quantumkids.in" className="block underline">
               contact@quantumkids.in
             </a>
           </p>
@@ -126,7 +126,7 @@ const Footer: React.FC = () => {
                 />
               </a>
               <a
-                href="https://www.facebook.com/profile.php?id=61571464794833&mibextid=ZbWKwL"
+                href="https://www.facebook.com/people/Quantumkids-preschool-and-daycare/61571233544577/"
                 className="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow hover:bg-gray-200 transition"
                 aria-label="Facebook"
               >

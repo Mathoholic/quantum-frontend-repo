@@ -126,7 +126,7 @@ const FormPage = () => {
     }
     
     try {
-      const response = await fetch(`http://208.109.214.146:3002/form/enqueryForm/find?customId=${customId}`);
+      const response = await fetch(`http://localhost:3002/form/enqueryForm/find?customId=${customId}`);
       const result = await response.json();
       
       if (result.data === true) {
@@ -189,7 +189,7 @@ const FormPage = () => {
     setIsLoading(true);
     
     try {
-      const response = await fetch('http://208.109.214.146:3002/form/enqueryForm', {
+      const response = await fetch('http://localhost:3002/form/enqueryForm', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

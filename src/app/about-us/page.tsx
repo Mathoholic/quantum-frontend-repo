@@ -11,7 +11,7 @@ const AboutUs = () => {
       <HeroSection />
       <MissionVisionSection />
       <ValuesSection />
-      <div className="w-full bg-gray-100">
+      <div className="w-full  bg-gray-200">
         <TeamCarousel />
       </div>
 

@@ -84,7 +84,7 @@ const Admin = () => {
 
 
     try {
-      await fetch("http://208.109.214.146:3002/form/enqueryForm", {
+      await fetch("http://localhost:3002/form/enqueryForm", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -118,7 +118,7 @@ const Admin = () => {
     for (const status of statuses) {
       try {
         const response = await fetch(
-          `http://208.109.214.146:3002/form/count?status=${status}`
+          `http://localhost:3002/form/count?status=${status}`
         );
         if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();
@@ -156,7 +156,7 @@ const Admin = () => {
 
     try {
       const response = await fetch(
-        `http://208.109.214.146:3002/form/status?status=${status}`
+        `http://localhost:3002/form/status?status=${status}`
       );
       if (!response.ok) throw new Error("Network response was not ok");
 
@@ -186,7 +186,7 @@ const Admin = () => {
   const updateRecord = async (uuid: string, status: string) => {
     try {
       await fetch(
-        `http://208.109.214.146:3002/form/updateStatus?uuid=${uuid}&status=${status}`,
+        `http://localhost:3002/form/updateStatus?uuid=${uuid}&status=${status}`,
         {
           method: "PATCH",
           headers: {
@@ -277,7 +277,7 @@ const Admin = () => {
   };
   const getCSVFile = async () => {
     try {
-      const response = await fetch("http://208.109.214.146:3002/form/lead/csv", {
+      const response = await fetch("http://localhost:3002/form/lead/csv", {
         method: "GET",
         headers: {
           "Content-Type": "text/csv",

@@ -17,6 +17,7 @@ const config = {
       fontFamily: {
         comic: ['"Comic Sans MS"', "cursive"],
         outfit: ['"Outfit"', "sans-serif"], // Added Outfit font
+        aladin: ['"Aladin" , "sanserif"  '], // Added Aladin font
       },
       animation: {
         "infinite-scroll": "scroll 15s linear infinite",

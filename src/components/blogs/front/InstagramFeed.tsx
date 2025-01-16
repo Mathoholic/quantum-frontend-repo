@@ -17,15 +17,17 @@ const LightWidget: React.FC = () => {
   }, []);
 
   return (
-    <div className="w-full bg-white shadow-lg rounded-lg px-16 py-4">
+    <div className="w-full 2xl:max-h-[500px] bg-white shadow-lg rounded-lg px-8 py-2 2xl:px-4 2xl:py-1">
       <iframe
-        src="//lightwidget.com/widgets/5f7649ce486b58f59e86138d6de8a7e5.html"
+        src="http://lightwidget.com/widgets/31361854a1635f699014530873e69dec.html"
         className="lightwidget-widget rounded-lg"
         style={{
           width: '100%',
-          height: '300px',
+          height: '200px',
           border: '0',
           overflow: 'hidden',
+          transform: 'scale(0.8)',
+          transformOrigin: '0 0'
         }}
         scrolling="no"
       />
@@ -34,3 +36,5 @@ const LightWidget: React.FC = () => {
 };
 
 export default LightWidget;
+
+
