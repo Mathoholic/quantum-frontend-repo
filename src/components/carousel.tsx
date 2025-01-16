@@ -1,14 +1,7 @@
-"use client";
+'use client'
 
-import React from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import "swiper/css/effect-coverflow";
-import "swiper/css/pagination";
-import "swiper/css/autoplay";
-import "../styles/globals.css";
-
-import { EffectCoverflow, Pagination, Autoplay } from "swiper/modules";
+import React, { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 
 const images = [
@@ -22,53 +15,79 @@ const images = [
   { id: "nature-8", src: "/carousel/8.png" },
 ];
 
-const PanoramaSlider: React.FC = () => {
+const Panorama: React.FC = () => {
+  const pathname = usePathname();
+  const sliderInitialized = useRef(false);
+
+  const initializeSlider = () => {
+    // Check if the slider is already initialized
+    if (window && (window as any).PanoramaSlider && !sliderInitialized.current) {
+      const sliderElement = document.querySelector(".panorama-slider");
+      if (sliderElement) {
+        (window as any).PanoramaSlider.init(sliderElement);
+        sliderInitialized.current = true;
+      }
+    }
+  };
+
+  useEffect(() => {
+    // Load external CSS and scripts
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href =
+      "https://panorama-slider.uiinitiative.com/assets/index.c1d53924.css";
+    document.head.appendChild(link);
+
+    const preloadLink = document.createElement("link");
+    preloadLink.rel = "modulepreload";
+    preloadLink.href =
+      "https://panorama-slider.uiinitiative.com/assets/vendor.dba6b2d2.js";
+    document.head.appendChild(preloadLink);
+
+    const script = document.createElement("script");
+    script.type = "module";
+    script.crossOrigin = "anonymous";
+    script.src =
+      "https://panorama-slider.uiinitiative.com/assets/index.d2ce9dca.js";
+    script.onload = initializeSlider;
+    document.body.appendChild(script);
+
+    // Cleanup
+    return () => {
+      document.head.removeChild(link);
+      document.head.removeChild(preloadLink);
+      document.body.removeChild(script);
+      sliderInitialized.current = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    // Reinitialize the slider on pathname changes
+    initializeSlider();
+  }, [pathname]);
+
   return (
-    <div
-      className="panorama-slider w-full mx-auto p-4"
-      style={{ backgroundColor: "#d5f3f5" }}
-    >
-      <Swiper
-        modules={[EffectCoverflow, Pagination, Autoplay]}
-        effect="coverflow"
-        grabCursor={true}
-        centeredSlides={true}
-        slidesPerView="auto"
-        loop={true}
-        coverflowEffect={{
-          rotate: 0,
-          stretch: 0,
-          depth: 200,
-          modifier: 1,
-          slideShadows: false,
-        }}
-        pagination={{ clickable: true }}
-        autoplay={{ delay: 2500, disableOnInteraction: false }}
-      >
-        {images.map((image, index) => (
-          <SwiperSlide key={image.id}>
-            <div
-              className={`relative w-[400px] h-[400px] transition-transform duration-500 ${
-                index === 0
-                  ? "scale-110"
-                  : index === images.length + 1
-                  ? "scale-90"
-                  : "scale-100"
-              }`}
-            >
-              <Image
-                className="slide-image rounded-lg"
-                src={image.src}
-                alt={image.id}
-                layout="fill"
-                objectFit="cover"
-              />
-            </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
-    </div>
+    <>
+      <div className="panorama-slider bg-[#d5f3f5] p-4">
+        <div className="swiper">
+          <div className="swiper-wrapper">
+            {images.map((image) => (
+              <div key={image.id} className="swiper-slide">
+                <Image
+                  className="slide-image"
+                  src={image.src}
+                  alt={image.id}
+                  layout="fill"
+                  objectFit="cover"
+                />
+              </div>
+            ))}
+          </div>
+          <div className="swiper-pagination"></div>
+        </div>
+      </div>
+    </>
   );
 };
 
-export default PanoramaSlider;
+export default Panorama;
