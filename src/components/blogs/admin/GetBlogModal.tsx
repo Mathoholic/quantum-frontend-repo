@@ -31,7 +31,7 @@ export default function GetBlogModal({ blogId, closeModal, onBlogUpdated, isEdit
   useEffect(() => {
     const fetchBlog = async () => {
       try {
-        const response = await axios.get(`http://localhost:3002/blogs/${blogId}`);
+        const response = await axios.get(`http://208.109.214.146:3002/blogs/${blogId}`);
         setBlog(response.data);
         setFormData({
           title: response.data.title,
@@ -74,7 +74,7 @@ export default function GetBlogModal({ blogId, closeModal, onBlogUpdated, isEdit
     }
 
     try {
-      const response = await axios.patch(`http://localhost:3002/blogs/${blogId}`, updatedBlog, {
+      const response = await axios.patch(`http://208.109.214.146:3002/blogs/${blogId}`, updatedBlog, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -107,7 +107,7 @@ export default function GetBlogModal({ blogId, closeModal, onBlogUpdated, isEdit
     return null;
   }
 
-  const imageUrl = blog.imageUrl ? `http://localhost:3002${blog.imageUrl}` : null;
+  const imageUrl = blog.imageUrl ? `http://208.109.214.146:3002${blog.imageUrl}` : null;
 
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto pt-10">

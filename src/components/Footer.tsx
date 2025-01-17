@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import { FaPhoneAlt, FaEnvelope } from "react-icons/fa";
 
 const Footer: React.FC = () => {
   return (
@@ -23,11 +24,12 @@ const Footer: React.FC = () => {
             <br />
             Landmark: Next to ARS SIGNATURE Phase 2
           </p>
-          <p className="mt-2 text-base text-gray-700 font-semibold">
-            +91 8971133673
+          <p className="mt-2 text-base text-gray-700 font-semibold flex items-center">
+            <FaPhoneAlt className="mr-2" /> +91 8971133673
           </p>
-          <p className="mt-2 text-base text-gray-700 font-semibold">
-            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=contact@quantumkids.in" className="block underline">
+          <p className="mt-2 text-base text-gray-700 font-semibold flex items-center">
+            <FaEnvelope className="mr-2" />
+            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=contact@quantumkids.in" className="underline">
               contact@quantumkids.in
             </a>
           </p>

@@ -8,7 +8,7 @@ interface TeamMember {
 }
 
 
-interface TeamMemberModalProps {
+interface TeamMemberModalProps {  
   member: TeamMember;
   onClose: () => void;
 }
@@ -27,9 +27,9 @@ const TeamMemberModal: React.FC<TeamMemberModalProps> = ({ member, onClose }) =>
           <img
             src={member.profilePic || "/placeholder.png"}
             alt={member.memberName}
-            className=" 2xl:h-25 rounded-xl mr-4 lg:h-[300px] lg:w-[300px] w-24 h-24 object-cover"
-            width="196"
-            height="196"
+            className=" 2xl:h-25 rounded-lg mr-4 lg:h-[300px] lg:w-[230]  w-24 h-24 object-cover"
+            width="auto"
+            height="auto"
           />
           <div>
             <h3 className="text-lg 2xl:text-4xl font-bold">{member.memberName}</h3>
