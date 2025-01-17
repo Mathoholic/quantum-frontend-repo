@@ -54,7 +54,7 @@ const ProgramHero = () => {
       <div className="grid md:grid-cols-2 gap-10 items-center">
         <div className={`${isVisible ? 'animate-slideInLeft' : ''}`}>
           <h2
-            className="text-left mb-6 text-[36px] md:text-[44px] font-comic font-normal leading-[50px] md:leading-[66.89px] underline-from-font decoration-skip-ink"
+            className="text-left mb-6 text-[36px] lg:text-[44px] font-comic font-normal leading-[50px] md:leading-[66.89px] underline-from-font decoration-skip-ink"
             style={{ textUnderlinePosition: "from-font", textDecorationSkipInk: "none" }}
           >
             <span className="bg-gradient-to-r from-green-400 to-green-600 text-transparent bg-clip-text">Toddler</span>-
@@ -97,7 +97,7 @@ const ProgramHero = () => {
           />
         </div>
         <div className={`${isVisible ? 'animate-slideInRight' : ''}`}>
-          <h2 className="text-left text-[36px] mb-6 md:text-[48px] font-comic font-normal leading-[50px] md:leading-[66.89px] underline-from-font decoration-skip-ink"
+          <h2 className="text-left text-[36px] mb-6 lg:text-[48px] font-comic font-normal leading-[50px] md:leading-[66.89px] underline-from-font decoration-skip-ink"
             style={{ textUnderlinePosition: "from-font", textDecorationSkipInk: "none" }}
           >
             <span className="bg-gradient-to-r from-pink-400 to-pink-600 text-transparent bg-clip-text">Playgroup:</span>

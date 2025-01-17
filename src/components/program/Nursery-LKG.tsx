@@ -52,14 +52,14 @@ const ProgramSection: React.FC = () => {
       {/* Nursery Section */}
       <div className="grid md:grid-cols-2 gap-10 items-center">
         <div className={`${isVisible ? 'animate-slideInLeft' : ''}`}>
-          <h2 className="text-3xl md:text-4xl font-bold font-comic text-gray-800 mb-6">
+          <h2 className="text-3xl md:text-4xl lg:text-[44px] font-bold font-comic text-gray-800 mb-6">
             <span style={{ color: "#6ab846" }}>N</span>
-            <span style={{ color: "#8d549e" }}>U</span>
-            <span style={{ color: "#8d549e" }}>R</span>
-            <span style={{ color: "#f06f13" }}>S</span>
-            <span style={{ color: "#f06f13" }}>E</span>
-            <span style={{ color: "#087278" }}>R</span>
-            <span style={{ color: "#087278" }}>Y</span>
+            <span style={{ color: "#8d549e" }}>u</span>
+            <span style={{ color: "#8d549e" }}>r</span>
+            <span style={{ color: "#f06f13" }}>s</span>
+            <span style={{ color: "#f06f13" }}>e</span>
+            <span style={{ color: "#087278" }}>r</span>
+            <span style={{ color: "#087278" }}>y</span>
           </h2>
           <ul className="space-y-4 mt-4">
             {featuresNursery.map((feature, index) => (
@@ -96,7 +96,7 @@ const ProgramSection: React.FC = () => {
           />
         </div>
         <div className={`${isVisible ? 'animate-slideInRight' : ''}`}>
-          <h2 className="text-3xl md:text-4xl font-bold font-comic text-gray-800 mb-6">
+          <h2 className="text-3xl md:text-4xl lg:text-[44px] font-bold font-comic text-gray-800 mb-6">
             <span style={{ color: "#ed477c" }}>L</span>
             <span style={{ color: "#e04a2f" }}>K</span>
             <span style={{ color: "#652f8f" }}>G</span>
