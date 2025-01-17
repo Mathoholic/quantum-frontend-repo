@@ -76,9 +76,9 @@ const Highlights: React.FC = () => {
   }, []);
 
   return (
-    <div className="bg-[#ffe0b3] py-12">
+    <div className="bg-[#ffe0b3] py-12 px-4 lg:px-8 2xl:px-16">
       <h2 ref={headingRef} className="2xl:text-[52px] text-4xl font-bold font-comic text-center text-gray-800 mb-14">Highlights</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 2xl:gap-8 2xl:max-w-[1440px] max-w-[1120px] mx-auto px-2 ">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 lg:gap-6 2xl:gap-8 2xl:max-w-[1440px] max-w-[1120px] mx-auto px-2 lg:px-4 2xl:px-8">
         {highlights.map((highlight, index) => (
           <div
             key={index}
@@ -92,7 +92,7 @@ const Highlights: React.FC = () => {
               alt={highlight.alt}
               width={300}
               height={250}
-              className="mb-4 rounded-lg 2xl:w-[300px] 2xl:h-[250px] xl:w-[250px] xl:h-[200px] "
+              className="mb-4 rounded-lg 2xl:w-[300px] 2xl:h-[250px] xl:w-[250px] xl:h-[200px] lg:w-[200px] lg:h-[150px]"
             />
             <h3 className="text-lg 2xl:text-2xl font-semibold mb-2 text-gray-900 ">{highlight.title}</h3>
             <p className="text-lg text-gray-700 2xl:text-2xl">{highlight.description}</p>

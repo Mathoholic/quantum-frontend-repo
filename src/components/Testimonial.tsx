@@ -79,20 +79,21 @@ const Testimonials: React.FC = () => {
   }, []);
 
   return (
-    <div className="bg-[#fcdce6] py-24 relative">
-      <div ref={paintImageRef} className="absolute top-[-50px] left-10 m-4">
+    <div className="bg-[#fcdce6] lg:py-24 py-10 relative">
+      <div ref={paintImageRef} className="absolute top-[-50px] lg:left-10  m-4">
         <Image 
           src="paint.svg" 
           alt="Decorative Image" 
           width={158.06} 
           height={166.79} 
+          className="w-20 lg:w-40 2xl:w-52"
         />
       </div>
-      <h2 ref={headingRef} className="2xl:text-[52px] text-4xl font-bold font-comic text-center text-pink-600 mb-2 2xl:mb-4 ">Stories That Speak for Themselves</h2>
+      <h2 ref={headingRef} className="2xl:text-[52px] lg:text-4xl text-2xl font-bold font-comic text-center text-pink-600 mb-2 2xl:mb-4 ">Stories That Speak for Themselves</h2>
       <p className="text-center text-gray-600 mb-8 text-outfit 2xl:text-[24px] 2xl:mb-12">
-        Discover What Our Customers Have to Say About Their Experience with Us
+        Discover What Our Parents Have to Say About Their Experience with Us
       </p>  
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 2xl:max-w-[1440px] max-w-6xl mx-auto px-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 2xl:max-w-[1250px] lg:max-w-[920px] max-w-6xl mx-auto px-4">
         {testimonials.map((testimonial, index) => (
           <div
             key={index}

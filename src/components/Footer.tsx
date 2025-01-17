@@ -1,11 +1,11 @@
 import React from "react";
 import Image from "next/image";
-import { FaPhoneAlt, FaEnvelope } from "react-icons/fa";
+import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 
 const Footer: React.FC = () => {
   return (
     <footer className="bg-[#E8F9FF] pt-12 ">
-      <div className="container mx-auto flex flex-col md:flex-row gap-12 px-20 ">
+      <div className="container mx-auto flex flex-col md:flex-row gap-12 lg:px-20 px-10 ">
         {/* Address Section */}
         <div className="md:w-1/2">
           <Image
@@ -13,21 +13,32 @@ const Footer: React.FC = () => {
             alt="Quantum School Logo"
             width={97}
             height={76}
-            className="2xl:w-44 2xl:h-32 mb-4"
+            className="2xl:w-44 2xl:h-32 mb-4 pl-6 md:pl-0"
           />
-          <p className="text-base text-gray-700 leading-7">
-            Quantum Kids preschool and daycare
-            <br />
-            56, Sy no. 25, Sompura Village, Sarjapura hobli, Anekal Taluk,
-            <br />
-            Bangalore, Karnataka - 562125.
-            <br />
-            Landmark: Next to ARS SIGNATURE Phase 2
-          </p>
-          <p className="mt-2 text-base text-gray-700 font-semibold flex items-center">
+
+          
+            
+<p className="lg:text-base text-[14px] text-gray-700 leading-7 flex  pl-6 lg:pl-7 2xl:pl-7 ">
+  <strong className="font-bold flex ">
+    
+    Quantum Kids Preschool and Daycare,
+  </strong>
+  
+</p>
+<p className="lg:text-base text-[12px] text-gray-700 leading-7 flex ">
+<FaMapMarkerAlt className="mr-2 mt-1 text-xl" />
+56, Sy no. 25, Sompura Village, Sarjapura hobli, Anekal Taluk,
+  <br />
+  Bangalore, Karnataka - 562125.
+  <br />
+  Landmark: Next to ARS SIGNATURE Phase 2
+</p>
+
+
+          <p className="mt-2 lg:text-base text-[14px] text-gray-700 font-semibold flex items-center">
             <FaPhoneAlt className="mr-2" /> +91 8971133673
           </p>
-          <p className="mt-2 text-base text-gray-700 font-semibold flex items-center">
+          <p className="mt-2 text-base text-gray-700 text-[14px] font-semibold flex items-center">
             <FaEnvelope className="mr-2" />
             <a href="https://mail.google.com/mail/?view=cm&fs=1&to=contact@quantumkids.in" className="underline">
               contact@quantumkids.in
@@ -39,19 +50,19 @@ const Footer: React.FC = () => {
         <div className="md:w-1/2 flex flex-col md:flex-row gap-12">
           {/* Explore Section */}
           <div className="md:w-1/3">
-            <h3 className="font-semibold text-xl text-gray-900 mb-4">
+            <h3 className="font-semibold lg:text-xl text-lg text-gray-900 mb-4">
               Explore
             </h3>
             <ul className="space-y-3">
               <li>
-                <a href="/qk-circle" className="text-lg text-gray-700 hover:underline">
+                <a href="/qk-circle" className="lg:text-lg text-[14px] text-gray-700 hover:underline">
                   Quantum Circle
                 </a>
               </li>
               <li>
                 <a
                   href="/gallery"
-                  className="text-lg text-gray-700 hover:underline"
+                  className="lg:text-lg text-[14px] text-gray-700 hover:underline"
                 >
                   Gallery & News
                 </a>
@@ -59,7 +70,7 @@ const Footer: React.FC = () => {
               <li>
                 <a
                   href="/our-programs"
-                  className="text-lg text-gray-700 hover:underline"
+                  className="lg:text-lg text-[14px] text-gray-700 hover:underline"
                 >
                   Our Programs
                 </a>
@@ -68,15 +79,15 @@ const Footer: React.FC = () => {
           </div>
 
           {/* General Pages Section */}
-          <div className="md:w-1/3">
-            <h3 className="font-semibold text-xl text-gray-900 mb-4">
+          <div className="md:w-1/3 ">
+            <h3 className="font-semibold lg:text-xl text-lg text-gray-900 mb-4">
               General Pages
             </h3>
             <ul className="space-y-3">
             <li>
                 <a
                   href="/"
-                  className="text-lg text-gray-700 hover:underline"
+                  className="lg:text-lg text-[14px] text-gray-700 hover:underline"
                 >
                   Home
                 </a>
@@ -84,7 +95,7 @@ const Footer: React.FC = () => {
               <li>
                 <a
                   href="/about-us"
-                  className="text-lg text-gray-700 hover:underline"
+                  className="lg:text-lg text-[14px] text-gray-700 hover:underline"
                 >
                   About Us
                 </a>
@@ -92,7 +103,7 @@ const Footer: React.FC = () => {
               <li>
                 <a
                   href="/why-quantum"
-                  className="text-lg text-gray-700 hover:underline"
+                  className="lg:text-lg text-[14px] text-gray-700 hover:underline"
                 >
                   Why Quantum
                 </a>
@@ -101,7 +112,7 @@ const Footer: React.FC = () => {
               <li>
                 <a
                   href="/contact-us"
-                  className="text-lg text-gray-700 hover:underline"
+                  className="lg:text-lg text-[14px] text-gray-700 hover:underline"
                 >
                   Contact
                 </a>
@@ -111,7 +122,7 @@ const Footer: React.FC = () => {
 
           {/* Social Media Section */}
           <div className="md:w-1/3">
-            <h3 className="font-semibold text-xl text-gray-900 mb-4">
+            <h3 className="font-semibold lg:text-xl text-lg text-gray-900 mb-4">
               Social Media
             </h3>
             <div className="flex space-x-4">
