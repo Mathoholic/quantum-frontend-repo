@@ -71,9 +71,7 @@ const Gallery: React.FC = () => {
                 className="w-full h-full object-cover"
               />
             </div>
-            <div className="text-center mt-2">
-              <h3 className="text-lg font-semibold">{image.title}</h3>
-            </div>
+        
           </SwiperSlide>
         ))}
       </Swiper>
@@ -104,9 +102,7 @@ const Gallery: React.FC = () => {
                 className="w-full h-full object-cover"
               />
             </div>
-            <div className="text-center mt-2">
-              <h3 className="text-lg font-semibold">{image.title}</h3>
-            </div>
+            
           </SwiperSlide>
         ))}
       </Swiper>
