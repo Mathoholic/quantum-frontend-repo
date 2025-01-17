@@ -44,7 +44,7 @@ const Footer: React.FC = () => {
             </h3>
             <ul className="space-y-3">
               <li>
-                <a href="/quantum-circle" className="text-lg text-gray-700 hover:underline">
+                <a href="/qk-circle" className="text-lg text-gray-700 hover:underline">
                   Quantum Circle
                 </a>
               </li>
