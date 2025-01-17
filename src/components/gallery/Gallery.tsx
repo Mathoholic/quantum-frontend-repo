@@ -7,7 +7,6 @@ import 'swiper/css/pagination';
 import 'swiper/css/autoplay';
 import 'swiper/css/navigation';
 import { Pagination, Autoplay, Navigation } from 'swiper/modules';
-import ImageModal from './ImageModal'; // Import ImageModal
 
 interface Image {
   id: number;
@@ -18,7 +17,6 @@ interface Image {
 
 const Gallery: React.FC = () => {
   const [images, setImages] = useState<Image[]>([]);
-  const [selectedImage, setSelectedImage] = useState<Image | null>(null); // State for selected image
 
   useEffect(() => {
     async function fetchImages() {
@@ -41,14 +39,6 @@ const Gallery: React.FC = () => {
   const middleIndex = Math.ceil(images.length / 2);
   const firstCarouselImages = images.slice(0, middleIndex);
   const secondCarouselImages = images.slice(middleIndex);
-
-  const handleImageClick = (image: Image) => {
-    setSelectedImage(image);
-  };
-
-  const handleCloseModal = () => {
-    setSelectedImage(null);
-  };
 
   return (
     <div className="bg-blue-100 py-10 px-6">
@@ -74,19 +64,14 @@ const Gallery: React.FC = () => {
       >
         {firstCarouselImages.map((image) => (
           <SwiperSlide key={image.id}>
-            <div
-              className="w-full h-[300px] flex items-center justify-center bg-gray-200 cursor-pointer"
-              onClick={() => handleImageClick(image)}
-            >
+            <div className="w-full h-[300px] flex items-center justify-center bg-gray-200">
               <img
                 src={image.image}
                 alt={image.alt}
                 className="w-full h-full object-cover"
               />
             </div>
-            <div className="text-center mt-2">
-              <h3 className="text-lg font-semibold">{image.title}</h3>
-            </div>
+        
           </SwiperSlide>
         ))}
       </Swiper>
@@ -110,30 +95,17 @@ const Gallery: React.FC = () => {
       >
         {secondCarouselImages.map((image) => (
           <SwiperSlide key={image.id}>
-            <div
-              className="w-full h-[300px] flex items-center justify-center bg-gray-200 cursor-pointer"
-              onClick={() => handleImageClick(image)}
-            >
+            <div className="w-full h-[300px] flex items-center justify-center bg-gray-200">
               <img
                 src={image.image}
                 alt={image.alt}
                 className="w-full h-full object-cover"
               />
             </div>
-            <div className="text-center mt-2">
-              <h3 className="text-lg font-semibold">{image.title}</h3>
-            </div>
+            
           </SwiperSlide>
         ))}
       </Swiper>
-
-      {selectedImage && (
-        <ImageModal
-          imageUrl={selectedImage.image}
-          altText={selectedImage.alt}
-          onClose={handleCloseModal}
-        />
-      )}
     </div>
   );
 };
