@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import React, { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
@@ -18,9 +18,9 @@ const images = [
 const Panorama: React.FC = () => {
   const pathname = usePathname();
   const sliderInitialized = useRef(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   const initializeSlider = () => {
-    // Check if the slider is already initialized
     if (window && (window as any).PanoramaSlider && !sliderInitialized.current) {
       const sliderElement = document.querySelector(".panorama-slider");
       if (sliderElement) {
@@ -54,9 +54,9 @@ const Panorama: React.FC = () => {
 
     // Cleanup
     return () => {
-      document.head.removeChild(link);
-      document.head.removeChild(preloadLink);
-      document.body.removeChild(script);
+      if (link.parentNode) document.head.removeChild(link);
+      if (preloadLink.parentNode) document.head.removeChild(preloadLink);
+      if (script.parentNode) document.body.removeChild(script);
       sliderInitialized.current = false;
     };
   }, []);
@@ -66,27 +66,38 @@ const Panorama: React.FC = () => {
     initializeSlider();
   }, [pathname]);
 
+  useEffect(() => {
+    // Ensure container is hidden during loading
+    if (containerRef.current) {
+      containerRef.current.style.opacity = "0";
+    }
+
+    const timeout = setTimeout(() => {
+      if (containerRef.current) {
+        containerRef.current.style.opacity = "1";
+        containerRef.current.style.transition = "opacity 0.5s ease-in-out";
+      }
+    }, 50); // Allow time for loading and script initialization
+
+    return () => clearTimeout(timeout);
+  }, []);
+
   return (
-    <>
-      <div className="panorama-slider bg-[#d5f3f5] p-4">
-        <div className="swiper">
-          <div className="swiper-wrapper">
-            {images.map((image) => (
-              <div key={image.id} className="swiper-slide">
-                <Image
-                  className="slide-image"
-                  src={image.src}
-                  alt={image.id}
-                  layout="fill"
-                  objectFit="cover"
-                />
-              </div>
-            ))}
-          </div>
-          <div className="swiper-pagination"></div>
+    <div
+      ref={containerRef}
+      className="panorama-slider bg-[#d5f3f5] p-4"
+    >
+      <div className="swiper">
+        <div className="swiper-wrapper">
+          {images.map((image) => (
+            <div key={image.id} className="swiper-slide">
+              <Image src={image.src} alt={image.id} fill style={{ objectFit: "cover" }} />
+            </div>
+          ))}
         </div>
+        <div className="swiper-pagination"></div>
       </div>
-    </>
+    </div>
   );
 };
 
