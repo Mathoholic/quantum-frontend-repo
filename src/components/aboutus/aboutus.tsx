@@ -26,7 +26,7 @@ const TeamCarousel = () => {
   useEffect(() => {
     const fetchMembers = async () => {
       try {
-        const response = await fetch('http://localhost:3002/team');
+        const response = await fetch('http://208.109.214.146:3002/team');
         if (!response.ok) throw new Error('Failed to fetch team members');
         const data = await response.json();
         setMembers(data);

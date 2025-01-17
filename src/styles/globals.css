@@ -1,165 +1,165 @@
-@import url('https://fonts.googleapis.com/css2?family=Aladin&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Aladin&display=swap');
 
-html,
-body {
-  position: relative;
-  height: 100%;
-}
-
-#app {
-  height: 100%;
-}
-
-body {
-  background: #eee;
-  font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
-  font-size: 14px;
-  color: #000;
-  margin: 0;
-  padding: 0;
-}
-
-.swiper {
-  width: 100%;
-  padding-top: 50px;
-  padding-bottom: 50px;
-}
-
-.swiper-slide {
-  background-position: center;
-  background-size: cover;
-  width: 300px;
-  height: 300px;
-}
-
-.swiper-slide img {
-  display: block;
-  width: 100%;
-}
-
-.perspective {
-  perspective: 1000px;
-}
-
-.preserve-3d {
-  transform-style: preserve-3d;
-}
-
-.backface-hidden {
-  backface-visibility: hidden;
-}
-
-.rotate-y-180 {
-  transform: rotateY(180deg);
-}
-
-.group:hover .group-hover\:rotate-y-180 {
-  transform: rotateY(180deg);
-}
-
-.transform-style-preserve {
-  transform-style: preserve-3d;
-}
-
-.custom-paragraph {
-  font-family: 'Outfit';
-  font-size: 28px;
-  font-weight: 400;
-  line-height: 36px;
-  letter-spacing: 0.2px;
-  text-align: left;
-  text-underline-position: from-font;
-  text-decoration-skip-ink: none;
-}
-.perspective {
-  perspective: 1000px;
-}
-
-.preserve-3d {
-  transform-style: preserve-3d;
-}
-
-.backface-hidden {
-  backface-visibility: hidden;
-}
-
-.rotate-y-180 {
-  transform: rotateY(180deg);
-}
-
-/* globals.css */
-.panorama-slider {
-  overflow: hidden;
-}
-
-.mySwiper .swiper-slide {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.mySwiper img {
-  transition: transform 0.3s ease;
-}
-
-.mySwiper img:hover {
-  transform: scale(1.05);
-}
-
-@keyframes starsUp {
-  0% {
-    transform: translateY(0);
+  html,
+  body {
+    position: relative;
+    height: 100%;
   }
-  100% {
-    transform: translateY(-40px);
+
+  #app {
+    height: 100%;
   }
-}
 
-.animate-stars {
-  animation: starsUp 0.5s ease-in-out forwards;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
+  body {
+    background: #eee;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    color: #000;
+    margin: 0;
+    padding: 0;
   }
-  to {
-    opacity: 1;
+
+  .swiper {
+    width: 100%;
+    padding-top: 50px;
+    padding-bottom: 50px;
   }
-}
 
-@keyframes slideInLeft {
-  from {
-    transform: translateX(-100%);
+  .swiper-slide {
+    background-position: center;
+    background-size: cover;
+    width: 300px;
+    height: 300px;
   }
-  to {
-    transform: translateX(0);
+
+  .swiper-slide img {
+    display: block;
+    width: 100%;
   }
-}
 
-@keyframes slideInRight {
-  from {
-    transform: translateX(100%);
+  .perspective {
+    perspective: 1000px;
   }
-  to {
-    transform: translateX(0);
+
+  .preserve-3d {
+    transform-style: preserve-3d;
   }
-}
 
-.animate-fade-in {
-  animation: fadeIn 1s ease-in-out forwards;
-}
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
 
-.animate-slide-in-left {
-  animation: slideInLeft 1s ease-in-out forwards;
-}
+  .rotate-y-180 {
+    transform: rotateY(180deg);
+  }
 
-.animate-slide-in-right {
-  animation: slideInRight 1s ease-in-out forwards;
-}
+  .group:hover .group-hover\:rotate-y-180 {
+    transform: rotateY(180deg);
+  }
 
-.aladin-regular {
-  font-family: "Aladin", serif;
-  font-weight: 400;
-  font-style: normal;
-}
+  .transform-style-preserve {
+    transform-style: preserve-3d;
+  }
+
+  .custom-paragraph {
+    font-family: 'Outfit';
+    font-size: 28px;
+    font-weight: 400;
+    line-height: 36px;
+    letter-spacing: 0.2px;
+    text-align: left;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+  }
+  .perspective {
+    perspective: 1000px;
+  }
+
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+
+  .rotate-y-180 {
+    transform: rotateY(180deg);
+  }
+
+  /* globals.css */
+  .panorama-slider {
+    overflow: hidden;
+  }
+
+  .mySwiper .swiper-slide {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .mySwiper img {
+    transition: transform 0.3s ease;
+  }
+
+  .mySwiper img:hover {
+    transform: scale(1.05);
+  }
+
+  @keyframes starsUp {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-40px);
+    }
+  }
+
+  .animate-stars {
+    animation: starsUp 0.5s ease-in-out forwards;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideInLeft {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slideInRight {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 1s ease-in-out forwards;
+  }
+
+  .animate-slide-in-left {
+    animation: slideInLeft 1s ease-in-out forwards;
+  }
+
+  .animate-slide-in-right {
+    animation: slideInRight 1s ease-in-out forwards;
+  }
+
+  .aladin-regular {
+    font-family: "Aladin", serif;
+    font-weight: 400;
+    font-style: normal;
+  }

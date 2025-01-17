@@ -21,7 +21,7 @@ const BlogSection: React.FC = () => {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const response = await axios.get('http://localhost:3002/blogs');
+        const response = await axios.get('http://208.109.214.146:3002/blogs');
         setBlogs(response.data);
       } catch (error) {
         console.error('Error fetching blogs:', error);

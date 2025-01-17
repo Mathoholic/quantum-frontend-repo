@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from 'next/image';
+import '../styles/globals.css';
 
 // Import SVGs
 import QSvg from '../../public/quantum/q.svg';
@@ -36,7 +37,7 @@ const QuantumHover: React.FC = () => {
   }, [hoveredLetterId]);
 
   return (
-    <div id="quantum-hover" className="flex flex-col items-center justify-center p-6 sm:p-12 md:p-24 bg-[#d5f3f5]">
+    <div id="quantum-hover" className="flex flex-col items-center justify-center p-6 sm:p-12 md:p-24 bg-[#d5f3f5] font-aladin">
       {/* Grid Boxes */}
       <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-4 sm:gap-6 md:gap-10 w-full max-w-screen-lg 2xl:max-w-screen-2xl">
         {letters.map((item, index) => (

@@ -3,8 +3,7 @@ import React, { useState } from "react";
 
 const CommonForm = ({ onSubmit }: any) => {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    childName: "",
     parentName: "",
     location: "",
     email: "",
@@ -15,8 +14,7 @@ const CommonForm = ({ onSubmit }: any) => {
   });
   const [isLoading, setIsLoading] = useState(false);
   interface FormErrors {
-    firstName: string;
-    lastName: string;
+    childName: string;
     parentName: string;
     location: string;
     email: string;
@@ -26,8 +24,7 @@ const CommonForm = ({ onSubmit }: any) => {
   }
 
   const [errors, setErrors] = useState<FormErrors>({
-    firstName: "",
-    lastName: "",
+    childName: "",
     parentName: "",
     location: "",
     email: "",
@@ -64,13 +61,8 @@ const CommonForm = ({ onSubmit }: any) => {
     });
 
     // Validate required fields
-    if (!formData.firstName) {
-      newErrors.firstName = "First name is required.";
-      valid = false;
-    }
-
-    if (!formData.lastName) {
-      newErrors.lastName = "Last name is required.";
+    if (!formData.childName) {
+      newErrors.childName = "Child name is required.";
       valid = false;
     }
 
@@ -122,7 +114,7 @@ const CommonForm = ({ onSubmit }: any) => {
 
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:3002/form/submit", {
+      const response = await fetch("http://208.109.214.146:3002/form/submit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -134,8 +126,7 @@ const CommonForm = ({ onSubmit }: any) => {
         // alert("Form submitted successfully!");
 
         setFormData({
-          firstName: "",
-          lastName: "",
+          childName: "",
           parentName: "",
           location: "",
           email: "",
@@ -174,25 +165,14 @@ const CommonForm = ({ onSubmit }: any) => {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <input
             type="text"
-            name="firstName"
-            value={formData.firstName}
+            name="childName"
+            value={formData.childName}
             onChange={handleChange}
-            placeholder="First Name"
+            placeholder="Child Name"
             className="w-full p-1 sm:p-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all"
             required
           />
-          {errors.firstName && <p className="text-red-500 text-xs">{errors.firstName}</p>}
-
-          <input
-            type="text"
-            name="lastName"
-            value={formData.lastName}
-            onChange={handleChange}
-            placeholder="Last Name"
-            className="w-full p-1 sm:p-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all"
-            required
-          />
-          {errors.lastName && <p className="text-red-500 text-xs">{errors.lastName}</p>}
+          {errors.childName && <p className="text-red-500 text-xs">{errors.childName}</p>}
 
           <input
             type="text"
@@ -211,7 +191,7 @@ const CommonForm = ({ onSubmit }: any) => {
             value={formData.location}
             onChange={handleChange}
             placeholder="Area you're located in"
-            className="w-full p-1 sm:p-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all"
+            className="w-full sm:col-span-2 p-1 sm:p-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all"
             required
           />
           {errors.location && <p className="text-red-500 text-xs">{errors.location}</p>}
@@ -317,7 +297,7 @@ const CommonForm = ({ onSubmit }: any) => {
             </div>
           ) : (
             <>
-              <span className="text-xs sm:text-sm">Enquiry Now</span>
+              <span className="text-xs sm:text-sm">Submit</span>
               <span className="group-hover:translate-x-1 transition-transform duration-300">
                 →
               </span>
