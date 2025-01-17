@@ -74,7 +74,7 @@ const setFeeStructure = async () => {
   const customId = student.customId;
   if (customId) {
     try {
-      const response = await fetch(`http://208.109.214.146:3002/form/class/receipt?customId=${customId}`, {
+      const response = await fetch(`https://api.quantumkids.in/form/class/receipt?customId=${customId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -83,8 +83,8 @@ const setFeeStructure = async () => {
       const result = await response.json();
       setLoading(true);
       const url = result.data
-        ? 'http://208.109.214.146:3002/form/class/updateReceipt'
-        : 'http://208.109.214.146:3002/class/createReceipt';
+        ? 'https://api.quantumkids.in/form/class/updateReceipt'
+        : 'https://api.quantumkids.in/class/createReceipt';
         
       const method = result.data ? 'PATCH' : 'POST';
       debugger;
@@ -284,7 +284,7 @@ const ApplicationForm = () => {
     try {
       setLoading(true);
 
-      const response = await fetch('http://208.109.214.146:3002/form/enqueryForm/get');
+      const response = await fetch('https://api.quantumkids.in/form/enqueryForm/get');
       const result = await response.json();
       setSubmissions(result.data.data);
     } catch (error) {
@@ -299,7 +299,7 @@ const ApplicationForm = () => {
     
     try {
       setLoading(true);
-      const response = await fetch(`http://208.109.214.146:3002/form/class/get?class=${selectedClass}`);
+      const response = await fetch(`https://api.quantumkids.in/form/class/get?class=${selectedClass}`);
       const result = await response.json();
       setSubmissions(result.data || []);
     } catch (error) {

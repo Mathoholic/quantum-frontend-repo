@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import BlogModal from "./BlogModal"; 
+
 import { FaShare } from "react-icons/fa";
 
 interface Blog {
@@ -14,14 +14,14 @@ interface Blog {
   content: string;
 }
 
-const BlogSection: React.FC = () => {
+const Social: React.FC = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [selectedBlog, setSelectedBlog] = useState<Blog | null>(null);
 
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const response = await axios.get('http://208.109.214.146:3002/blogs');
+        const response = await axios.get('https://api.quantumkids.in/blogs');
         setBlogs(response.data);
       } catch (error) {
         console.error('Error fetching blogs:', error);
@@ -47,4 +47,4 @@ const BlogSection: React.FC = () => {
   );
 };
 
-export default BlogSection;
+export default Social;

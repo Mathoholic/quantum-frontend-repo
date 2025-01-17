@@ -20,7 +20,7 @@ export default function NewsEventsList() {
 
     const fetchNewsEvents = async () => {
         try {
-            const response = await axios.get('http://208.109.214.146:3002/news-events');
+            const response = await axios.get('https://api.quantumkids.in/news-events');
             setNewsEvents(response.data);
         } catch (error) {
             console.error('Error fetching news/events:', error);
@@ -33,7 +33,7 @@ export default function NewsEventsList() {
 
     const handleDelete = async (newsEventId: string) => {
         try {
-            await axios.delete(`http://208.109.214.146:3002/news-events/${newsEventId}`);
+            await axios.delete(`https://api.quantumkids.in/news-events/${newsEventId}`);
             fetchNewsEvents();
         } catch (error) {
             console.error('Error deleting news/event:', error);
@@ -51,7 +51,7 @@ export default function NewsEventsList() {
                         >
                             {newsEvent.imageUrl && (
                                 <img
-                                    src={`http://208.109.214.146:3002${newsEvent.imageUrl}`}
+                                    src={`https://api.quantumkids.in${newsEvent.imageUrl}`}
                                     alt={newsEvent.title}
                                     className="w-full h-48 object-cover rounded-md mb-4 cursor-pointer"
                                     onClick={() => setSelectedNewsEventId(newsEvent.id)}
@@ -67,15 +67,15 @@ export default function NewsEventsList() {
                                 Event Date: {new Date(newsEvent.eventDate).toLocaleDateString()}
                             </p>
                             <div className="flex justify-end space-x-4">
-                                {/* <button
+                                <button
                                     onClick={() => {
                                         setSelectedNewsEventId(newsEvent.id);
                                         setIsEditing(true);
                                     }}
                                     className="text-blue-600 hover:text-blue-800 text-xl"
-                                > */}
-                                    {/* <FaEdit /> */}
-                                {/* </button> */}
+                                >
+                                    <FaEdit />
+                                </button>
                                 <button
                                     onClick={() => handleDelete(newsEvent.id)}
                                     className="text-red-600 hover:text-red-800 text-xl"
