@@ -54,7 +54,7 @@ const HeroSection: React.FC = () => {
           <button 
             ref={buttonRef}
             onClick={scrollToQuantumHover} 
-            className={`bg-pink-500 text-white px-3 py-2 sm:px-5 md:px-6 lg:px-6 2xl:px-8 sm:py-3 md:py-4 lg:py-4 2xl:py-5 rounded-lg sm:text-base md:text-lg lg:text-lg 2xl:text-xl shadow-lg hover:bg-pink-600 transition-opacity duration-500 ${isButtonVisible ? 'opacity-100' : 'opacity-0'}`}
+            className={`bg-pink-500 text-white px-3 py-2 sm:px-5 md:px-6 lg:px-6 2xl:px-8 sm:py-3 md:py-4 lg:py-2 2xl:py-5 rounded-lg sm:text-base md:text-lg lg:text-lg 2xl:text-xl shadow-lg hover:bg-pink-600 transition-opacity duration-500 ${isButtonVisible ? 'opacity-100' : 'opacity-0'}`}
           >
             Let's Get Started
           </button>
