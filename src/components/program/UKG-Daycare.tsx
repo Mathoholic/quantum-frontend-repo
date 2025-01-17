@@ -52,7 +52,7 @@ const UKGDaycareInfo: React.FC = () => {
       <div className="grid md:grid-cols-2 gap-10 items-center">
         <div className={`animate-slideInLeft ${isVisible ? 'visible' : 'invisible'}`}>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800">
-            <span className="bg-gradient-to-r from-pink-400 to-pink-600 text-transparent font-comic bg-clip-text">UKG</span>
+            <span className="bg-gradient-to-r from-pink-400 to-pink-600 text-transparent font-comic bg-clip-text">UKG:</span>
           </h2>
           <ul className="space-y-4 mt-6">
             {featuresUKG.map((feature, index) => (
@@ -91,7 +91,7 @@ const UKGDaycareInfo: React.FC = () => {
         </div>
         <div className={`animate-slideInRight ${isVisible ? 'visible' : 'invisible'}`}>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800">
-            <span className="bg-gradient-to-r from-green-400 to-green-600 text-transparent bg-clip-text font-comic">Daycare</span>
+            <span className="bg-gradient-to-r from-green-400 to-green-600 text-transparent bg-clip-text font-comic">Daycare:</span>
           </h2>
           <ul className="space-y-4 mt-6">
             {featuresDaycare.map((feature, index) => (

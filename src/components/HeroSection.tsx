@@ -39,7 +39,7 @@ const HeroSection: React.FC = () => {
       <div className="flex-grow flex flex-col items-center justify-center md:pt-[46px] px-4 sm:px-8 md:px-12 lg:px-10  2xl:px-16">
         <div
           ref={mainRef}
-          className="flex flex-col items-center text-center w-full h-auto justify-center gap-3 sm:gap-8 md:gap-10 lg:gap-2 2xl:gap-6 absolute inset-x-0 top-6 md:top-20 lg:top-10  2xl:top-12 opacity-0"
+          className="flex flex-col items-center text-center w-full h-auto justify-center gap-8 sm:gap-8 md:gap-10 lg:gap-2 2xl:gap-6 absolute inset-x-0 top-6 md:top-20 lg:top-10  2xl:top-12 opacity-0"
         >
           <h1 className="font-extrabold text-gray-800 md:mb-4 w-full max-w-[240px] md:max-w-[400px] lg:max-w-[576px] 2xl:max-w-[700px] font-comic text-[22px] md:text-[36px] lg:text-[44px] 2xl:text-[60px] leading-[25px]  sm:leading-[20px] md:leading-[25px] lg:leading-[65px] 2xl:leading-[75px]">
             Take A Quantum Leap Into Learning

@@ -18,16 +18,16 @@ const Footer: React.FC = () => {
 
           
             
-<p className="lg:text-base text-[14px] text-gray-700 leading-7 flex  pl-6 lg:pl-7 2xl:pl-7 ">
+<p className="lg:text-base text-[14px] text-gray-700 leading-7 flex  7 ">
   <strong className="font-bold flex ">
     
-    Quantum Kids Preschool and Daycare,
+    Quantum Kids Preschool and Daycare
   </strong>
   
 </p>
 <p className="lg:text-base text-[12px] text-gray-700 leading-7 flex ">
 <FaMapMarkerAlt className="mr-2 mt-1 text-xl" />
-56, Sy no. 25, Sompura Village, Sarjapura hobli, Anekal Taluk,
+56, Sy no. 25, Sompura Village,<br/> Sarjapura hobli, Anekal Taluk,
   <br />
   Bangalore, Karnataka - 562125.
   <br />

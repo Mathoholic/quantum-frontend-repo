@@ -8,40 +8,40 @@ interface ChecklistItem {
   titleColor?: string;
 }
 
-const FeatureSection = ({ 
-    bgColor, 
-    title, 
-    titleColor = 'text-black',
-    content, 
-    imageSrc, 
-    imageAlt,
-    reverse = false,
-    checklistItems = [] as ChecklistItem[],
-    className = '',
-    bgcontentColor = '',
-    initialReverse = false, // Add this line
-    contentAnimation = '',
-    imageAnimation = '',
-  }: {
-    bgColor: string;
-    title: React.ReactNode;
-    titleColor?: string;
-    content?: string;
-    imageSrc: string;
-    imageAlt: string;
-    reverse?: boolean;
-    checklistItems?: ChecklistItem[];
-    className?: string;
-    bgcontentColor?: string;
-    initialReverse?: boolean; // Add this line
-    contentAnimation?: string;
-    imageAnimation?: string;
-  }) => {
+const FeatureSection = ({
+  bgColor,
+  title,
+  titleColor = 'text-black',
+  content,
+  imageSrc,
+  imageAlt,
+  reverse = false,
+  checklistItems = [] as ChecklistItem[],
+  className = '',
+  bgcontentColor = '',
+  initialReverse = false,
+  contentAnimation = '',
+  imageAnimation = '',
+}: {
+  bgColor: string;
+  title: React.ReactNode;
+  titleColor?: string;
+  content?: string;
+  imageSrc: string;
+  imageAlt: string;
+  reverse?: boolean;
+  checklistItems?: ChecklistItem[];
+  className?: string;
+  bgcontentColor?: string;
+  initialReverse?: boolean;
+  contentAnimation?: string;
+  imageAnimation?: string;
+}) => {
   const ContentSection = () => (
-    <div className={`flex-1 space-y-6 lg:p-8 text-center 2xl:border 2xl:rounded-2xl lg:text-left ${bgcontentColor} ${contentAnimation}`}>
-      <div className=" p-4"> {/* Added background color */}
+    <div className={`flex-1 p-2 rounded-lg lg:p-6 lg:rounded-xl text-center 2xl:border 2xl:rounded-2xl lg:text-left ${bgcontentColor} ${contentAnimation}`}>
+      <div className="p-4">
         <h2
-          className={`2xl:text-[52px] text-4xl  ${titleColor} font-bold leading-tight`}
+          className={`2xl:text-[52px] lg:text-4xl text-2xl ${titleColor} font-bold leading-tight 2xl:leading-tight`}
           style={{
             fontFamily: 'Comic Sans MS',
             textAlign: 'left',
@@ -54,7 +54,7 @@ const FeatureSection = ({
       </div>
       {content && (
         <p
-          className="text-lg 2xl:text-2xl max-w-2xl mx-auto lg:mx-0"
+          className="text-lg 2xl:text-2xl max-w-2xl p-2 mx-auto lg:mx-0"
           style={{
             fontFamily: 'Outfit',
             fontWeight: 500,
@@ -70,7 +70,7 @@ const FeatureSection = ({
         <div className="space-y-4 mt-6">
           {checklistItems.map((item, index) => (
             <div key={index} className="space-y-2">
-              <div className="flex items-center gap-3 justify-center lg:justify-start">
+              <div className="flex items-center gap-3 justify-start lg:justify-start">
                 <div
                   className={`w-6 h-6 ${item.iconBgColor || 'bg-pink-500'} rounded-full flex items-center justify-center`}
                 >
@@ -90,7 +90,7 @@ const FeatureSection = ({
                   {item.title}
                 </h3>
               </div>
-              <p className="text-sm sm:text-base text-black font-outfit ml-9">
+              <p className="text-sm text-start sm:text-base text-black font-outfit ml-9">
                 {item.description}
               </p>
             </div>
@@ -101,24 +101,27 @@ const FeatureSection = ({
   );
 
   const ImageSection = () => (
-    <div className={`flex-1 relative ${imageAnimation}`}>
-      <div className="relative w-full h-[300px] sm:h-[400px] lg:h-[500px] overflow-hidden">
-        <Image
-          src={imageSrc}
-          alt={imageAlt}
-          fill
-          className="object-contain transition-transform duration-300 hover:scale-95"
-          priority
-        />
-      </div>
+    <div className="relative w-full rounded-md h-[300px] sm:h-[300px] lg:h-[500px] overflow-hidden">
+      <Image
+        src={imageSrc}
+        alt={imageAlt}
+        fill
+        className="object-contain transition-transform duration-300 rounded-lg hover:scale-95"
+        priority
+      />
     </div>
   );
 
   return (
-    <div className={`${bgColor} ${className}  py-6 2xl:px-20 lg:py-12 `}>
-      <div className=" px-6 sm:px-12 lg:px-16 items-center ">
-        <div className={`flex flex-col lg:flex-row items-center gap-8 ${reverse ? 'lg:flex-row-reverse' : initialReverse ? 'lg:flex-row-reverse' : ''}`}> {/* Modify this line */}
-          <div className="flex-1 ">
+    <>
+    <div className={`${bgColor} ${className} hidden lg:block  py-6 px-3 2xl:px-10 lg:py-12`}>
+      <div className=" px-2 sm:px-12 lg:px-16 items-center">
+        <div
+          className={`flex flex-col-reverse  lg:flex-row items-center gap-4 lg:gap-8 ${
+            (reverse || initialReverse) ? 'lg:flex-row-reverse' : ''
+          }`}
+        >
+          <div className="flex-1">
             <ContentSection />
           </div>
           <div className="flex-1">
@@ -127,6 +130,21 @@ const FeatureSection = ({
         </div>
       </div>
     </div>
+    <div className={`${bgColor} ${className} block lg:hidden  py-6 px-3 2xl:px-10 lg:py-12`}>
+      <div className=" px-2 sm:px-12 lg:px-16 items-center">
+        <div
+          className={`flex flex-col gap-5`}
+        >
+          <div className="flex-1 order-2">
+            <ImageSection />
+          </div>
+          <div className="flex-1 order-1">
+            <ContentSection />
+          </div>
+        </div>
+      </div>
+    </div>
+    </>
   );
 };
 

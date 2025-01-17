@@ -69,18 +69,20 @@ const TeamCarousel = () => {
 
   return (
     <div className="w-full min-h-full bg-[#FEDFB2] py-16 fade-in">
-      <div className="max-w-7xl lg:max-w-5xl 2xl:max-w-[1600px] mx-auto">
+      <div className="max-w-7xl lg:max-w-5xl 2xl:max-w-[1220px] mx-auto">
         <h1 className="text-4xl lg:text-5xl 2xl:text-[54px] font-comic font-bold text-center lg:mb-8 2xl:mb-10 slide-up">Team Members</h1>
         
         <Swiper
           slidesPerView={1}
-          spaceBetween={30}
+          spaceBetween={1}
           breakpoints={{
             1024: {
               slidesPerView: 3,
+              spaceBetween: 20, // Add space between slides for 1024px screen size
             },
-            1536: {
-              slidesPerView: 4,
+            1440: {
+              slidesPerView: 3,
+              spaceBetween: 30, // Change this value to set the gap for 1440px screen size
             },
           }}
           pagination={{

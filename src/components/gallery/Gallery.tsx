@@ -61,6 +61,14 @@ const Gallery: React.FC = () => {
         navigation={true}
         modules={[Pagination, Autoplay, Navigation]}
         className="mySwiper mb-10"
+        breakpoints={{
+          300: {
+            slidesPerView: 1,
+          },
+          1024: {
+            slidesPerView: 3,
+          },
+        }}
       >
         {firstCarouselImages.map((image) => (
           <SwiperSlide key={image.id}>
@@ -92,6 +100,14 @@ const Gallery: React.FC = () => {
         navigation={true}
         modules={[Pagination, Autoplay, Navigation]}
         className="mySwiper"
+        breakpoints={{
+          300: {
+            slidesPerView: 1,
+          },
+          1024: {
+            slidesPerView: 3,
+          },
+        }}
       >
         {secondCarouselImages.map((image) => (
           <SwiperSlide key={image.id}>
