@@ -1,4 +1,4 @@
-import BlogSection from "@/components/blogs/front/BlogSection";
+import BlogSection from "@/components/blogs/front/Social";
 import LightWidget from "@/components/blogs/front/InstagramFeed";
 import FacebookWidget from "@/components/blogs/front/Facebook";
 

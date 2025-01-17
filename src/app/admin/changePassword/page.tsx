@@ -38,7 +38,7 @@ export default function ChangePassword() {
     }
 
     try {
-      const response = await fetch(`http://208.109.214.146:3002/admin/reset-password`, {
+      const response = await fetch(`https://api.quantumkids.in/admin/reset-password`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

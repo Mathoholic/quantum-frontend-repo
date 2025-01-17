@@ -114,7 +114,7 @@ const CommonForm = ({ onSubmit }: any) => {
 
     setIsLoading(true);
     try {
-      const response = await fetch("http://208.109.214.146:3002/form/submit", {
+      const response = await fetch("https://api.quantumkids.in/form/submit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

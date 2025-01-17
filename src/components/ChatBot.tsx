@@ -7,18 +7,17 @@ const ChatBot = () => {
   const [messages, setMessages] = useState([
     {
       type: "bot",
-      text: "Hi! I'm here to help you register. Can I have your first name?",
+      text: "Hi! I'm here to help you register. Can I have your Child's name?",
       avatar: "👋",
     },
   ]);
   const [inputValue, setInputValue] = useState("");
-  const [currentStep, setCurrentStep] = useState("firstName");
+  const [currentStep, setCurrentStep] = useState("childName");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    childName: "",
     parentName: "",
     location: "",
     email: "",
@@ -60,28 +59,15 @@ const ChatBot = () => {
     let avatar = "🤖";
 
     switch (currentStep) {
-      case "firstName":
+      case "childName":
         if (value.trim()) {
-          setFormData((prev) => ({ ...prev, firstName: value }));
-          botResponse = `Nice to meet you, ${value}! What's your last name?`;
-          nextStep = "lastName";
-          avatar = "😊";
-        } else {
-          isValid = false;
-          botResponse = "Please enter a valid first name.";
-          avatar = "⚠️";
-        }
-        break;
-
-      case "lastName":
-        if (value.trim()) {
-          setFormData((prev) => ({ ...prev, lastName: value }));
+          setFormData((prev) => ({ ...prev, childName: value }));
           botResponse = "Great! What's your parent's name?";
           nextStep = "parentName";
           avatar = "👥";
         } else {
           isValid = false;
-          botResponse = "Please enter a valid last name.";
+          botResponse = "Please enter a valid child's name.";
           avatar = "⚠️";
         }
         break;
@@ -159,7 +145,7 @@ const ChatBot = () => {
   const handleSubmit = async (submissionData: any) => {
     setIsLoading(true);
     try {
-      const response = await fetch("http://208.109.214.146:3002/form/submit", {
+      const response = await fetch("https://api.quantumkids.in/form/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(submissionData),
@@ -198,10 +184,10 @@ const ChatBot = () => {
     }
   };
 
-  if (!isChatBotVisible) return null; 
+  if (!isChatBotVisible) return null;
 
   return (
-    <div className="fixed bottom-4 right-4 bg-white shadow-lg rounded-lg w-80 h-[80vh] flex flex-col">
+    <div className="fixed bottom-4 right-4 bg-white shadow-lg rounded-lg w-80 h-[80vh] 2xl:h-[50vh]  2xl:w-96 flex flex-col">
       {/* Header */}
       <div className="bg-blue-500 text-white p-4 rounded-t-lg flex justify-between items-center">
         <h2 className="text-lg font-semibold">ChatBot Registration</h2>

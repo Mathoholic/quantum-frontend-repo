@@ -22,7 +22,7 @@ const EventsNews = () => {
   useEffect(() => {
     const fetchEventsData = async () => {
       try {
-        const response = await axios.get('http://208.109.214.146:3002/news-events');
+        const response = await axios.get('https://api.quantumkids.in/news-events');
         setEventsData(response.data);
       } catch (error) {
         console.error('Error fetching events data:', error);
@@ -51,7 +51,7 @@ const EventsNews = () => {
               {event.imageUrls.map((imageUrl, index) => (
                 <SwiperSlide key={index}>
                   <Image
-                    src={`http://208.109.214.146:3002${imageUrl}`}
+                    src={`https://api.quantumkids.in${imageUrl}`}
                     alt={event.title}
                     width={400}
                     height={240}
