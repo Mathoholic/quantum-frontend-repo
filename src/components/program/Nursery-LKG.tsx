@@ -60,6 +60,7 @@ const ProgramSection: React.FC = () => {
             <span style={{ color: "#f06f13" }}>e</span>
             <span style={{ color: "#087278" }}>r</span>
             <span style={{ color: "#087278" }}>y</span>
+            <span style={{ color: "#f06f13" }}>:</span>
           </h2>
           <ul className="space-y-4 mt-4">
             {featuresNursery.map((feature, index) => (

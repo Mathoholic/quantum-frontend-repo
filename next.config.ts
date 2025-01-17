@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   // ...existing code...
   images: {
-    domains: ['208.109.214.146'],
+    domains: ['api.quantumkids.in'],
   },
   eslint: {
     ignoreDuringBuilds: true,

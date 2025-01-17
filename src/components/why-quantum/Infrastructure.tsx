@@ -5,7 +5,7 @@ const Infrastructure = () => (
   <FeatureSection
     className="animate-fade-in"
     bgColor="bg-[#FCDAE5]"
-    bgcontentColor = "bg-[#F0F0F0]"
+    bgcontentColor = "bg-[#FFF6C8]"
     title="State-of-the-Art Infrastructure"
     titleColor="text-[#EE487C]"
     imageSrc="/why-quantum/student-study.svg"

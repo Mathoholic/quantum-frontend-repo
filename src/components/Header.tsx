@@ -43,7 +43,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="relative bg-[#d5f3f5] flex items-center justify-between w-full shadow-md h-full transition-all duration-500 ease-in-out px-4 lg:px-6 xl:px-8 2xl:px-10">
+    <nav className="relative bg-[#fff6c8] flex items-center justify-between w-full shadow-md h-full transition-all duration-500 ease-in-out px-4 lg:py-2 xl:px-8 2xl:px-10">
       {/* Logo */}
       <div
         className={`flex transition-all duration-500 ${
@@ -58,7 +58,7 @@ const Navbar = () => {
             alt="Logo"
             width={80}
             height={60}
-            className="transition-transform duration-500 2xl:p-2 lg:p-1 hover:scale-110 2xl:w-48 2xl:h-28 xl:w-36 xl:h-20 lg:w-28 lg:h-16 md:w-20 md:h-14 w-16 h-12"
+            className="transition-transform duration-500 2xl:p-2 lg:p1 hover:scale-110 2xl:w-48 2xl:h-28 xl:w-36 xl:h-20 lg:w-28 lg:h-16 md:w-20 md:h-14 w-16 h-12"
           />
         </Link>
       </div>
@@ -81,7 +81,7 @@ const Navbar = () => {
             : "opacity-0 -translate-y-10"
         }`}
       >
-        <ul className="flex flex-wrap justify-center items-center lg:gap-4 gap-2 w-full">
+        <ul className="flex flex-wrap justify-center items-center lg:gap-4 xl:gap-10 gap-2 w-full">
           {navigationLinks.map((link, index) => {
             const isActive = currentPath === link.path;
             const colors = [

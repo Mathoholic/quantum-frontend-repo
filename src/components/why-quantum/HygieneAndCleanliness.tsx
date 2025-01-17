@@ -5,7 +5,7 @@ const HygieneAndCleanliness = () => (
   <FeatureSection
     className="animate-fade-in"
     bgColor="bg-[#FCDAE5]"
-    bgcontentColor = "bg-[#F0F0F0]"
+    bgcontentColor = "bg-[#FFF6C8]"
     title="Hygiene & Cleanliness"
     titleColor="text-[#EE487C]"
     imageSrc="/why-quantum/teacher-handwash.svg"

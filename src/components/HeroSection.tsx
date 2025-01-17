@@ -34,17 +34,17 @@ const HeroSection: React.FC = () => {
   };
 
   return (
-    <div className="bg-[#d5f3f5] min-h-[50vh] md:min-h-[60vh] lg:min-h-[75vh] xl:min-h-[80vh] 2xl:min-h-[60vh] flex flex-col items-center justify-between relative overflow-hidden px-4 sm:px-8 md:px-12 lg:px-10">
+    <div className="bg-[#d5f3f5] min-h-[38vh] md:min-h-[60vh] lg:min-h-[60vh] xl:min-h-[80vh] 2xl:min-h-[60vh] flex flex-col items-center justify-between relative overflow-hidden px-4 sm:px-8 md:px-12 lg:px-10">
       <DecorativeImages />
-      <div className="flex-grow flex flex-col items-center justify-center md:pt-[46px] px-4 sm:px-8 md:px-12 lg:px-10 2xl:px-16">
+      <div className="flex-grow flex flex-col items-center justify-center md:pt-[46px] px-4 sm:px-8 md:px-12 lg:px-10  2xl:px-16">
         <div
           ref={mainRef}
-          className="flex flex-col items-center text-center w-full h-auto justify-center gap-4 sm:gap-6 md:gap-7 lg:gap-8 2xl:gap-10 absolute inset-x-0 top-10 md:top-20 lg:top-24 2xl:top-28 opacity-0"
+          className="flex flex-col items-center text-center w-full h-auto justify-center gap-8 sm:gap-8 md:gap-10 lg:gap-2 2xl:gap-6 absolute inset-x-0 top-6 md:top-20 lg:top-10  2xl:top-12 opacity-0"
         >
-          <h1 className="font-extrabold text-gray-800 md:mb-4 w-full max-w-[190px] md:max-w-[400px] lg:max-w-[576px] 2xl:max-w-[800px] font-comic text-[16px] md:text-[36px] lg:text-[52px] 2xl:text-[70px] leading-[25px] sm:leading-[20px] md:leading-[45px] lg:leading-[65px] 2xl:leading-[75px]">
+          <h1 className="font-extrabold text-gray-800 md:mb-4 w-full max-w-[240px] md:max-w-[400px] lg:max-w-[576px] 2xl:max-w-[700px] font-comic text-[22px] md:text-[36px] lg:text-[44px] 2xl:text-[60px] leading-[25px]  sm:leading-[20px] md:leading-[25px] lg:leading-[65px] 2xl:leading-[75px]">
             Take A Quantum Leap Into Learning
           </h1>
-          <p className="text-gray-600 text-[8px] sm:text-[12px] md:text-[16px] lg:text-lg 2xl:text-2xl max-w-[200px] sm:max-w-[400px] md:max-w-[600px] lg:max-w-2xl 2xl:max-w-4xl">
+          <p className="text-gray-600 text-[12px] sm:text-[12px] md:text-[16px] lg:text-lg 2xl:text-2xl max-w-[280px] sm:max-w-[400px] md:max-w-[600px] lg:max-w-2xl 2xl:max-w-[900px] lg:mb-2">
             Quantum kids is a new age, progressive pre-school aiming to provide
             Child-Centric education hugely inspired by Montessori philosophy. Our
             thoughtfully designed environment nurtures each child's natural
@@ -54,7 +54,7 @@ const HeroSection: React.FC = () => {
           <button 
             ref={buttonRef}
             onClick={scrollToQuantumHover} 
-            className={`bg-pink-500 text-white px-3 py-2 sm:px-5 md:px-6 lg:px-6 2xl:px-8 sm:py-3 md:py-4 lg:py-2 2xl:py-5 rounded-lg sm:text-base md:text-lg lg:text-lg 2xl:text-xl shadow-lg hover:bg-pink-600 transition-opacity duration-500 ${isButtonVisible ? 'opacity-100' : 'opacity-0'}`}
+            className={`bg-pink-500 text-white p-1 sm:py-3 md:p-4 lg:p-2 2xl:p-2 rounded-lg text-[14px] md:text-lg lg:text-lg 2xl:text-2xl shadow-lg hover:bg-pink-600 transition-opacity duration-500 ${isButtonVisible ? 'opacity-100' : 'opacity-0'}`}
           >
             Let's Get Started
           </button>

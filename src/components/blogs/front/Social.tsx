@@ -15,21 +15,7 @@ interface Blog {
 }
 
 const Social: React.FC = () => {
-  const [blogs, setBlogs] = useState<Blog[]>([]);
-  const [selectedBlog, setSelectedBlog] = useState<Blog | null>(null);
-
-  useEffect(() => {
-    const fetchBlogs = async () => {
-      try {
-        const response = await axios.get('https://api.quantumkids.in/blogs');
-        setBlogs(response.data);
-      } catch (error) {
-        console.error('Error fetching blogs:', error);
-      }
-    };
-
-    fetchBlogs();
-  }, []);
+  
 
   return (
     <div className="bg-sky-100 pt-10 smx-auto px-6 w-full flex items-center justify-center flex-col">

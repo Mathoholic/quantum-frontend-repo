@@ -65,30 +65,28 @@ const EducationSection = () => {
     <section className="bg-[#fcd4df] py-16 relative">
       <div
         ref={plusImageRef}
-        className="absolute top-[-70px] right-20 m-4"
+        className="absolute top-[-40px] right-0 lg:top-[-85px] lg:right-20 m-4"
       >
-        <Image src="/plus.svg" alt="Top Right Image" width={100} height={100} />
+        <Image src="/plus.svg" alt="Top Right Image" width={100} height={100} className="w-14 lg:w-36" />
       </div>
-      <div className="container mx-auto lg:px-16 2xl:px-0">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-24">
+      <div className="container mx-auto lg:px-16 2xl:px-24">
+        <h1 className="2xl:text-[52px] text-center text-4xl font-bold font-comic mt-4 text-pink-600 leading-tight">
+          Our Approach: Play Based Learning
+        </h1>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 lg:gap-16 mt-8">
           {/* Left Column: Text Content */}
-          <div ref={textContentRef} className="text-center lg:text-left">
-            <h1 className="2xl:text-[52px] text-4xl font-bold font-comic mt-4 text-pink-600 leading-tight">
-            Our Approach: <br/>Play Based Learning
-            </h1>
-            <p className="text-gray-700 text-lg 2xl:text-[28px] mt-6 font-outfit leading-relaxed ">
-            Early education is not a luxury, but a necessity! 
+          <div ref={textContentRef} className="text-center p-5 lg:text-left">
+            <p className="text-gray-700 text-[22px] 2xl:text-[28px] lg:mt-6 font-outfit leading-relaxed font-bold ">
+              Early education is not a luxury, but a necessity! 
             </p>
-            <p className="text-gray-700 text-lg 2xl:text-[28px] mt-6 font-outfit leading-relaxed ">
-            
-
+            <p className="text-gray-700 text-[20px] 2xl:text-[28px] mt-6 font-outfit leading-relaxed ">
               A child’s brain development is phenomenal during the early years — over 
               75% development happens during 0-6 years, where they absorb everything
               around them just like sponges. We believe in a strong foundation in the
               early years, and providing a rich structured environment makes a huge
               difference in their lives.
             </p>
-            <p className="text-gray-700 text-lg mt-6 leading-relaxed 2xl:text-[28px] font-outfit">
+            <p className="text-gray-700 text-[20px] mt-6 leading-relaxed 2xl:text-[28px] font-outfit">
               At Quantum Kids, learning is a joyful, hands-on experience where PLAY is
               not only encouraged but integrated as a powerful tool for discovery and
               development. Through a rich blend of exploration, collaboration, and
@@ -97,7 +95,7 @@ const EducationSection = () => {
             </p>
           </div>
 
-          {/* Right Column: Diagram */}
+          {/* Right Column: Video */}
           <div className="flex justify-center items-center">
             <div ref={videoRef} className="relative w-full h-full">
               <video
