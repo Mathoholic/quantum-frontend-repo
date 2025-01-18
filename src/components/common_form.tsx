@@ -154,7 +154,7 @@ const CommonForm = ({ onSubmit }: any) => {
       ) : (
         <>
           <h1 className="text-3xl font-bold mb-2">
-            <span className="text-red-400">Register Now </span> for{" "}
+            <span className="text-red-400">Signup Now </span> for{" "}
             <span className="text-blue-400">AY</span>{" "}
             <span className="text-green-500">
               {" "}
