@@ -23,6 +23,7 @@ const ChatBot = () => {
     email: "",
     mobileNumber: "",
     program: "",
+    isChecked: true
   });
 
   const programs = ["Daycare", "Playgroup", "Nursery", "LKG", "UKG"];
@@ -47,7 +48,7 @@ const ChatBot = () => {
     ]);
     setCurrentStep("submit");
 
-    const submissionData = { ...formData, program };
+    const submissionData = { ...formData, program, isChecked: true };
 
     await handleSubmit(submissionData);
   };
